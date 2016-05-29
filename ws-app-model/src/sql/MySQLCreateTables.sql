@@ -36,8 +36,7 @@ CREATE TABLE Reserva (
     emailUsuarioReserva VARCHAR(70) COLLATE latin1_bin NOT NULL,
     fechaExpiracionReserva TIMESTAMP DEFAULT 0 NOT NULL,
     tarjetaCreditoReserva VARCHAR(16),
-    price FLOAT NOT NULL,
-    movieUrl VARCHAR(255) NOT NULL,
+    precioReserva FLOAT NOT NULL,
     fechaCreacionReserva TIMESTAMP DEFAULT 0 NOT NULL,
     CONSTRAINT ReservaPK PRIMARY KEY(reservaId),
     CONSTRAINT ReservaOfertaIdFK FOREIGN KEY(ofertaId)
