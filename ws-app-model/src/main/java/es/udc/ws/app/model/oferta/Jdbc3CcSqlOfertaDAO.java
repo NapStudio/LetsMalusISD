@@ -14,7 +14,7 @@ public class Jdbc3CcSqlOfertaDAO extends MySQLOfertaDAO{
     public Oferta create(Connection connection, Oferta oferta) {
 		
         String queryString = "INSERT INTO Oferta"
-                + " (nombreOferta, descripcionOferta, precioRealOferta, precioDescontadoOferta, fechaLimiteOferta, estadoOferta)"
+                + " (nombreOferta, descripcionOferta, estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva)"
                 + " VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -22,6 +22,7 @@ public class Jdbc3CcSqlOfertaDAO extends MySQLOfertaDAO{
 
 
 			Timestamp sqlTimestamp = new Timestamp(oferta.getFechaLimiteOferta().getTime());
+			Timestamp sqlTimestamp2 = new Timestamp(oferta.getFechaLimiteReserva().getTime());
         	
             /* Fill "preparedStatement". */
             int i = 1;
@@ -30,7 +31,9 @@ public class Jdbc3CcSqlOfertaDAO extends MySQLOfertaDAO{
             preparedStatement.setString(i++, oferta.getEstadoOferta());
             preparedStatement.setFloat(i++, oferta.getPrecioRealOferta());
             preparedStatement.setFloat(i++, oferta.getPrecioDescontadoOferta());
+            preparedStatement.setFloat(i++, oferta.getComisionOferta());
             preparedStatement.setTimestamp(i++, sqlTimestamp);
+            preparedStatement.setTimestamp(i++, sqlTimestamp2);
             /* Execute query. */
             preparedStatement.executeUpdate();
 
@@ -46,7 +49,7 @@ public class Jdbc3CcSqlOfertaDAO extends MySQLOfertaDAO{
             /* Return oferta. */
             return new Oferta(ofertaId, oferta.getNombreOferta(), oferta.getDescripcionOferta(),
                     oferta.getEstadoOferta(), oferta.getPrecioRealOferta(),
-                    oferta.getPrecioDescontadoOferta(), oferta.getFechaLimiteOferta());
+                    oferta.getPrecioDescontadoOferta(), oferta.getComisionOferta(), oferta.getFechaLimiteOferta(), oferta.getFechaLimiteReserva());
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

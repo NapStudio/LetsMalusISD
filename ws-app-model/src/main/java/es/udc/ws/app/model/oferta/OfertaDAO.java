@@ -1,6 +1,7 @@
 package es.udc.ws.app.model.oferta;
 
 import java.sql.Connection;
+import java.util.Date;
 import java.util.List;
 
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -12,8 +13,10 @@ public interface OfertaDAO {
     public Oferta find(Connection connection, Long ofertaId)
             throws InstanceNotFoundException;
 
-    public List<Oferta> findByKeywords(Connection connection,
-            String keywords);
+    public List<Oferta> findByParameters(Connection connection,
+            String keywords, String estadoBusqueda, Date fechaBusqueda);
+    
+    public List<Oferta> findAll(Connection connection);
 
     public void update(Connection connection, Oferta oferta)
             throws InstanceNotFoundException;

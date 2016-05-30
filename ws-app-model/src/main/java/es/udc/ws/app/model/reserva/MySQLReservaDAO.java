@@ -4,8 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
@@ -19,8 +20,8 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
 	public Reserva find(Connection connection, Long reservaId)
 			throws InstanceNotFoundException {
 		 /* Create "queryString". */
-        String queryString = "SELECT ofertaId, emailUsuarioReserva, fechaExpiracionReserva,"
-                + " tarjetaCreditoReserva, precioReserva, fechaCreacionReserva FROM Reserva WHERE reservaId = ?";
+        String queryString = "SELECT ofertaId, emailUsuarioReserva,"
+                + " tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva FROM Reserva WHERE reservaId = ?";
 
         
         
@@ -42,13 +43,12 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
             i = 1;
             Long ofertaId = resultSet.getLong(i++);
             String emailUsuarioReserva = resultSet.getString(i++);
-            Date fechaExpiracionReserva = resultSet.getTimestamp(i++);
             String tarjetaCreditoReserva = resultSet.getString(i++);
-            float precioReserva = resultSet.getFloat(i++);
+            String estadoReserva = resultSet.getString(i++);
             Date fechaCreacionReserva = resultSet.getTimestamp(i++);
             /* Return sale. */
-            return new Reserva(reservaId, ofertaId, emailUsuarioReserva, fechaExpiracionReserva,
-            		tarjetaCreditoReserva, precioReserva, fechaCreacionReserva);
+            return new Reserva(reservaId, ofertaId, emailUsuarioReserva,
+            		tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -60,23 +60,20 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
 			throws InstanceNotFoundException {
         /* Create "queryString". */
         String queryString = "UPDATE Reserva"
-                + " SET ofertaId = ?, emailUsuarioReserva = ?, fechaExpiracionReserva = ?, "
-                + " tarjetaCreditoReserva = ?, precioReserva = ? WHERE reservaId = ?";
+                + " SET ofertaId = ?, emailUsuarioReserva = ?,  "
+                + " tarjetaCreditoReserva = ?, estadoReserva = ? WHERE reservaId = ?";
         
-        /* (ofertaId, emailUsuarioReserva, fechaExpiracionReserva, tarjetaCreditoReserva, precioReserva, fechaCreacionReserva)"
-        + " VALUES (?, ?, ?, ?, ?)";*/
+        
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
         	
-        	Timestamp sqlTimestampExpiracion = new Timestamp(reserva.getFechaExpiracionReserva().getTime());
 
             /* Fill "preparedStatement". */
             int i = 1;
             preparedStatement.setLong(i++, reserva.getOfertaId());
             preparedStatement.setString(i++, reserva.getEmailUsuarioReserva());
-            preparedStatement.setTimestamp(i++, sqlTimestampExpiracion);
             preparedStatement.setString(i++, reserva.getTarjetaCreditoReserva());
-            preparedStatement.setFloat(i++, reserva.getPrecioReserva());
+            preparedStatement.setString(i++, reserva.getEstadoReserva());
             preparedStatement.setLong(i++, reserva.getReservaId());
             
 
@@ -118,6 +115,86 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
         }
 
     }
+
+	@Override
+	public List<Reserva> findbyOferta(Connection connection, Long ofertaId)
+			throws InstanceNotFoundException {
+		String queryString = "SELECT reservaId, emailUsuarioReserva,"
+                + " tarjetaCreditoReserva, estadoOferta, fechaCreacionReserva FROM Reserva WHERE ofertaId = ?";
+
+        
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+
+            /* Fill "preparedStatement". */
+            int i = 1;
+            preparedStatement.setLong(i++, ofertaId.longValue());
+
+            /* Execute query. */
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            
+
+            List<Reserva> reserva = new ArrayList<Reserva>();
+
+            while (resultSet.next()) {
+	            i = 1;
+	            Long reservaId = resultSet.getLong(i++);
+	            String emailUsuarioReserva = resultSet.getString(i++);
+	            String tarjetaCreditoReserva = resultSet.getString(i++);
+	            String estadoReserva = resultSet.getString(i++);
+	            Date fechaCreacionReserva = resultSet.getTimestamp(i++);
+	            /* Return sale. */
+	            
+	            reserva.add(new Reserva(reservaId, ofertaId, emailUsuarioReserva,
+	            		tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva));
+            }
+            return reserva;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+	}
 		
+
+	@Override
+	public List<Reserva> findbyUsuario(Connection connection, String emailUsuarioReserva)
+			throws InstanceNotFoundException {
+		String queryString = "SELECT reservaId, ofertaId,"
+                + " tarjetaCreditoReserva, estadoOferta, fechaCreacionReserva FROM Reserva WHERE emailUsuarioReserva = ?";
+
+        
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+
+            /* Fill "preparedStatement". */
+            int i = 1;
+            preparedStatement.setString(i++, emailUsuarioReserva);
+
+            /* Execute query. */
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            
+
+            List<Reserva> reserva = new ArrayList<Reserva>();
+
+            while (resultSet.next()) {
+	            i = 1;
+	            Long reservaId = resultSet.getLong(i++);
+	            Long ofertaId = resultSet.getLong(i++);
+	            String tarjetaCreditoReserva = resultSet.getString(i++);
+	            String estadoReserva = resultSet.getString(i++);
+	            Date fechaCreacionReserva = resultSet.getTimestamp(i++);
+	            /* Return sale. */
+	            
+	            reserva.add(new Reserva(reservaId, ofertaId, emailUsuarioReserva,
+	            		tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva));
+            }
+            return reserva;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+	}
 
 }

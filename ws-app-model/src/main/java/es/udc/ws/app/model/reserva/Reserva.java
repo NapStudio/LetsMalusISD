@@ -7,33 +7,35 @@ public class Reserva {
     private Long reservaId;
     private Long ofertaId;
     private String emailUsuarioReserva;
-    private Date fechaExpiracionReserva;
     private String tarjetaCreditoReserva;
-    private float precioReserva;
+    //estados reserva: válida, inválida, anulada.
+    private String estadoReserva;
     private Date fechaCreacionReserva;
     
+    public Reserva(){
+    	
+    }
+    
+	public Reserva(Long ofertaId, String emailUsuarioReserva,
+			String tarjetaCreditoReserva, String estadoReserva,
+			Date fechaCreacionReserva) {
+		super();
+		this.ofertaId = ofertaId;
+		this.emailUsuarioReserva = emailUsuarioReserva;
+		this.tarjetaCreditoReserva = tarjetaCreditoReserva;
+		this.estadoReserva = estadoReserva;
+		this.fechaCreacionReserva = fechaCreacionReserva;
+	}
+
 	public Reserva(Long reservaId, Long ofertaId, String emailUsuarioReserva,
-			Date fechaExpiracionReserva, String tarjetaCreditoReserva,
-			float precioReserva, Date fechaCreacionReserva) {
+			String tarjetaCreditoReserva, String estadoReserva,
+			Date fechaCreacionReserva) {
 		super();
 		this.reservaId = reservaId;
 		this.ofertaId = ofertaId;
 		this.emailUsuarioReserva = emailUsuarioReserva;
-		this.fechaExpiracionReserva = fechaExpiracionReserva;
 		this.tarjetaCreditoReserva = tarjetaCreditoReserva;
-		this.precioReserva = precioReserva;
-		this.fechaCreacionReserva = fechaCreacionReserva;
-	}
-
-	public Reserva(Long ofertaId, String emailUsuarioReserva,
-			Date fechaExpiracionReserva, String tarjetaCreditoReserva,
-			float precioReserva, Date fechaCreacionReserva) {
-		super();
-		this.ofertaId = ofertaId;
-		this.emailUsuarioReserva = emailUsuarioReserva;
-		this.fechaExpiracionReserva = fechaExpiracionReserva;
-		this.tarjetaCreditoReserva = tarjetaCreditoReserva;
-		this.precioReserva = precioReserva;
+		this.estadoReserva = estadoReserva;
 		this.fechaCreacionReserva = fechaCreacionReserva;
 	}
 
@@ -61,14 +63,6 @@ public class Reserva {
 		this.emailUsuarioReserva = emailUsuarioReserva;
 	}
 
-	public Date getFechaExpiracionReserva() {
-		return fechaExpiracionReserva;
-	}
-
-	public void setFechaExpiracionReserva(Date fechaExpiracionReserva) {
-		this.fechaExpiracionReserva = fechaExpiracionReserva;
-	}
-
 	public String getTarjetaCreditoReserva() {
 		return tarjetaCreditoReserva;
 	}
@@ -77,12 +71,12 @@ public class Reserva {
 		this.tarjetaCreditoReserva = tarjetaCreditoReserva;
 	}
 
-	public float getPrecioReserva() {
-		return precioReserva;
+	public String getEstadoReserva() {
+		return estadoReserva;
 	}
 
-	public void setPrecioReserva(float precioReserva) {
-		this.precioReserva = precioReserva;
+	public void setEstadoReserva(String estadoReserva) {
+		this.estadoReserva = estadoReserva;
 	}
 
 	public Date getFechaCreacionReserva() {
@@ -101,17 +95,14 @@ public class Reserva {
 				* result
 				+ ((emailUsuarioReserva == null) ? 0 : emailUsuarioReserva
 						.hashCode());
+		result = prime * result
+				+ ((estadoReserva == null) ? 0 : estadoReserva.hashCode());
 		result = prime
 				* result
 				+ ((fechaCreacionReserva == null) ? 0 : fechaCreacionReserva
 						.hashCode());
-		result = prime
-				* result
-				+ ((fechaExpiracionReserva == null) ? 0
-						: fechaExpiracionReserva.hashCode());
 		result = prime * result
 				+ ((ofertaId == null) ? 0 : ofertaId.hashCode());
-		result = prime * result + Float.floatToIntBits(precioReserva);
 		result = prime * result
 				+ ((reservaId == null) ? 0 : reservaId.hashCode());
 		result = prime
@@ -135,23 +126,20 @@ public class Reserva {
 				return false;
 		} else if (!emailUsuarioReserva.equals(other.emailUsuarioReserva))
 			return false;
+		if (estadoReserva == null) {
+			if (other.estadoReserva != null)
+				return false;
+		} else if (!estadoReserva.equals(other.estadoReserva))
+			return false;
 		if (fechaCreacionReserva == null) {
 			if (other.fechaCreacionReserva != null)
 				return false;
 		} else if (!fechaCreacionReserva.equals(other.fechaCreacionReserva))
 			return false;
-		if (fechaExpiracionReserva == null) {
-			if (other.fechaExpiracionReserva != null)
-				return false;
-		} else if (!fechaExpiracionReserva.equals(other.fechaExpiracionReserva))
-			return false;
 		if (ofertaId == null) {
 			if (other.ofertaId != null)
 				return false;
 		} else if (!ofertaId.equals(other.ofertaId))
-			return false;
-		if (Float.floatToIntBits(precioReserva) != Float
-				.floatToIntBits(other.precioReserva))
 			return false;
 		if (reservaId == null) {
 			if (other.reservaId != null)
@@ -165,6 +153,8 @@ public class Reserva {
 			return false;
 		return true;
 	}
+
     
+
     
 }

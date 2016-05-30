@@ -10,25 +10,30 @@ public class Oferta {
     private String estadoOferta;
     private float precioRealOferta;
     private float precioDescontadoOferta;
+    private float comisionOferta;
     private Date fechaLimiteOferta;
+    private Date fechaLimiteReserva;
     
-    
-    
-	public Oferta(String nombreOferta, String descripcionOferta,
+    public Oferta(String nombreOferta, String descripcionOferta,
 			String estadoOferta, float precioRealOferta,
-			float precioDescontadoOferta, Date fechaLimiteOferta) {
+			float precioDescontadoOferta, float comisionOferta,
+			Date fechaLimiteOferta, Date fechaLimiteReserva) {
 		super();
 		this.nombreOferta = nombreOferta;
 		this.descripcionOferta = descripcionOferta;
 		this.estadoOferta = estadoOferta;
 		this.precioRealOferta = precioRealOferta;
 		this.precioDescontadoOferta = precioDescontadoOferta;
+		this.comisionOferta = comisionOferta;
 		this.fechaLimiteOferta = fechaLimiteOferta;
+		this.fechaLimiteReserva = fechaLimiteReserva;
 	}
-
+    
+    
 	public Oferta(Long ofertaId, String nombreOferta, String descripcionOferta,
 			String estadoOferta, float precioRealOferta,
-			float precioDescontadoOferta, Date fechaLimiteOferta) {
+			float precioDescontadoOferta, float comisionOferta,
+			Date fechaLimiteOferta, Date fechaLimiteReserva) {
 		super();
 		this.ofertaId = ofertaId;
 		this.nombreOferta = nombreOferta;
@@ -36,9 +41,12 @@ public class Oferta {
 		this.estadoOferta = estadoOferta;
 		this.precioRealOferta = precioRealOferta;
 		this.precioDescontadoOferta = precioDescontadoOferta;
+		this.comisionOferta = comisionOferta;
 		this.fechaLimiteOferta = fechaLimiteOferta;
+		this.fechaLimiteReserva = fechaLimiteReserva;
 	}
-	
+
+
 	public Long getOfertaId() {
 		return ofertaId;
 	}
@@ -81,11 +89,29 @@ public class Oferta {
 	public void setFechaLimiteOferta(Date fechaLimiteOferta) {
 		this.fechaLimiteOferta = fechaLimiteOferta;
 	}
+	public float getComisionOferta() {
+		return comisionOferta;
+	}
+	public void setComisionOferta(float comisionOferta) {
+		this.comisionOferta = comisionOferta;
+	}
+
+
+	public Date getFechaLimiteReserva() {
+		return fechaLimiteReserva;
+	}
+
+
+	public void setFechaLimiteReserva(Date fechaLimiteReserva) {
+		this.fechaLimiteReserva = fechaLimiteReserva;
+	}
+
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + Float.floatToIntBits(comisionOferta);
 		result = prime
 				* result
 				+ ((descripcionOferta == null) ? 0 : descripcionOferta
@@ -96,6 +122,10 @@ public class Oferta {
 				* result
 				+ ((fechaLimiteOferta == null) ? 0 : fechaLimiteOferta
 						.hashCode());
+		result = prime
+				* result
+				+ ((fechaLimiteReserva == null) ? 0 : fechaLimiteReserva
+						.hashCode());
 		result = prime * result
 				+ ((nombreOferta == null) ? 0 : nombreOferta.hashCode());
 		result = prime * result
@@ -104,6 +134,7 @@ public class Oferta {
 		result = prime * result + Float.floatToIntBits(precioRealOferta);
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -114,6 +145,9 @@ public class Oferta {
 		if (getClass() != obj.getClass())
 			return false;
 		Oferta other = (Oferta) obj;
+		if (Float.floatToIntBits(comisionOferta) != Float
+				.floatToIntBits(other.comisionOferta))
+			return false;
 		if (descripcionOferta == null) {
 			if (other.descripcionOferta != null)
 				return false;
@@ -128,6 +162,11 @@ public class Oferta {
 			if (other.fechaLimiteOferta != null)
 				return false;
 		} else if (!fechaLimiteOferta.equals(other.fechaLimiteOferta))
+			return false;
+		if (fechaLimiteReserva == null) {
+			if (other.fechaLimiteReserva != null)
+				return false;
+		} else if (!fechaLimiteReserva.equals(other.fechaLimiteReserva))
 			return false;
 		if (nombreOferta == null) {
 			if (other.nombreOferta != null)
@@ -147,6 +186,9 @@ public class Oferta {
 			return false;
 		return true;
 	}
+
+
+
 	
 	
     

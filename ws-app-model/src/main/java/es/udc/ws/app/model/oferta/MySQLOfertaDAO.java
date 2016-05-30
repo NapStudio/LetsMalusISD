@@ -17,38 +17,13 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
 	protected MySQLOfertaDAO(){
 		
 	}
-	
-
-	
-	/* 	ofertaId BIGINT NOT NULL AUTO_INCREMENT,
-    nombreOferta VARCHAR(255) COLLATE latin1_bin NOT NULL,
-    descripcionOferta VARCHAR(1024) COLLATE latin1_bin ,
-    precioRealOferta FLOAT NOT NULL,
-    precioDescontadoOferta FLOAT NOT NULL,
-    fechaLimiteOferta TIMESTAMP DEFAULT 0 NOT NULL,
-    estadoOferta VARCHAR(255) NOT NULL,
-    CONSTRAINT OfertaId PRIMARY KEY(ofertaId), 
-    CONSTRAINT validPrice CHECK ( price >= 0) 
-    ) ENGINE = InnoDB;
-	
-    
-   private Long ofertaId;
-    private String nombreOferta;
-    private String descripcionOferta;
-    private String estadoOferta;
-    private float precioRealOferta;
-    private float precioDescontadoOferta;
-    private Date fechaLimiteOferta;*/
-	
-
-    /* Create "queryString". */
 
 	@Override
 	public Oferta find(Connection connection, Long ofertaId)
 			throws InstanceNotFoundException {
 		 /* Create "queryString". */
         String queryString = "SELECT nombreOferta, descripcionOferta, "
-                + " estadoOferta, precioRealOferta, precioDescontadoOferta, fechaLimiteOferta FROM Oferta WHERE ofertaId = ?";
+                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva FROM Oferta WHERE ofertaId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -71,11 +46,13 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
             String estadoOferta = resultSet.getString(i++);
             float precioRealOferta = resultSet.getFloat(i++);
             float precioDescontadoOferta = resultSet.getFloat(i++);
+            float comisionOferta = resultSet.getFloat(i++);
             Date fechaLimiteOferta = resultSet.getTimestamp(i++);
+            Date fechaLimiteReserva = resultSet.getTimestamp(i++);
 
-            /* Return movie. */
+            /* Return oferta. */
             return new Oferta(ofertaId, nombreOferta, descripcionOferta, estadoOferta, precioRealOferta,
-            		precioDescontadoOferta, fechaLimiteOferta);
+            		precioDescontadoOferta,comisionOferta, fechaLimiteOferta, fechaLimiteReserva);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -83,30 +60,59 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
 	}
 
 	@Override
-	public List<Oferta> findByKeywords(Connection connection, String keywords) {
+	public List<Oferta> findByParameters(Connection connection, String keywords, String estadoBusqueda, Date fechaBusqueda) {
         /* Create "queryString". */
         String[] words = keywords != null ? keywords.split(" ") : null;
         String queryString = "SELECT ofertaId, nombreOferta, descripcionOferta, "
-                + " estadoOferta, precioRealOferta, precioDescontadoOferta, fechaLimiteOferta FROM Oferta";
+                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva FROM Oferta";
+        
+        if ((words != null && words.length > 0) || (estadoBusqueda != null)
+        		|| (fechaBusqueda != null)) {
+        	queryString += " WHERE";
+        }
+        boolean isFirst=true;
         if (words != null && words.length > 0) {
-            queryString += " WHERE";
+        	isFirst=false;
             for (int i = 0; i < words.length; i++) {
                 if (i > 0) {
                     queryString += " AND";
                 }
-                queryString += " LOWER(nombreOferta) LIKE LOWER(?)";
+                queryString += "LOWER(descripcionOferta) LIKE LOWER(?) ";
             }
         }
+        if(estadoBusqueda!=null){
+        	if(!isFirst){
+        		queryString+= " AND ";
+        	}else{
+        		isFirst=false;
+        	}
+        	queryString="estadoOferta = ?";
+        }
+        if(fechaBusqueda!=null){
+        	if(!isFirst){
+        		queryString+= " AND ";
+        	}else{
+        		isFirst=false;
+        	}
+        	queryString=" fechaLimiteOferta = ?";
+        }
+        
         queryString += " ORDER BY nombreOferta";
 
+        
+        
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
+        	int j=1;
             if (words != null) {
                 /* Fill "preparedStatement". */
                 for (int i = 0; i < words.length; i++) {
-                    preparedStatement.setString(i + 1, "%" + words[i] + "%");
+                    preparedStatement.setString(j++, "%" + words[i] + "%");
                 }
             }
+            if(estadoBusqueda!=null) preparedStatement.setString(j++, estadoBusqueda);
+            if(fechaBusqueda!=null) preparedStatement.setTimestamp(j++, new Timestamp(fechaBusqueda.getTime()));
+            
 
             /* Execute query. */
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -123,10 +129,53 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
                 String estadoOferta = resultSet.getString(i++);
                 float precioRealOferta = resultSet.getFloat(i++);
                 float precioDescontadoOferta = resultSet.getFloat(i++);
+                float comisionOferta = resultSet.getFloat(i++);
                 Date fechaLimiteOferta = resultSet.getTimestamp(i++);
+                Date fechaLimiteReserva = resultSet.getTimestamp(i++);
 
                 ofertas.add(new Oferta(ofertaId, nombreOferta, descripcionOferta, estadoOferta,
-                		precioRealOferta, precioDescontadoOferta, fechaLimiteOferta));
+                		precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva));
+
+            }
+
+            /* Return ofertas. */
+            return ofertas;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+	}
+	
+	@Override
+	public List<Oferta> findAll(Connection connection){
+		 /* Create "queryString". */
+        String queryString = "SELECT nombreOferta, descripcionOferta, "
+                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta FROM Oferta";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+
+            /* Fill "preparedStatement". */
+
+            /* Execute query. */
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Oferta> ofertas = new ArrayList<Oferta>();
+
+            while (resultSet.next()) {
+
+                int i = 1;
+                Long ofertaId = new Long(resultSet.getLong(i++));
+                String nombreOferta = resultSet.getString(i++);
+                String descripcionOferta = resultSet.getString(i++);
+                String estadoOferta = resultSet.getString(i++);
+                float precioRealOferta = resultSet.getFloat(i++);
+                float precioDescontadoOferta = resultSet.getFloat(i++);
+                float comisionOferta = resultSet.getFloat(i++);
+                Date fechaLimiteOferta = resultSet.getTimestamp(i++);
+                Date fechaLimiteReserva = resultSet.getTimestamp(i++);
+
+                ofertas.add(new Oferta(ofertaId, nombreOferta, descripcionOferta, estadoOferta,
+                		precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva));
 
             }
 
@@ -145,11 +194,12 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
         /* Create "queryString". */
         String queryString = "UPDATE Oferta"
                 + " SET nombreOferta = ?, descripcionOferta = ?, estadoOferta = ?, "
-                + "precioRealOferta = ?, precioDescontadoOferta = ?, fechaLimiteOferta = ? WHERE ofertaId = ?";
+                + "precioRealOferta = ?, precioDescontadoOferta = ?, comisionOferta = ?, fechaLimiteOferta = ? WHERE ofertaId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
-        	
+
         	Timestamp sqlTimestamp = new Timestamp(oferta.getFechaLimiteOferta().getTime());
+        	Timestamp sqlTimestamp2 = new Timestamp(oferta.getFechaLimiteReserva().getTime());
             /* Fill "preparedStatement". */
             int i = 1;
             preparedStatement.setString(i++, oferta.getNombreOferta());
@@ -157,7 +207,9 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
             preparedStatement.setString(i++, oferta.getEstadoOferta());
             preparedStatement.setFloat(i++, oferta.getPrecioRealOferta());
             preparedStatement.setFloat(i++, oferta.getPrecioDescontadoOferta());
+            preparedStatement.setFloat(i++, oferta.getComisionOferta());
             preparedStatement.setTimestamp(i++, sqlTimestamp);
+            preparedStatement.setTimestamp(i++, sqlTimestamp2);
 
             /* Execute query. */
             int updatedRows = preparedStatement.executeUpdate();
