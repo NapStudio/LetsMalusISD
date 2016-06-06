@@ -303,9 +303,10 @@ public class OfertaServiceImpl implements OfertaService{
                 connection.setAutoCommit(false);
 
                 /* Do work. */
+                Oferta oferta=ofertaDAO.find(connection, ofertaId);
                 Reserva reserva= new Reserva();
                 reserva.setEmailUsuarioReserva(emailUsuarioReserva);
-                reserva.setOfertaId(ofertaId);
+                reserva.setOfertaId(oferta.getOfertaId());
                 reserva.setTarjetaCreditoReserva(tarjetaCreditoReserva);
                 reserva.setFechaCreacionReserva(new Date());
                 reserva.setEstadoReserva("válida");
@@ -435,6 +436,39 @@ public class OfertaServiceImpl implements OfertaService{
 	    } catch (SQLException e) {
 	        throw new RuntimeException(e);
 	    }
+	}
+
+	@Override
+	public Reserva findReserva(Long reservaId) throws InstanceNotFoundException {
+		 try (Connection connection = dataSource.getConnection()) {
+
+	            try {
+
+	                /* Prepare connection. */
+	                connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+	                connection.setAutoCommit(false);
+
+	                /* Do work. */
+	                Reserva reserva = reservaDAO.find(connection, reservaId);
+	                
+
+	                /* Commit. */
+	                connection.commit();
+	                return reserva;
+	            } catch (InstanceNotFoundException e) {
+	                connection.commit();
+	                throw e;
+	            } catch (SQLException e) {
+	                connection.rollback();
+	                throw new RuntimeException(e);
+	            } catch (RuntimeException | Error e) {
+	                connection.rollback();
+	                throw e;
+	            }
+
+	        } catch (SQLException e) {
+	            throw new RuntimeException(e);
+	        }
 	}
     
     

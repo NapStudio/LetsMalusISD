@@ -120,7 +120,7 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
 	public List<Reserva> findbyOferta(Connection connection, Long ofertaId)
 			throws InstanceNotFoundException {
 		String queryString = "SELECT reservaId, emailUsuarioReserva,"
-                + " tarjetaCreditoReserva, estadoOferta, fechaCreacionReserva FROM Reserva WHERE ofertaId = ?";
+                + " tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva FROM Reserva WHERE ofertaId = ?";
 
         
         

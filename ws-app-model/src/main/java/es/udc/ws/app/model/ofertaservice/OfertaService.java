@@ -28,6 +28,8 @@ public interface OfertaService {
 
     public Long reservarOferta(Long ofertaId, String emailUsuarioReserva, String tarjetaCreditoReserva)
             throws InstanceNotFoundException, InputValidationException;
+    
+    public Reserva findReserva(Long reservaId) throws InstanceNotFoundException;
 
     public List<Reserva> findReservasByOferta(Long ofertaId) throws InstanceNotFoundException,
             ReservaExpirationException;

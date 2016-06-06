@@ -111,27 +111,8 @@ public class Oferta {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(comisionOferta);
-		result = prime
-				* result
-				+ ((descripcionOferta == null) ? 0 : descripcionOferta
-						.hashCode());
-		result = prime * result
-				+ ((estadoOferta == null) ? 0 : estadoOferta.hashCode());
-		result = prime
-				* result
-				+ ((fechaLimiteOferta == null) ? 0 : fechaLimiteOferta
-						.hashCode());
-		result = prime
-				* result
-				+ ((fechaLimiteReserva == null) ? 0 : fechaLimiteReserva
-						.hashCode());
-		result = prime * result
-				+ ((nombreOferta == null) ? 0 : nombreOferta.hashCode());
 		result = prime * result
 				+ ((ofertaId == null) ? 0 : ofertaId.hashCode());
-		result = prime * result + Float.floatToIntBits(precioDescontadoOferta);
-		result = prime * result + Float.floatToIntBits(precioRealOferta);
 		return result;
 	}
 
@@ -145,47 +126,19 @@ public class Oferta {
 		if (getClass() != obj.getClass())
 			return false;
 		Oferta other = (Oferta) obj;
-		if (Float.floatToIntBits(comisionOferta) != Float
-				.floatToIntBits(other.comisionOferta))
-			return false;
-		if (descripcionOferta == null) {
-			if (other.descripcionOferta != null)
-				return false;
-		} else if (!descripcionOferta.equals(other.descripcionOferta))
-			return false;
-		if (estadoOferta == null) {
-			if (other.estadoOferta != null)
-				return false;
-		} else if (!estadoOferta.equals(other.estadoOferta))
-			return false;
-		if (fechaLimiteOferta == null) {
-			if (other.fechaLimiteOferta != null)
-				return false;
-		} else if (!fechaLimiteOferta.equals(other.fechaLimiteOferta))
-			return false;
-		if (fechaLimiteReserva == null) {
-			if (other.fechaLimiteReserva != null)
-				return false;
-		} else if (!fechaLimiteReserva.equals(other.fechaLimiteReserva))
-			return false;
-		if (nombreOferta == null) {
-			if (other.nombreOferta != null)
-				return false;
-		} else if (!nombreOferta.equals(other.nombreOferta))
-			return false;
 		if (ofertaId == null) {
 			if (other.ofertaId != null)
 				return false;
 		} else if (!ofertaId.equals(other.ofertaId))
 			return false;
-		if (Float.floatToIntBits(precioDescontadoOferta) != Float
-				.floatToIntBits(other.precioDescontadoOferta))
-			return false;
-		if (Float.floatToIntBits(precioRealOferta) != Float
-				.floatToIntBits(other.precioRealOferta))
-			return false;
 		return true;
 	}
+
+
+	
+
+
+	
 
 
 

@@ -77,29 +77,27 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
                 if (i > 0) {
                     queryString += " AND";
                 }
-                queryString += "LOWER(descripcionOferta) LIKE LOWER(?) ";
+                queryString += " LOWER (descripcionOferta) LIKE LOWER (?)";
             }
         }
         if(estadoBusqueda!=null){
         	if(!isFirst){
-        		queryString+= " AND ";
+        		queryString+= " AND";
         	}else{
         		isFirst=false;
         	}
-        	queryString="estadoOferta = ?";
+        	queryString+=" estadoOferta = ?";
         }
         if(fechaBusqueda!=null){
         	if(!isFirst){
-        		queryString+= " AND ";
+        		queryString+= " AND";
         	}else{
         		isFirst=false;
         	}
-        	queryString=" fechaLimiteOferta = ?";
+        	queryString+=" fechaLimiteOferta = ?";
         }
         
         queryString += " ORDER BY nombreOferta";
-
-        
         
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -112,7 +110,7 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
             }
             if(estadoBusqueda!=null) preparedStatement.setString(j++, estadoBusqueda);
             if(fechaBusqueda!=null) preparedStatement.setTimestamp(j++, new Timestamp(fechaBusqueda.getTime()));
-            
+           
 
             /* Execute query. */
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -149,8 +147,8 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
 	@Override
 	public List<Oferta> findAll(Connection connection){
 		 /* Create "queryString". */
-        String queryString = "SELECT nombreOferta, descripcionOferta, "
-                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta FROM Oferta";
+        String queryString = "SELECT ofertaId, nombreOferta, descripcionOferta, "
+                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva FROM Oferta";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -194,7 +192,8 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
         /* Create "queryString". */
         String queryString = "UPDATE Oferta"
                 + " SET nombreOferta = ?, descripcionOferta = ?, estadoOferta = ?, "
-                + "precioRealOferta = ?, precioDescontadoOferta = ?, comisionOferta = ?, fechaLimiteOferta = ? WHERE ofertaId = ?";
+                + "precioRealOferta = ?, precioDescontadoOferta = ?, comisionOferta = ?, fechaLimiteOferta = ?, fechaLimiteReserva = ? "
+                + "WHERE ofertaId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -210,6 +209,9 @@ public abstract class MySQLOfertaDAO implements OfertaDAO {
             preparedStatement.setFloat(i++, oferta.getComisionOferta());
             preparedStatement.setTimestamp(i++, sqlTimestamp);
             preparedStatement.setTimestamp(i++, sqlTimestamp2);
+            
+            
+            preparedStatement.setLong(i++, oferta.getOfertaId());
 
             /* Execute query. */
             int updatedRows = preparedStatement.executeUpdate();
