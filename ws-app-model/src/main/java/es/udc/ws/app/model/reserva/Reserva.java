@@ -1,35 +1,38 @@
 package es.udc.ws.app.model.reserva;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Reserva {
-	
-    private Long reservaId;
-    private Long ofertaId;
-    private String emailUsuarioReserva;
-    private String tarjetaCreditoReserva;
-    //estados reserva: válida, inválida, anulada.
-    private String estadoReserva;
-    private Date fechaCreacionReserva;
-    
-    public Reserva(){
-    	
-    }
-    
+
+	private Long reservaId;
+	private Long ofertaId;
+	private String emailUsuarioReserva;
+	private String tarjetaCreditoReserva;
+	// estados reserva: válida, inválida, anulada.
+	private String estadoReserva;
+	private Calendar fechaCreacionReserva;
+
+	public Reserva() {
+
+	}
+
 	public Reserva(Long ofertaId, String emailUsuarioReserva,
 			String tarjetaCreditoReserva, String estadoReserva,
-			Date fechaCreacionReserva) {
+			Calendar fechaCreacionReserva) {
 		super();
 		this.ofertaId = ofertaId;
 		this.emailUsuarioReserva = emailUsuarioReserva;
 		this.tarjetaCreditoReserva = tarjetaCreditoReserva;
 		this.estadoReserva = estadoReserva;
 		this.fechaCreacionReserva = fechaCreacionReserva;
+		if (fechaCreacionReserva != null) {
+			this.fechaCreacionReserva.set(Calendar.MILLISECOND, 0);
+		}
 	}
 
 	public Reserva(Long reservaId, Long ofertaId, String emailUsuarioReserva,
 			String tarjetaCreditoReserva, String estadoReserva,
-			Date fechaCreacionReserva) {
+			Calendar fechaCreacionReserva) {
 		super();
 		this.reservaId = reservaId;
 		this.ofertaId = ofertaId;
@@ -37,6 +40,9 @@ public class Reserva {
 		this.tarjetaCreditoReserva = tarjetaCreditoReserva;
 		this.estadoReserva = estadoReserva;
 		this.fechaCreacionReserva = fechaCreacionReserva;
+		if (fechaCreacionReserva != null) {
+			this.fechaCreacionReserva.set(Calendar.MILLISECOND, 0);
+		}
 	}
 
 	public Long getReservaId() {
@@ -79,12 +85,15 @@ public class Reserva {
 		this.estadoReserva = estadoReserva;
 	}
 
-	public Date getFechaCreacionReserva() {
+	public Calendar getFechaCreacionReserva() {
 		return fechaCreacionReserva;
 	}
 
-	public void setFechaCreacionReserva(Date fechaCreacionReserva) {
+	public void setFechaCreacionReserva(Calendar fechaCreacionReserva) {
 		this.fechaCreacionReserva = fechaCreacionReserva;
+		if (fechaCreacionReserva != null) {
+			this.fechaCreacionReserva.set(Calendar.MILLISECOND, 0);
+		}
 	}
 
 	@Override
@@ -154,7 +163,4 @@ public class Reserva {
 		return true;
 	}
 
-    
-
-    
 }

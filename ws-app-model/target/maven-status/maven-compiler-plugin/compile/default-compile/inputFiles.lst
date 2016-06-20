@@ -3,12 +3,12 @@ C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\ofertase
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\oferta\Jdbc3CcSqlOfertaDAO.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\oferta\OfertaDAOFactory.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\reserva\ReservaDAOFactory.java
+C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\oferta\AbstractOfertaDAO.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\util\ModelConstants.java
-C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\oferta\MySQLOfertaDAO.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\oferta\Oferta.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\ofertaservice\OfertaServiceFactory.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\reserva\Jdbc3CcSqlReservaDAO.java
-C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\reserva\MySQLReservaDAO.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\oferta\OfertaDAO.java
+C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\reserva\AbstractReservaDAO.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\reserva\Reserva.java
 C:\software\ws-app-1.0.0\ws-app-model\src\main\java\es\udc\ws\app\model\reserva\ReservaDAO.java

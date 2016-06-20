@@ -5,14 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
-public abstract class MySQLReservaDAO implements ReservaDAO{
+public abstract class AbstractReservaDAO implements ReservaDAO{
 
-	protected MySQLReservaDAO() {
+	protected AbstractReservaDAO() {
 		
 	}
 
@@ -45,7 +46,9 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
             String emailUsuarioReserva = resultSet.getString(i++);
             String tarjetaCreditoReserva = resultSet.getString(i++);
             String estadoReserva = resultSet.getString(i++);
-            Date fechaCreacionReserva = resultSet.getTimestamp(i++);
+
+            Calendar fechaCreacionReserva= Calendar.getInstance();
+            fechaCreacionReserva.setTime(resultSet.getTimestamp(i++));
             /* Return sale. */
             return new Reserva(reservaId, ofertaId, emailUsuarioReserva,
             		tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva);
@@ -142,8 +145,9 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
 	            Long reservaId = resultSet.getLong(i++);
 	            String emailUsuarioReserva = resultSet.getString(i++);
 	            String tarjetaCreditoReserva = resultSet.getString(i++);
-	            String estadoReserva = resultSet.getString(i++);
-	            Date fechaCreacionReserva = resultSet.getTimestamp(i++);
+	            String estadoReserva = resultSet.getString(i++);      
+	            Calendar fechaCreacionReserva= Calendar.getInstance();
+	            fechaCreacionReserva.setTime(resultSet.getTimestamp(i++));
 	            /* Return sale. */
 	            
 	            reserva.add(new Reserva(reservaId, ofertaId, emailUsuarioReserva,
@@ -183,8 +187,9 @@ public abstract class MySQLReservaDAO implements ReservaDAO{
 	            Long reservaId = resultSet.getLong(i++);
 	            Long ofertaId = resultSet.getLong(i++);
 	            String tarjetaCreditoReserva = resultSet.getString(i++);
-	            String estadoReserva = resultSet.getString(i++);
-	            Date fechaCreacionReserva = resultSet.getTimestamp(i++);
+	            String estadoReserva = resultSet.getString(i++);      
+	            Calendar fechaCreacionReserva= Calendar.getInstance();
+	            fechaCreacionReserva.setTime(resultSet.getTimestamp(i++));
 	            /* Return sale. */
 	            
 	            reserva.add(new Reserva(reservaId, ofertaId, emailUsuarioReserva,

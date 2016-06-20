@@ -7,12 +7,12 @@ import static es.udc.ws.app.model.util.ModelConstants.MAX_PRICE;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import es.udc.ws.app.exceptions.BadStateReserva;
+import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
 import es.udc.ws.app.exceptions.ReservaExpirationException;
 import es.udc.ws.app.model.oferta.Oferta;
@@ -47,8 +47,8 @@ public class OfertaServiceImpl implements OfertaService{
         //TODO: check max_price y que hacer con comision(si es un porcentaje o que)
         PropertyValidator.validateDouble("comisionOferta", oferta.getComisionOferta(), 0, MAX_PRICE);
         //TODO: como cambiar calendar a date o al reves.
-       /* PropertyValidator.validatePastDate("creation date",
-                oferta.getFechaLimiteOferta());*/
+        PropertyValidator.validatePastDate("creation date",
+                oferta.getFechaLimiteOferta());
     }
     
 
@@ -248,9 +248,8 @@ public class OfertaServiceImpl implements OfertaService{
 	            throw new RuntimeException(e);
 	        }
 	}
-
 	@Override
-	public List<Oferta> findOfertas(String keywords, String estadoBusqueda, Date fechaBusqueda) {
+	public List<Oferta> findOfertas(String keywords, String estadoBusqueda, Calendar fechaBusqueda) {
 		 try (Connection connection = dataSource.getConnection()) {
 
 	            try {
@@ -308,7 +307,7 @@ public class OfertaServiceImpl implements OfertaService{
                 reserva.setEmailUsuarioReserva(emailUsuarioReserva);
                 reserva.setOfertaId(oferta.getOfertaId());
                 reserva.setTarjetaCreditoReserva(tarjetaCreditoReserva);
-                reserva.setFechaCreacionReserva(new Date());
+                reserva.setFechaCreacionReserva(Calendar.getInstance());
                 reserva.setEstadoReserva("válida");
                 		
                 		
@@ -396,9 +395,9 @@ public class OfertaServiceImpl implements OfertaService{
 	        throw new RuntimeException(e);
 	    }
 	}
-
+//TODO reclamar oferta no tiene sentido que se busca por reservaId si va a devolver exactamente reservaId, tendria que buscarse por Oferta y nombre usuario 
 	@Override
-	public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReserva, ReservaExpirationException {
+	public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, ReservaExpirationException {
 		try (Connection connection = dataSource.getConnection()) {
 
             try {
@@ -410,12 +409,13 @@ public class OfertaServiceImpl implements OfertaService{
                 /* Do work. */
                 Reserva reserva= reservaDAO.find(connection, reservaId);
                 if(reserva.getEstadoReserva().equals("anulada")){
-                	throw new BadStateReserva(reserva.getEstadoReserva(),reservaId);
+                	throw new BadStateReservaException(reservaId, reserva.getEstadoReserva());
                 }else if(reserva.getEstadoReserva().equals("inválida")){
-                	throw new BadStateReserva(reserva.getEstadoReserva(),reservaId);
+                	throw new BadStateReservaException(reservaId, reserva.getEstadoReserva());
             	}else{
-                	Date fechalimite = (ofertaDAO.find(connection, reserva.getOfertaId())).getFechaLimiteReserva();
-                	if(fechalimite.before(new Date())){
+            		Calendar fechalimite= Calendar.getInstance();
+                	fechalimite=((ofertaDAO.find(connection, reserva.getOfertaId())).getFechaLimiteReserva());
+                	if(fechalimite.before(Calendar.getInstance())){
                 		reserva.setEstadoReserva("inválida");
                 		reservaDAO.update(connection, reserva);
                     	throw new ReservaExpirationException(reservaId,fechalimite);
@@ -470,6 +470,8 @@ public class OfertaServiceImpl implements OfertaService{
 	            throw new RuntimeException(e);
 	        }
 	}
+
+
     
     
 }

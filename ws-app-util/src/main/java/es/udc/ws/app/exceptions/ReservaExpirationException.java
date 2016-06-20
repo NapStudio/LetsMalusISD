@@ -1,27 +1,27 @@
 package es.udc.ws.app.exceptions;
 
-import java.util.Date;
+import java.util.Calendar;
 
 
 @SuppressWarnings("serial")
 public class ReservaExpirationException extends Exception{
 	
     private Long reservaId;
-    private Date fechaExpiracion;
+    private Calendar fechaExpiracion;
 
-    public ReservaExpirationException(Long reservaId, Date fechaExpiracion) {
+    public ReservaExpirationException(Long reservaId, Calendar fechalimite) {
         super("Reserva with id=\"" + reservaId + 
               "\" has expired (expirationDate = \"" + 
-              fechaExpiracion.toString() + "\")");
+              fechalimite.toString() + "\")");
         this.reservaId = reservaId;
-        this.fechaExpiracion = fechaExpiracion;
+        this.fechaExpiracion = fechalimite;
     }
 
 	public Long getReservaId() {
 		return reservaId;
 	}
 
-	public Date getFechaExpiracion() {
+	public Calendar getFechaExpiracion() {
 		return fechaExpiracion;
 	}
     

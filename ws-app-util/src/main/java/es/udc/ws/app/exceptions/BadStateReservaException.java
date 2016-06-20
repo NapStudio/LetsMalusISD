@@ -1,11 +1,11 @@
 package es.udc.ws.app.exceptions;
 
 @SuppressWarnings("serial")
-public class BadStateReserva extends Exception{
+public class BadStateReservaException extends Exception{
 	//TODO
 	private Long reservaId;
 	private String estadoReserva;
-	public BadStateReserva(String estadoReserva, Long reservaId){
+	public BadStateReservaException(Long reservaId ,String estadoReserva){
 		super("The reservation id: "+reservaId+" has state: "+estadoReserva);
 		this.reservaId=reservaId;
 		this.estadoReserva=estadoReserva;

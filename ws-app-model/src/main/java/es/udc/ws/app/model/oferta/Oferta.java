@@ -1,23 +1,23 @@
 package es.udc.ws.app.model.oferta;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Oferta {
-	
-    private Long ofertaId;
-    private String nombreOferta;
-    private String descripcionOferta;
-    private String estadoOferta;
-    private float precioRealOferta;
-    private float precioDescontadoOferta;
-    private float comisionOferta;
-    private Date fechaLimiteOferta;
-    private Date fechaLimiteReserva;
-    
-    public Oferta(String nombreOferta, String descripcionOferta,
+
+	private Long ofertaId;
+	private String nombreOferta;
+	private String descripcionOferta;
+	private String estadoOferta;
+	private float precioRealOferta;
+	private float precioDescontadoOferta;
+	private float comisionOferta;
+	private Calendar fechaLimiteOferta;
+	private Calendar fechaLimiteReserva;
+
+	public Oferta(String nombreOferta, String descripcionOferta,
 			String estadoOferta, float precioRealOferta,
 			float precioDescontadoOferta, float comisionOferta,
-			Date fechaLimiteOferta, Date fechaLimiteReserva) {
+			Calendar fechaLimiteOferta, Calendar fechaLimiteReserva) {
 		super();
 		this.nombreOferta = nombreOferta;
 		this.descripcionOferta = descripcionOferta;
@@ -26,14 +26,19 @@ public class Oferta {
 		this.precioDescontadoOferta = precioDescontadoOferta;
 		this.comisionOferta = comisionOferta;
 		this.fechaLimiteOferta = fechaLimiteOferta;
+		if (fechaLimiteOferta != null) {
+			this.fechaLimiteOferta.set(Calendar.MILLISECOND, 0);
+		}
 		this.fechaLimiteReserva = fechaLimiteReserva;
+		if (fechaLimiteReserva != null) {
+			this.fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
+		}
 	}
-    
-    
+
 	public Oferta(Long ofertaId, String nombreOferta, String descripcionOferta,
 			String estadoOferta, float precioRealOferta,
 			float precioDescontadoOferta, float comisionOferta,
-			Date fechaLimiteOferta, Date fechaLimiteReserva) {
+			Calendar fechaLimiteOferta, Calendar fechaLimiteReserva) {
 		super();
 		this.ofertaId = ofertaId;
 		this.nombreOferta = nombreOferta;
@@ -43,69 +48,93 @@ public class Oferta {
 		this.precioDescontadoOferta = precioDescontadoOferta;
 		this.comisionOferta = comisionOferta;
 		this.fechaLimiteOferta = fechaLimiteOferta;
+		if (fechaLimiteOferta != null) {
+			this.fechaLimiteOferta.set(Calendar.MILLISECOND, 0);
+		}
 		this.fechaLimiteReserva = fechaLimiteReserva;
+		if (fechaLimiteReserva != null) {
+			this.fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
+		}
 	}
-
 
 	public Long getOfertaId() {
 		return ofertaId;
 	}
+
 	public void setOfertaId(Long ofertaId) {
 		this.ofertaId = ofertaId;
 	}
+
 	public String getNombreOferta() {
 		return nombreOferta;
 	}
+
 	public void setNombreOferta(String nombreOferta) {
 		this.nombreOferta = nombreOferta;
 	}
+
 	public String getDescripcionOferta() {
 		return descripcionOferta;
 	}
+
 	public void setDescripcionOferta(String descripcionOferta) {
 		this.descripcionOferta = descripcionOferta;
 	}
+
 	public String getEstadoOferta() {
 		return estadoOferta;
 	}
+
 	public void setEstadoOferta(String estadoOferta) {
 		this.estadoOferta = estadoOferta;
 	}
+
 	public float getPrecioRealOferta() {
 		return precioRealOferta;
 	}
+
 	public void setPrecioRealOferta(float precioRealOferta) {
 		this.precioRealOferta = precioRealOferta;
 	}
+
 	public float getPrecioDescontadoOferta() {
 		return precioDescontadoOferta;
 	}
+
 	public void setPrecioDescontadoOferta(float precioDescontadoOferta) {
 		this.precioDescontadoOferta = precioDescontadoOferta;
 	}
-	public Date getFechaLimiteOferta() {
+
+	public Calendar getFechaLimiteOferta() {
 		return fechaLimiteOferta;
 	}
-	public void setFechaLimiteOferta(Date fechaLimiteOferta) {
+
+	public void setFechaLimiteOferta(Calendar fechaLimiteOferta) {
 		this.fechaLimiteOferta = fechaLimiteOferta;
+
+		if (fechaLimiteOferta != null) {
+			this.fechaLimiteOferta.set(Calendar.MILLISECOND, 0);
+		}
 	}
+
 	public float getComisionOferta() {
 		return comisionOferta;
 	}
+
 	public void setComisionOferta(float comisionOferta) {
 		this.comisionOferta = comisionOferta;
 	}
 
-
-	public Date getFechaLimiteReserva() {
+	public Calendar getFechaLimiteReserva() {
 		return fechaLimiteReserva;
 	}
 
-
-	public void setFechaLimiteReserva(Date fechaLimiteReserva) {
+	public void setFechaLimiteReserva(Calendar fechaLimiteReserva) {
 		this.fechaLimiteReserva = fechaLimiteReserva;
+		if (fechaLimiteReserva != null) {
+			this.fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
+		}
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -115,7 +144,6 @@ public class Oferta {
 				+ ((ofertaId == null) ? 0 : ofertaId.hashCode());
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -133,17 +161,5 @@ public class Oferta {
 			return false;
 		return true;
 	}
-
-
-	
-
-
-	
-
-
-
-	
-	
-    
 
 }

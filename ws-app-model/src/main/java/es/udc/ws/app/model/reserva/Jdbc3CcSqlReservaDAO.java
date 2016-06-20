@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 
 
-public class Jdbc3CcSqlReservaDAO extends MySQLReservaDAO{
+public class Jdbc3CcSqlReservaDAO extends AbstractReservaDAO{
 
 	@Override
 	public Reserva create(Connection connection, Reserva reserva) {
@@ -20,7 +20,6 @@ public class Jdbc3CcSqlReservaDAO extends MySQLReservaDAO{
                         queryString, Statement.RETURN_GENERATED_KEYS)) {
 
 
-			Timestamp sqlTimestampCreacion = new Timestamp(reserva.getFechaCreacionReserva().getTime());
         	
             /* Fill "preparedStatement". */
             int i = 1;
@@ -28,7 +27,9 @@ public class Jdbc3CcSqlReservaDAO extends MySQLReservaDAO{
             preparedStatement.setString(i++, reserva.getEmailUsuarioReserva());
             preparedStatement.setString(i++, reserva.getTarjetaCreditoReserva());
             preparedStatement.setString(i++, reserva.getEstadoReserva());
-            preparedStatement.setTimestamp(i++, sqlTimestampCreacion);
+            Timestamp date = reserva.getFechaCreacionReserva() != null ? new Timestamp(
+            		reserva.getFechaCreacionReserva().getTime().getTime()) : null;
+            preparedStatement.setTimestamp(i++, date);
             /* Execute query. */
             preparedStatement.executeUpdate();
 
