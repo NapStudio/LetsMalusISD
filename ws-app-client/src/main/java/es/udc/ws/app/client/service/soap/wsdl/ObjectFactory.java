@@ -45,9 +45,11 @@ public class ObjectFactory {
     private final static QName _AddOfertaResponse_QNAME = new QName("http://soap.ws.udc.es/", "addOfertaResponse");
     private final static QName _ReservarOferta_QNAME = new QName("http://soap.ws.udc.es/", "reservarOferta");
     private final static QName _FindReservaResponse_QNAME = new QName("http://soap.ws.udc.es/", "findReservaResponse");
+    private final static QName _FindOfertaResponse_QNAME = new QName("http://soap.ws.udc.es/", "findOfertaResponse");
     private final static QName _UpdateOfertaResponse_QNAME = new QName("http://soap.ws.udc.es/", "updateOfertaResponse");
     private final static QName _ReclamarOfertaResponse_QNAME = new QName("http://soap.ws.udc.es/", "reclamarOfertaResponse");
     private final static QName _SoapInputValidationException_QNAME = new QName("http://soap.ws.udc.es/", "SoapInputValidationException");
+    private final static QName _FindOferta_QNAME = new QName("http://soap.ws.udc.es/", "findOferta");
     private final static QName _FindReservasByUsuario_QNAME = new QName("http://soap.ws.udc.es/", "findReservasByUsuario");
 
     /**
@@ -194,6 +196,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link FindOfertaResponse }
+     * 
+     */
+    public FindOfertaResponse createFindOfertaResponse() {
+        return new FindOfertaResponse();
+    }
+
+    /**
      * Create an instance of {@link UpdateOfertaResponse }
      * 
      */
@@ -207,6 +217,14 @@ public class ObjectFactory {
      */
     public ReclamarOfertaResponse createReclamarOfertaResponse() {
         return new ReclamarOfertaResponse();
+    }
+
+    /**
+     * Create an instance of {@link FindOferta }
+     * 
+     */
+    public FindOferta createFindOferta() {
+        return new FindOferta();
     }
 
     /**
@@ -455,6 +473,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FindOfertaResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://soap.ws.udc.es/", name = "findOfertaResponse")
+    public JAXBElement<FindOfertaResponse> createFindOfertaResponse(FindOfertaResponse value) {
+        return new JAXBElement<FindOfertaResponse>(_FindOfertaResponse_QNAME, FindOfertaResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link UpdateOfertaResponse }{@code >}}
      * 
      */
@@ -479,6 +506,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://soap.ws.udc.es/", name = "SoapInputValidationException")
     public JAXBElement<String> createSoapInputValidationException(String value) {
         return new JAXBElement<String>(_SoapInputValidationException_QNAME, String.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FindOferta }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://soap.ws.udc.es/", name = "findOferta")
+    public JAXBElement<FindOferta> createFindOferta(FindOferta value) {
+        return new JAXBElement<FindOferta>(_FindOferta_QNAME, FindOferta.class, null, value);
     }
 
     /**

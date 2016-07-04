@@ -17,7 +17,6 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 public interface ClientOfertaService {
 	
 	//TODO porque devuelve el Id y no un objeto
-
 	public Long addOferta(OfertaDto oferta) throws InputValidationException;
 
     public void updateOferta(OfertaDto oferta) throws InputValidationException,
@@ -25,9 +24,9 @@ public interface ClientOfertaService {
 
     public void removeOferta(Long ofertaId) throws InstanceNotFoundException, OfertaReservadaException, SoapOfertaReservadaException;
     
-    public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException;
+    public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException, InputValidationException;
 
-//    public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException;
+    public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException;
 
     public List<OfertaDto> findOfertas(String keywords, String estadoBusqueda, Calendar fechaBusqueda) throws DatatypeConfigurationException;
 
@@ -39,7 +38,7 @@ public interface ClientOfertaService {
     public List<ReservaDto> findReservasByOferta(Long ofertaId) throws InstanceNotFoundException,
             ReservaExpirationException;
     
-    public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva) throws InstanceNotFoundException,
+    public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva, String estado) throws InstanceNotFoundException,
     ReservaExpirationException;
     
     public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, ReservaExpirationException ;

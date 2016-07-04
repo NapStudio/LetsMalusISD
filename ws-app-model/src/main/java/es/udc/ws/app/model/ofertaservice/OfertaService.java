@@ -20,7 +20,7 @@ public interface OfertaService {
 
     public void removeOferta(Long ofertaId) throws InstanceNotFoundException, OfertaReservadaException;
     
-    public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException;
+    public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException, InputValidationException;
 
     public Oferta findOferta(Long ofertaId) throws InstanceNotFoundException;
 
@@ -34,7 +34,7 @@ public interface OfertaService {
     public List<Reserva> findReservasByOferta(Long ofertaId) throws InstanceNotFoundException,
             ReservaExpirationException;
     
-    public List<Reserva> findReservasByUsuario(String emailUsuarioReserva) throws InstanceNotFoundException,
+    public List<Reserva> findReservasByUsuario(String emailUsuarioReserva, String estado) throws InstanceNotFoundException,
     ReservaExpirationException;
     
     public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, ReservaExpirationException ;

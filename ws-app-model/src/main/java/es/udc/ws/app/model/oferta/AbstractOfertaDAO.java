@@ -67,7 +67,7 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
         String[] words = keywords != null ? keywords.split(" ") : null;
         String queryString = "SELECT ofertaId, nombreOferta, descripcionOferta, "
                 + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva FROM Oferta";
-        
+        System.out.println("ofertadao keywords: "+keywords);
         if ((words != null && words.length > 0) || (estadoBusqueda != null)
         		|| (fechaBusqueda != null)) {
         	queryString += " WHERE";
@@ -100,7 +100,7 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
         }
         
         queryString += " ORDER BY nombreOferta";
-        
+        System.out.println("query: "+queryString);
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
         	int j=1;
@@ -241,7 +241,7 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
 			throws InstanceNotFoundException {
 		/* Create "queryString". */
         String queryString = "DELETE FROM Oferta WHERE" + " ofertaId = ?";
-
+        System.out.println("removeOfertaDAO");
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
             /* Fill "preparedStatement". */

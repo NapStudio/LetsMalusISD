@@ -3,7 +3,6 @@ package es.udc.ws.app.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.jdom2.DataConversionException;
@@ -18,13 +17,36 @@ public class XmlReservaDtoConversor {
 
 	public final static Namespace XML_NS = Namespace
 			.getNamespace("http://ws.udc.es/reservas/xml");
+	
+    public static Document toResponse(ReservaDto reserva)
+            throws IOException {
 
-	public static Document toXml(ReservaDto reserva) throws IOException {
+        Element saleElement = toXml(reserva);
 
-		Element reservaElement = toJDOMElement(reserva);
+        return new Document(saleElement);
+    }
 
-		return new Document(reservaElement);
-	}
+    public static Element toXml(ReservaDto reserva) {
+
+        Element reservaElement = new Element("sale", XML_NS);
+
+        if (reserva.getReservaId() != null) {
+            Element reservaIdElement = new Element("saleId", XML_NS);
+            reservaIdElement.setText(reserva.getReservaId().toString());
+            reservaElement.addContent(reservaIdElement);
+        }
+
+        if (reserva.getOfertaId() != null) {
+            Element ofertaIdElement = new Element("movieId", XML_NS);
+            ofertaIdElement.setText(reserva.getOfertaId().toString());
+            reservaElement.addContent(ofertaIdElement);
+        }
+//        Element movieUrlElement = new Element("movieUrl", XML_NS);
+//        movieUrlElement.setText(reserva.getMovieUrl());
+//        saleElement.addContent(movieUrlElement);
+
+        return reservaElement;
+    }
 
 	public static Document toXml(List<ReservaDto> reserva) throws IOException {
 

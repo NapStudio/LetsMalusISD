@@ -53,13 +53,15 @@ public class SoapOfertaService {
 
 	@WebMethod(operationName = "invalidarOferta")
 	public void invalidarOferta(@WebParam(name = "ofertaId") Long ofertaId)
-			throws SoapInstanceNotFoundException {
+			throws SoapInstanceNotFoundException, SoapInputValidationException {
 		try {
 			OfertaServiceFactory.getService().invalidarOferta(ofertaId);
 		} catch (InstanceNotFoundException ex) {
 			throw new SoapInstanceNotFoundException(
 					new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
 							ex.getInstanceType()));
+		} catch (InputValidationException e) {
+			throw new SoapInputValidationException(e.getMessage());
 		}
 	}
 
@@ -76,6 +78,21 @@ public class SoapOfertaService {
 			throw new SoapOfertaReservadaException(
 					new SoapOfertaReservadaExceptionInfo(e.getOfertaId()));
 		}
+	}
+
+	@WebMethod(operationName = "findOferta")
+	public OfertaDto findOferta(
+			@WebParam(name = "ofertaId") Long ofertaId) throws SoapInstanceNotFoundException {
+		Oferta ofertas;
+		try {
+			ofertas = OfertaServiceFactory.getService().findOferta(
+					ofertaId);
+		} catch (InstanceNotFoundException ex) {
+			throw new SoapInstanceNotFoundException(
+					new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
+							ex.getInstanceType()));
+		}
+		return OfertaToOfertaDtoConversor.toOfertaDto(ofertas);
 	}
 
 	@WebMethod(operationName = "findOfertas")
@@ -151,6 +168,7 @@ public class SoapOfertaService {
 			SoapReservaExpirationException {
 		
 		try{
+			System.out.println(Long.valueOf(ofertaId));
 		List<Reserva> reservas = OfertaServiceFactory.getService()
 				.findReservasByOferta(ofertaId);
 
@@ -168,12 +186,14 @@ public class SoapOfertaService {
 
 	@WebMethod(operationName = "findReservasByUsuario")
 	public List<ReservaDto> findReservasByUsuario(
-			@WebParam(name = "emailUsuarioReserva") String emailUsuarioReserva)
+			@WebParam(name = "emailUsuarioReserva") String emailUsuarioReserva,
+			@WebParam(name = "estadoReserva") String estadoReserva)
 			throws SoapInstanceNotFoundException,
 			SoapReservaExpirationException {
 		try{
+			System.out.println("emailUsuario "+emailUsuarioReserva+" estado: "+estadoReserva);
 			List<Reserva> reservas = OfertaServiceFactory.getService()
-					.findReservasByUsuario(emailUsuarioReserva);
+					.findReservasByUsuario(emailUsuarioReserva, estadoReserva);
 
 			return ReservaToReservaDtoConversor.toReservaDtos(reservas);
 			}catch(InstanceNotFoundException ex) {

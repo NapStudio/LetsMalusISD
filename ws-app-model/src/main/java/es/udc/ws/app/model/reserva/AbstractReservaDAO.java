@@ -162,19 +162,29 @@ public abstract class AbstractReservaDAO implements ReservaDAO{
 		
 
 	@Override
-	public List<Reserva> findbyUsuario(Connection connection, String emailUsuarioReserva)
+	public List<Reserva> findbyUsuario(Connection connection, String emailUsuarioReserva, String estado)
 			throws InstanceNotFoundException {
 		String queryString = "SELECT reservaId, ofertaId,"
-                + " tarjetaCreditoReserva, estadoOferta, fechaCreacionReserva FROM Reserva WHERE emailUsuarioReserva = ?";
+                + " tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva FROM Reserva WHERE emailUsuarioReserva = ?";
 
-        
+		if(estado!=null){
+			queryString+=" AND estadoReserva = ?";
+		}
         
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
             /* Fill "preparedStatement". */
-            int i = 1;
-            preparedStatement.setString(i++, emailUsuarioReserva);
 
+        	int i = 1;
+            
+            if(estado!=null){            	
+                preparedStatement.setString(i++, emailUsuarioReserva);
+                preparedStatement.setString(i++, estado);
+            }else{
+                preparedStatement.setString(i++, emailUsuarioReserva);            	
+            }
+            
+            System.out.println(queryString);
             /* Execute query. */
             ResultSet resultSet = preparedStatement.executeQuery();
 

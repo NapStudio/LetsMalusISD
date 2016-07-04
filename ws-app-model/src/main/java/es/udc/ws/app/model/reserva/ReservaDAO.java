@@ -15,7 +15,7 @@ public interface ReservaDAO {
     public List<Reserva> findbyOferta(Connection connection, Long ofertaId)
             throws InstanceNotFoundException;
     
-    public List<Reserva> findbyUsuario(Connection connection, String emailUsuarioReserva)
+    public List<Reserva> findbyUsuario(Connection connection, String emailUsuarioReserva, String estado)
             throws InstanceNotFoundException;
 
     public void update(Connection connection, Reserva reserva)

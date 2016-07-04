@@ -8,6 +8,7 @@ import javax.xml.ws.BindingProvider;
 
 import es.udc.ws.app.client.service.ClientOfertaService;
 import es.udc.ws.app.client.service.soap.wsdl.*;
+import es.udc.ws.app.client.service.soap.ReservaDtoToSoapReservaDtoConversor;
 import es.udc.ws.util.configuration.ConfigurationParametersManager;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -87,12 +88,14 @@ public class SoapClientOfertaService implements ClientOfertaService {
 	}
 
 	@Override
-	public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException {
+	public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException, InputValidationException {
 		try {
 			ofertasProvider.invalidarOferta(ofertaId);
 		} catch (SoapInstanceNotFoundException ex) {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
+		} catch (SoapInputValidationException e) {
+			throw new InputValidationException(e.getMessage());
 		}
 	}
 
@@ -106,16 +109,17 @@ public class SoapClientOfertaService implements ClientOfertaService {
 		return endpointAddress;
 	}
 
-	// @Override
-	// public OfertaDto findOferta(Long ofertaId) throws
-	// InstanceNotFoundException {
-	// try {
-	// ofertasProvider.findOferta(ofertaId);
-	// } catch (SoapInstanceNotFoundException ex) {
-	// throw new InstanceNotFoundException(ex.getFaultInfo()
-	// .getInstanceId(), ex.getFaultInfo().getInstanceType());
-	// }
-	// }
+	@Override
+	public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException {
+		try {
+			return OfertaDtoToSoapOfertaDtoConversor.toOfertaDto(ofertasProvider.findOferta(ofertaId));
+		} catch (SoapInstanceNotFoundException ex) {
+			throw new InstanceNotFoundException(ex.getFaultInfo()
+					.getInstanceId(), ex.getFaultInfo().getInstanceType());
+		} catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public Long reservarOferta(Long ofertaId, String emailUsuarioReserva,
@@ -163,12 +167,13 @@ public class SoapClientOfertaService implements ClientOfertaService {
 	}
 
 	@Override
-	public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva)
+	public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva, String estado)
 			throws InstanceNotFoundException, ReservaExpirationException {
 		try {
+			
 			return ReservaDtoToSoapReservaDtoConversor
 					.toReservaDtos(ofertasProvider
-							.findReservasByUsuario(emailUsuarioReserva));
+							.findReservasByUsuario(emailUsuarioReserva, estado));
 		} catch (SoapInstanceNotFoundException ex) {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
