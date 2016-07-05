@@ -44,7 +44,7 @@ public class OfertaDtoToSoapOfertaDtoConversor {
 					oferta.getDescripcionOferta(), oferta.getEstadoOferta(),
 					oferta.getPrecioRealOferta(),
 					oferta.getPrecioDescontadoOferta(), oferta.getComisionOferta(),
-					oferta.getFechaLimiteOferta().toGregorianCalendar(), oferta.getFechaLimiteReserva().toGregorianCalendar());
+					oferta.getFechaLimiteOferta().toGregorianCalendar(), oferta.getFechaLimiteReserva().toGregorianCalendar(),oferta.getFacebookLikes());
 	}
 
 	public static List<OfertaDto> toOfertaDtos(

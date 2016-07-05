@@ -153,6 +153,9 @@ public class XmlOfertaDtoConversor {
 
 		String description = ofertaElement.getChildTextNormalize(
 				"descripcionOferta", XML_NS);
+		
+		int facebookLikes = Integer.valueOf(ofertaElement.getChildTextTrim(
+				"facebookLikes", XML_NS));
 
 		String state = ofertaElement.getChildTextNormalize("estadoOferta",
 				XML_NS);
@@ -191,7 +194,7 @@ public class XmlOfertaDtoConversor {
 		}
 
 		return new OfertaDto(identifier, name, description, state, realPrice,
-				discountPrice, comision, limitOfertaDate, limitReservaDate);
+				discountPrice, comision, limitOfertaDate, limitReservaDate, facebookLikes);
 	}
 
 	private static Calendar getExpirationReservaDate(

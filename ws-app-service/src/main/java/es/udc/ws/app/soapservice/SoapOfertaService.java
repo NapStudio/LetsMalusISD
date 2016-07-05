@@ -1,5 +1,7 @@
 package es.udc.ws.app.soapservice;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -7,14 +9,18 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
+import org.apache.http.client.ClientProtocolException;
+
 import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
 import es.udc.ws.app.exceptions.TimeExpirationException;
 import es.udc.ws.app.model.oferta.Oferta;
+import es.udc.ws.app.model.ofertaservice.OfertaService;
 import es.udc.ws.app.model.ofertaservice.OfertaServiceFactory;
 import es.udc.ws.app.model.reserva.Reserva;
+import es.udc.ws.app.service.facebook.FacebookService;
 import es.udc.ws.app.serviceutil.OfertaToOfertaDtoConversor;
 import es.udc.ws.app.serviceutil.ReservaToReservaDtoConversor;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -22,11 +28,23 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 @WebService(name = "OfertasProvider", serviceName = "OfertasProviderService", targetNamespace = "http://soap.ws.udc.es/")
 public class SoapOfertaService {
+	private FacebookService facebookService=new FacebookService();
 
 	@WebMethod(operationName = "addOferta")
 	public Long addOferta(@WebParam(name = "ofertaDto") OfertaDto ofertaDto)
 			throws SoapInputValidationException {
 		Oferta oferta = OfertaToOfertaDtoConversor.toOferta(ofertaDto);
+		
+			try {
+				oferta.setFacebookId(facebookService.publicarOferta(oferta));
+			} catch (ClientProtocolException e) {
+				System.out.println("Errorfacebook 1"+e);
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println("Errorfacebook 1"+e);
+				e.printStackTrace();
+			}
+	
 		try {
 			return OfertaServiceFactory.getService().addOferta(oferta)
 					.getOfertaId();
@@ -39,6 +57,17 @@ public class SoapOfertaService {
 	public void updateOferta(@WebParam(name = "ofertaDto") OfertaDto ofertaDto)
 			throws SoapInputValidationException, SoapInstanceNotFoundException {
 		Oferta oferta = OfertaToOfertaDtoConversor.toOferta(ofertaDto);
+		try {
+			Oferta ofertaFace=OfertaServiceFactory.getService().findOferta(oferta.getOfertaId());
+			System.out.println("ofertaFace"+ofertaFace);
+			try {
+				oferta.setFacebookId(facebookService.actualizarOferta(ofertaFace));
+			} catch (Exception e) {
+				System.out.println("problema fb");
+			}
+		} catch (InstanceNotFoundException e) {
+			System.out.println("problema fb");
+		}
 		try {
 			OfertaServiceFactory.getService().updateOferta(oferta);
 		} catch (InputValidationException ex) {
@@ -55,6 +84,13 @@ public class SoapOfertaService {
 			throws SoapInstanceNotFoundException, SoapInputValidationException {
 		try {
 			OfertaServiceFactory.getService().invalidarOferta(ofertaId);
+			try {
+				facebookService.borrarOferta(OfertaServiceFactory.getService().findOferta(ofertaId).getFacebookId());
+			} catch (ClientProtocolException e) {
+				System.out.println("Error remove 1"+e);
+			} catch (IOException e) {
+				System.out.println("Error remove 2"+e);
+			}
 		} catch (InstanceNotFoundException ex) {
 			throw new SoapInstanceNotFoundException(
 					new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
@@ -68,6 +104,14 @@ public class SoapOfertaService {
 	public void removeOferta(@WebParam(name = "ofertaId") Long ofertaId)
 			throws SoapInstanceNotFoundException, SoapOfertaReservadaException {
 		try {
+			String faceId=OfertaServiceFactory.getService().findOferta(ofertaId).getFacebookId();
+			try {
+				facebookService.borrarOferta(faceId);
+			} catch (ClientProtocolException e) {
+				System.out.println("Error remove 1"+e);
+			} catch (IOException e) {
+				System.out.println("Error remove 2"+e);
+			}
 			OfertaServiceFactory.getService().removeOferta(ofertaId);
 		} catch (InstanceNotFoundException ex) {
 			throw new SoapInstanceNotFoundException(
@@ -82,16 +126,24 @@ public class SoapOfertaService {
 	@WebMethod(operationName = "findOferta")
 	public OfertaDto findOferta(
 			@WebParam(name = "ofertaId") Long ofertaId) throws SoapInstanceNotFoundException {
-		Oferta ofertas;
+		Oferta oferta;
 		try {
-			ofertas = OfertaServiceFactory.getService().findOferta(
+			oferta = OfertaServiceFactory.getService().findOferta(
 					ofertaId);
 		} catch (InstanceNotFoundException ex) {
 			throw new SoapInstanceNotFoundException(
 					new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
 							ex.getInstanceType()));
 		}
-		return OfertaToOfertaDtoConversor.toOfertaDto(ofertas);
+		int facebookLikes = 0;
+		try {
+			facebookLikes = facebookService.getOfertaLikes(oferta.getFacebookId());
+		}  catch (ClientProtocolException e) {
+			System.out.println("Error finds 1"+e);
+		} catch (IOException e) {
+			System.out.println("Error finds 2"+e);
+		}
+		return OfertaToOfertaDtoConversor.toOfertaDto(oferta,facebookLikes);
 	}
 
 	@WebMethod(operationName = "findOfertas")
@@ -101,7 +153,18 @@ public class SoapOfertaService {
 			@WebParam(name = "fechaBusqueda") Calendar fechaBusqueda) {
 		List<Oferta> ofertas = OfertaServiceFactory.getService().findOfertas(
 				keywords, estadoBusqueda, fechaBusqueda);
-		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas);
+		List<Integer> facebookLikes= new ArrayList<Integer>();
+		for(Oferta oferta:ofertas){
+				try {
+					facebookLikes.add(facebookService.getOfertaLikes(oferta.getFacebookId()));
+				} catch (ClientProtocolException e) {
+					System.out.println("Error find 1"+e);
+				} catch (IOException e) {
+					System.out.println("Error find 2"+e);
+				}
+			
+		}
+		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas,facebookLikes);
 	}
 
 	@WebMethod(operationName = "reservarOferta")

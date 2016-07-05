@@ -21,6 +21,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="comisionOferta" type="{http://www.w3.org/2001/XMLSchema}float"/>
  *         &lt;element name="descripcionOferta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="estadoOferta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="facebookLikes" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="fechaLimiteOferta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="fechaLimiteReserva" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="nombreOferta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -40,6 +41,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "comisionOferta",
     "descripcionOferta",
     "estadoOferta",
+    "facebookLikes",
     "fechaLimiteOferta",
     "fechaLimiteReserva",
     "nombreOferta",
@@ -52,6 +54,7 @@ public class OfertaDto {
     protected float comisionOferta;
     protected String descripcionOferta;
     protected String estadoOferta;
+    protected int facebookLikes;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar fechaLimiteOferta;
     @XmlSchemaType(name = "dateTime")
@@ -123,6 +126,22 @@ public class OfertaDto {
      */
     public void setEstadoOferta(String value) {
         this.estadoOferta = value;
+    }
+
+    /**
+     * Gets the value of the facebookLikes property.
+     * 
+     */
+    public int getFacebookLikes() {
+        return facebookLikes;
+    }
+
+    /**
+     * Sets the value of the facebookLikes property.
+     * 
+     */
+    public void setFacebookLikes(int value) {
+        this.facebookLikes = value;
     }
 
     /**

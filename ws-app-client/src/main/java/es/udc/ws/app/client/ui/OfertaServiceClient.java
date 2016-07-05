@@ -80,7 +80,7 @@ public class OfertaServiceClient {
 				Long ofertaId = clientOfertaService.addOferta(new OfertaDto(
 						null, args[1], args[2], "válida", Float
 								.valueOf(args[5]), Float.valueOf(args[6]),
-						comision, fechaLimiteOferta, fechaLimiteReserva));
+						comision, fechaLimiteOferta, fechaLimiteReserva,0));
 
 				System.out.println("Oferta " + ofertaId
 						+ " created sucessfully");
@@ -256,6 +256,8 @@ public class OfertaServiceClient {
 								+ oferta.getFechaLimiteOferta().getTime()
 								+ "\n Deadline reservation: "
 								+ oferta.getFechaLimiteReserva().getTime()
+								+ "\n Likes: "
+								+ oferta.getFacebookLikes()
 								+ "\n   and reservation number: "
 								+ reservas.get(i).getReservaId()+"\n");
 
@@ -283,6 +285,8 @@ public class OfertaServiceClient {
 						+ "\n Discounted price: "
 						+ oferta.getPrecioDescontadoOferta()
 						+ "\n Deadline offer: " + oferta.getFechaLimiteOferta().getTime()
+						+ "\n Likes: "
+						+ oferta.getFacebookLikes()
 						+ "\n Deadline reservation: "
 						+ oferta.getFechaLimiteReserva().getTime());
 			} catch (Exception ex) {
@@ -337,6 +341,8 @@ public class OfertaServiceClient {
 							+ "\n  Discounted price: "
 							+ oferta.getPrecioDescontadoOferta()
 							+ "\n Deadline offer: " + oferta.getFechaLimiteOferta().getTime()
+							+ "\n Likes: "
+							+ oferta.getFacebookLikes()
 							+ "\n Deadline reservation: "
 							+ oferta.getFechaLimiteReserva().getTime());
 				}

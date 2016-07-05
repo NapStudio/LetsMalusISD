@@ -8,6 +8,7 @@ C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\serviceutil\
 C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\soapservice\SoapBadStateReservaExceptionInfo.java
 C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\soapservice\SoapInputValidationException.java
 C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\soapservice\SoapOfertaService.java
+C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\service\facebook\FacebookService.java
 C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\soapservice\SoapInstanceNotFoundException.java
 C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\soapservice\SoapOfertaReservadaException.java
 C:\software\ws-app-1.0.0\ws-app-service\src\main\java\es\udc\ws\app\restservice\servlets\ReservaServlet.java

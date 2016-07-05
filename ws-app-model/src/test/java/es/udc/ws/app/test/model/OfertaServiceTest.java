@@ -64,15 +64,17 @@ public class OfertaServiceTest {
 	}
 
 	private Oferta getValidOferta(String title) {
+		Calendar calendar= Calendar.getInstance();
+		calendar.add(Calendar.MONTH, 11);
 		return new Oferta(title, "esto es una descripcion", "válida", 19.95F,
-				17.50F, 1.75F, Calendar.getInstance(), Calendar.getInstance());
+				17.50F, 1.75F, calendar, calendar, "");
 	}
 
 	private Oferta getValidOferta(String title, String descripcion) {
 		Calendar calendar= Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, RESERVA_EXPIRATION_DAYS);
+		calendar.add(Calendar.MONTH, 11);
 		return new Oferta(title, descripcion, "válida", 19.95F, 17.50F, 1.75F,
-				calendar, calendar);
+				calendar, calendar, "");
 	}
 
 	private Oferta getValidOferta() {
@@ -182,9 +184,7 @@ public class OfertaServiceTest {
 			InstanceNotFoundException, OfertaReservadaException {
 
 		Oferta oferta = getValidOferta();
-		Oferta addedOferta = null;
-
-		addedOferta = ofertaService.addOferta(oferta);
+		Oferta addedOferta = ofertaService.addOferta(oferta);
 		/*
 		 * oferta.getNombreOferta(),oferta.getDescripcionOferta(),oferta.
 		 * getEstadoOferta(),
@@ -265,6 +265,7 @@ public class OfertaServiceTest {
 				exceptionCatched = true;
 			}
 			assertTrue(exceptionCatched);
+			
 			// Check valid discount
 			exceptionCatched = false;
 			oferta = getValidOferta();
@@ -364,7 +365,7 @@ public class OfertaServiceTest {
 	}
 
 	@Test(expected = InstanceNotFoundException.class)
-	public void testRemoveNonExistentMovie() throws InstanceNotFoundException,
+	public void testRemoveNonExistentOferta() throws InstanceNotFoundException,
 			OfertaReservadaException {
 
 		ofertaService.removeOferta(NON_EXISTENT_OFERTA_ID);
@@ -389,24 +390,22 @@ public class OfertaServiceTest {
 		List<Oferta> foundOfertas = new ArrayList<Oferta>();
 
 		try {
-//			// Proba devolucion todo
-//			foundOfertas = ofertaService.findOfertas("palabra", null, null);
-////			assertEquals(ofertas, foundOfertas);
-//TODO hacer este test
-//			foundOfertas = ofertaService.findOfertas("clave", null, null);
-//
-//			assertEquals(ofertas, foundOfertas);
-//
-//			// Solo una
-//			foundOfertas = ofertaService.findOfertas("eee", null, null);
-//			assertEquals(1, foundOfertas.size());
-//			assertEquals(ofertas.get(1), foundOfertas.get(0));
-//
-//			foundOfertas = ofertaService.findOfertas("1", null, null);
-//			assertEquals(2, foundOfertas.size());
-//
-//			foundOfertas = ofertaService.findOfertas("palabra", "non", null);
-//			assertEquals(0, foundOfertas.size());
+			foundOfertas = ofertaService.findOfertas("palabra", null, null);
+			assertEquals(ofertas, foundOfertas);
+			foundOfertas = ofertaService.findOfertas("clave", null, null);
+
+			assertEquals(ofertas, foundOfertas);
+
+			// Solo una
+			foundOfertas = ofertaService.findOfertas("eee", null, null);
+			assertEquals(1, foundOfertas.size());
+			assertEquals(ofertas.get(1), foundOfertas.get(0));
+
+			foundOfertas = ofertaService.findOfertas("1", null, null);
+			assertEquals(2, foundOfertas.size());
+
+			foundOfertas = ofertaService.findOfertas("palabra", "non", null);
+			assertEquals(0, foundOfertas.size());
 		} finally {
 
 			// Clear Database
@@ -429,46 +428,42 @@ public class OfertaServiceTest {
 
 			/* Buy reserva. */
 //TODO este test
-//			Calendar beforeExpirationCalendar = Calendar.getInstance();
-//			beforeExpirationCalendar.add(Calendar.DAY_OF_MONTH,
-//					RESERVA_EXPIRATION_DAYS);
-//			beforeExpirationCalendar.set(Calendar.MILLISECOND, 0);
-//
-//			Long reservaId = (ofertaService.reservarOferta(
-//					oferta.getOfertaId(), USER_ID, VALID_CREDIT_CARD_NUMBER));
-//			reserva = ofertaService.findReserva(reservaId);
-//
-//			Calendar afterExpirationCalendar = Calendar.getInstance();
-//			afterExpirationCalendar.add(Calendar.DAY_OF_MONTH,
-//					RESERVA_EXPIRATION_DAYS);
-//
-//			afterExpirationCalendar.set(Calendar.MILLISECOND, 0);
-//
-//			Calendar fechaLimiteReserva = Calendar.getInstance();
-//			fechaLimiteReserva=(oferta.getFechaLimiteReserva());
-//			fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
-//
-//			/* Find reserva. */
-//			Reserva foundReserva = ofertaService.findReserva(reserva
-//					.getReservaId());
-//			Calendar fechaCreacion = Calendar.getInstance();
-//			fechaCreacion=(foundReserva.getFechaCreacionReserva());
-//			/* Check reserva. */
-//			assertEquals(reserva, foundReserva);
-//			assertEquals(VALID_CREDIT_CARD_NUMBER,
-//					foundReserva.getTarjetaCreditoReserva());
-//			assertEquals(USER_ID, foundReserva.getEmailUsuarioReserva());
-//			assertEquals(oferta.getOfertaId(), foundReserva.getOfertaId());
-//			assertEquals(reserva.getReservaId(), foundReserva.getReservaId());
-//			System.out.println(fechaLimiteReserva);
-//			System.out.println(beforeExpirationCalendar);
-//			System.out.println(afterExpirationCalendar);
-//			
-			//TODO mirar lo de las fechas y tal
-//			assertTrue((fechaLimiteReserva.compareTo(beforeExpirationCalendar) >= 0)
-//					&& (fechaLimiteReserva.compareTo(afterExpirationCalendar) <= 0));
 
-//			assertTrue(Calendar.getInstance().after(fechaCreacion));
+			Long reservaId = (ofertaService.reservarOferta(
+					oferta.getOfertaId(), USER_ID, VALID_CREDIT_CARD_NUMBER));
+			
+			Calendar beforeExpirationCalendar = Calendar.getInstance();
+			beforeExpirationCalendar.add(Calendar.DAY_OF_MONTH,
+					RESERVA_EXPIRATION_DAYS);
+			beforeExpirationCalendar.set(Calendar.MILLISECOND, 0);
+
+			reserva = ofertaService.findReserva(reservaId);
+
+			Calendar afterExpirationCalendar = Calendar.getInstance();
+			afterExpirationCalendar.add(Calendar.DAY_OF_MONTH,
+					RESERVA_EXPIRATION_DAYS);
+
+			afterExpirationCalendar.set(Calendar.MILLISECOND, 0);
+
+			Calendar fechaLimiteReserva = Calendar.getInstance();
+			fechaLimiteReserva=(oferta.getFechaLimiteReserva());
+			fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
+
+			/* Find reserva. */
+			Reserva foundReserva = ofertaService.findReserva(reserva
+					.getReservaId());
+			Calendar fechaCreacion = Calendar.getInstance();
+			fechaCreacion=(foundReserva.getFechaCreacionReserva());
+			/* Check reserva. */
+			assertEquals(reserva, foundReserva);
+			assertEquals(VALID_CREDIT_CARD_NUMBER,
+					foundReserva.getTarjetaCreditoReserva());
+			assertEquals(USER_ID, foundReserva.getEmailUsuarioReserva());
+			assertEquals(oferta.getOfertaId(), foundReserva.getOfertaId());
+			assertEquals(reserva.getReservaId(), foundReserva.getReservaId());
+			System.out.println(fechaLimiteReserva);
+
+			assertTrue(Calendar.getInstance().after(fechaCreacion));
 
 		} finally {
 			/* Clear database: remove reserva (if created) and movie. */
@@ -488,6 +483,7 @@ public class OfertaServiceTest {
 			OfertaReservadaException, TimeExpirationException {
 
 		Oferta oferta = createOferta(getValidOferta());
+		oferta=ofertaService.addOferta(oferta);
 		try {
 			ofertaService.reservarOferta(oferta.getOfertaId(), USER_ID,
 					INVALID_CREDIT_CARD_NUMBER);
@@ -502,11 +498,30 @@ public class OfertaServiceTest {
 	@Test(expected = InstanceNotFoundException.class)
 	public void testBuyNonExistentOferta() throws InputValidationException,
 			InstanceNotFoundException, OfertaReservadaException, TimeExpirationException {
-
+		
 		Long reservaId = ofertaService.reservarOferta(NON_EXISTENT_OFERTA_ID,
 				USER_ID, VALID_CREDIT_CARD_NUMBER);
 
 		removeReserva(reservaId);
+
+	}	
+	
+	@Test(expected = TimeExpirationException.class)
+	public void testReservarTimeExpiration()
+			throws InputValidationException, InstanceNotFoundException,
+			OfertaReservadaException, TimeExpirationException {
+
+		Oferta oferta = createOferta(getValidOferta());
+		oferta.setFechaLimiteOferta(Calendar.getInstance());
+		ofertaService.updateOferta(oferta);
+		try {
+			ofertaService.reservarOferta(oferta.getOfertaId(), USER_ID,
+					VALID_CREDIT_CARD_NUMBER);
+
+		} finally {
+			/* Clear database. */
+			removeOferta(oferta.getOfertaId());
+		}
 
 	}
 

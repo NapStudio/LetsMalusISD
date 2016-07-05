@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>es.udc.ws.app</groupId>
-        <artifactId>ws-app</artifactId>
-        <version>1.0.0</version>
-    </parent>
-    <artifactId>ws-app-model</artifactId>
-    <packaging>jar</packaging>
-    <name>WS App Model Subsystem</name>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>es.udc.ws.app</groupId>
+		<artifactId>ws-app</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>ws-app-model</artifactId>
+	<packaging>jar</packaging>
+	<name>WS App Model Subsystem</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>es.udc.ws</groupId>
-            <artifactId>ws-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>es.udc.ws.app</groupId>
-            <artifactId>ws-app-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${jdbcDriver.groupId}</groupId>
-            <artifactId>${jdbcDriver.artifactId}</artifactId>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>es.udc.ws</groupId>
+			<artifactId>ws-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>es.udc.ws.app</groupId>
+			<artifactId>ws-app-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${jdbcDriver.groupId}</groupId>
+			<artifactId>${jdbcDriver.artifactId}</artifactId>
+		</dependency><dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>fluent-hc</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>

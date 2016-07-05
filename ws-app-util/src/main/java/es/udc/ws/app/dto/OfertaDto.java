@@ -13,6 +13,7 @@ public class OfertaDto {
 	private float comisionOferta;
 	private Calendar fechaLimiteOferta;
 	private Calendar fechaLimiteReserva;
+	private int facebookLikes;
 
 	public OfertaDto() {
 
@@ -22,7 +23,7 @@ public class OfertaDto {
 			String descripcionOferta, String estadoOferta,
 			float precioRealOferta, float precioDescontadoOferta,
 			float comisionOferta, Calendar fechaLimiteOferta,
-			Calendar fechaLimiteReserva) {
+			Calendar fechaLimiteReserva, int facebookLikes) {
 		super();
 		this.ofertaId = ofertaId;
 		this.nombreOferta = nombreOferta;
@@ -33,6 +34,7 @@ public class OfertaDto {
 		this.comisionOferta = comisionOferta;
 		this.fechaLimiteOferta = fechaLimiteOferta;
 		this.fechaLimiteReserva = fechaLimiteReserva;
+		this.facebookLikes = facebookLikes;
 	}
 
 	public Long getOfertaId() {
@@ -107,6 +109,14 @@ public class OfertaDto {
 		this.fechaLimiteReserva = fechaLimiteReserva;
 	}
 
+	public int getFacebookLikes() {
+		return facebookLikes;
+	}
+
+	public void setFacebookLikes(int facebookLikes) {
+		this.facebookLikes = facebookLikes;
+	}
+
 	@Override
 	public String toString() {
 		return "OfertaDto [ofertaId=" + ofertaId + ", nombreOferta="
@@ -115,7 +125,9 @@ public class OfertaDto {
 				+ precioRealOferta + ", precioDescontadoOferta="
 				+ precioDescontadoOferta + ", comisionOferta=" + comisionOferta
 				+ ", fechaLimiteOferta=" + fechaLimiteOferta
-				+ ", fechaLimiteReserva=" + fechaLimiteReserva + "]";
+				+ ", fechaLimiteReserva=" + fechaLimiteReserva
+				+ ", facebookLikes=" + facebookLikes + "]";
 	}
+
 
 }

@@ -259,7 +259,7 @@ public class OfertaServiceImpl implements OfertaService {
 
 				/* Do work. */
 				Oferta oferta = ofertaDAO.find(connection, ofertaId);
-
+				System.out.println("service fbId "+oferta.getFacebookId());
 				/* Commit. */
 				connection.commit();
 				return oferta;

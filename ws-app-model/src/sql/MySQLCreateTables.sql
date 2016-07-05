@@ -25,6 +25,7 @@ CREATE TABLE Oferta (
     comisionOferta FLOAT NOT NULL,
     fechaLimiteOferta TIMESTAMP DEFAULT 0 NOT NULL,
     fechaLimiteReserva TIMESTAMP DEFAULT 0 NOT NULL,
+    facebookId VARCHAR(1000),
     CONSTRAINT OfertaId PRIMARY KEY(ofertaId), 
     CONSTRAINT validPrice CHECK ( price >= 0) 
     ) ENGINE = InnoDB;

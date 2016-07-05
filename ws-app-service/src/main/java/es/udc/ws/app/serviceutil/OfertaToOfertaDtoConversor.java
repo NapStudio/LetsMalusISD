@@ -9,20 +9,21 @@ import es.udc.ws.app.model.oferta.Oferta;
 
 public class OfertaToOfertaDtoConversor {
 	
-	 public static List<OfertaDto> toOfertaDtos(List<Oferta> ofertas) {
+	 public static List<OfertaDto> toOfertaDtos(List<Oferta> ofertas, List<Integer> facebookLikes) {
 	        List<OfertaDto> ofertaDtos = new ArrayList<>(ofertas.size());
 	        for (int i = 0; i < ofertas.size(); i++) {
 	        	Oferta oferta = ofertas.get(i);
-	            ofertaDtos.add(toOfertaDto(oferta));
+	        	int like=facebookLikes.get(i);
+	            ofertaDtos.add(toOfertaDto(oferta, like));
 	        }
 	        return ofertaDtos;
 	    }
 
-	    public static OfertaDto toOfertaDto(Oferta oferta) {
+	    public static OfertaDto toOfertaDto(Oferta oferta, int facebookLikes) {
 	        return new OfertaDto(oferta.getOfertaId(), oferta.getNombreOferta(), oferta
 	                .getDescripcionOferta(), oferta.getEstadoOferta(), oferta.getPrecioRealOferta(),
 	                oferta.getPrecioDescontadoOferta(), oferta.getComisionOferta(),oferta.getFechaLimiteOferta(),
-	                oferta.getFechaLimiteReserva());
+	                oferta.getFechaLimiteReserva(), facebookLikes);
 	    }
 	    
 	    
@@ -30,7 +31,7 @@ public class OfertaToOfertaDtoConversor {
 	        return new Oferta(oferta.getOfertaId(), oferta.getNombreOferta(), oferta
 	                .getDescripcionOferta(), oferta.getEstadoOferta(), oferta.getPrecioRealOferta(),
 	                oferta.getPrecioDescontadoOferta(), oferta.getComisionOferta(),oferta.getFechaLimiteOferta(),
-	                oferta.getFechaLimiteReserva());
+	                oferta.getFechaLimiteReserva(), "");
 	    }    
 
 }

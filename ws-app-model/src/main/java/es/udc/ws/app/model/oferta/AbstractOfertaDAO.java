@@ -23,7 +23,7 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
 			throws InstanceNotFoundException {
 		 /* Create "queryString". */
         String queryString = "SELECT nombreOferta, descripcionOferta, "
-                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva FROM Oferta WHERE ofertaId = ?";
+                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva, facebookId FROM Oferta WHERE ofertaId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -51,10 +51,12 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
             fechaLimiteOferta.setTime(resultSet.getTimestamp(i++));
             Calendar fechaLimiteReserva= Calendar.getInstance();
             fechaLimiteReserva.setTime(resultSet.getTimestamp(i++));
+            String facebookId=resultSet.getString(i++);
+            System.out.println("DAo fbID"+facebookId);
 
             /* Return oferta. */
             return new Oferta(ofertaId, nombreOferta, descripcionOferta, estadoOferta, precioRealOferta,
-            		precioDescontadoOferta,comisionOferta, fechaLimiteOferta, fechaLimiteReserva);
+            		precioDescontadoOferta,comisionOferta, fechaLimiteOferta, fechaLimiteReserva,facebookId);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -66,7 +68,7 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
         /* Create "queryString". */
         String[] words = keywords != null ? keywords.split(" ") : null;
         String queryString = "SELECT ofertaId, nombreOferta, descripcionOferta, "
-                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva FROM Oferta";
+                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva, facebookId FROM Oferta";
         System.out.println("ofertadao keywords: "+keywords);
         if ((words != null && words.length > 0) || (estadoBusqueda != null)
         		|| (fechaBusqueda != null)) {
@@ -136,9 +138,10 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
                 fechaLimiteOferta.setTime(resultSet.getTimestamp(i++));
                 Calendar fechaLimiteReserva= Calendar.getInstance();
                 fechaLimiteReserva.setTime(resultSet.getTimestamp(i++));
+                String facebookId=resultSet.getString(i++);
 
                 ofertas.add(new Oferta(ofertaId, nombreOferta, descripcionOferta, estadoOferta,
-                		precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva));
+                		precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva, facebookId));
 
             }
 
@@ -154,7 +157,8 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
 	public List<Oferta> findAll(Connection connection){
 		 /* Create "queryString". */
         String queryString = "SELECT ofertaId, nombreOferta, descripcionOferta, "
-                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva FROM Oferta";
+                + " estadoOferta, precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva, facebookId"
+                + " FROM Oferta";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -179,9 +183,10 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
                 fechaLimiteOferta.setTime(resultSet.getTimestamp(i++));
                 Calendar fechaLimiteReserva= Calendar.getInstance();
                 fechaLimiteReserva.setTime(resultSet.getTimestamp(i++));
+                String facebookId=resultSet.getString(i++);
 
                 ofertas.add(new Oferta(ofertaId, nombreOferta, descripcionOferta, estadoOferta,
-                		precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva));
+                		precioRealOferta, precioDescontadoOferta, comisionOferta, fechaLimiteOferta, fechaLimiteReserva, facebookId));
 
             }
 
@@ -200,7 +205,7 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
         /* Create "queryString". */
         String queryString = "UPDATE Oferta"
                 + " SET nombreOferta = ?, descripcionOferta = ?, estadoOferta = ?, "
-                + "precioRealOferta = ?, precioDescontadoOferta = ?, comisionOferta = ?, fechaLimiteOferta = ?, fechaLimiteReserva = ? "
+                + "precioRealOferta = ?, precioDescontadoOferta = ?, comisionOferta = ?, fechaLimiteOferta = ?, fechaLimiteReserva = ?, facebookId = ? "
                 + "WHERE ofertaId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
@@ -219,6 +224,7 @@ public abstract class AbstractOfertaDAO implements OfertaDAO {
             date = oferta.getFechaLimiteReserva() != null ? new Timestamp(
             		oferta.getFechaLimiteReserva().getTime().getTime()) : null;
             preparedStatement.setTimestamp(i++, date);
+            preparedStatement.setString(i++, oferta.getFacebookId());
             
             
             preparedStatement.setLong(i++, oferta.getOfertaId());
