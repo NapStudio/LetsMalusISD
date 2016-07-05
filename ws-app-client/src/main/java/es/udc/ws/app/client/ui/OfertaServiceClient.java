@@ -78,7 +78,7 @@ public class OfertaServiceClient {
 				}
 
 				Long ofertaId = clientOfertaService.addOferta(new OfertaDto(
-						null, args[1], args[2], "valida", Float
+						null, args[1], args[2], "válida", Float
 								.valueOf(args[5]), Float.valueOf(args[6]),
 						comision, fechaLimiteOferta, fechaLimiteReserva));
 
@@ -166,11 +166,18 @@ public class OfertaServiceClient {
 				if (args.length > 8) {
 					comision = Float.valueOf(args[8]);
 				}
-
-				clientOfertaService.updateOferta(new OfertaDto(Long
-						.valueOf(args[1]), args[2], args[3], args[3], Float
-						.valueOf(args[6]), Float.valueOf(args[7]), comision,
-						fechaLimiteOferta, fechaLimiteReserva));
+				OfertaDto ofertaDto=new OfertaDto();
+				ofertaDto.setOfertaId(Long.valueOf(args[1]));
+				ofertaDto.setNombreOferta(args[2]);
+				ofertaDto.setDescripcionOferta(args[3]);
+				ofertaDto.setPrecioRealOferta(Float.valueOf(args[6]));
+				ofertaDto.setPrecioDescontadoOferta(Float.valueOf(args[7]));
+				ofertaDto.setComisionOferta(comision);
+				ofertaDto.setFechaLimiteOferta(fechaLimiteOferta);
+				ofertaDto.setFechaLimiteReserva(fechaLimiteReserva);
+				ofertaDto.setEstadoOferta("nocambiar");
+				
+				clientOfertaService.updateOferta(ofertaDto);
 
 				System.out
 						.println("Oferta " + args[1] + " updated sucessfully");
@@ -276,9 +283,9 @@ public class OfertaServiceClient {
 						+ "\n Regular price: " + oferta.getPrecioRealOferta()
 						+ "\n Discounted price: "
 						+ oferta.getPrecioDescontadoOferta()
-						+ "\n Deadline offer: " + oferta.getFechaLimiteOferta()
+						+ "\n Deadline offer: " + oferta.getFechaLimiteOferta().getTime()
 						+ "\n Deadline reservation: "
-						+ oferta.getFechaLimiteReserva());
+						+ oferta.getFechaLimiteReserva().getTime());
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
@@ -291,12 +298,13 @@ public class OfertaServiceClient {
 
 			try {
 				String estado=null;
+				String keyword=null;
 				Calendar fecha = new GregorianCalendar();
 				fecha=null;
 				String addToPrint="";
 				if(args.length>3){
-					System.out.println(1);
 					estado=args[2];
+					keyword=args[1];
 					fecha = new GregorianCalendar();
 					System.out.print("fecha a parsear : " + args[3].toString());
 					SimpleDateFormat dataini = new SimpleDateFormat(
@@ -304,27 +312,30 @@ public class OfertaServiceClient {
 					Date dini = dataini.parse(args[3]);
 					System.out.print("fecha parseada ,; " + dini);
 					fecha.setTime(dini);
-					addToPrint=" with state: " + estado + " and date: " + fecha.getTime();
+					addToPrint=" with  keywords: '" + keyword + "' and state: " + estado + " and date: " + fecha.getTime();
 				}else if(args.length>2){
 					System.out.println(2);
 					estado=args[2];	
-					addToPrint=" with state: " + estado;
+					keyword=args[1];
+					addToPrint=" with  keywords: '" + keyword + "' and state: " + estado ;
+				}else if(args.length>1){
+					keyword=args[1];	
+					addToPrint=" with keywords: " + keyword;
 				}
 				
-				List<OfertaDto> ofertas=clientOfertaService.findOfertas(args[1], estado, fecha);
+				List<OfertaDto> ofertas=clientOfertaService.findOfertas(keyword, estado, fecha);
 				
 				
 				System.out.println("Found " + ofertas.size()
-						+ " oferta(s) with keywords '" + args[1] + "'"
+						+ " oferta(s)"
 						+ addToPrint);
-				System.out.println("keywords: "+args[1]+"estado: "+estado+"fecha: "+fecha);
 				for (OfertaDto oferta:ofertas) {
 					System.out.println(" Id: " + oferta.getOfertaId()
-							+ "\n Title: " + oferta.getNombreOferta()
-							+ "\n Estado: " + oferta.getEstadoOferta()
-							+ "\n Description: " + oferta.getDescripcionOferta()
-							+ "\n Regular price: " + oferta.getPrecioRealOferta()
-							+ "\n Discounted price: "
+							+ "\n  Title: " + oferta.getNombreOferta()
+							+ "\n  Estado: " + oferta.getEstadoOferta()
+							+ "\n  Description: " + oferta.getDescripcionOferta()
+							+ "\n  Regular price: " + oferta.getPrecioRealOferta()
+							+ "\n  Discounted price: "
 							+ oferta.getPrecioDescontadoOferta()
 							+ "\n Deadline offer: " + oferta.getFechaLimiteOferta().getTime()
 							+ "\n Deadline reservation: "
@@ -383,16 +394,16 @@ public class OfertaServiceClient {
 			// } else if ("-g".equalsIgnoreCase(args[0])) {
 			// validateArgs(args, 2, new int[] { 1 });
 			//
-			// // [get] OfertaServiceClient -g <saleId>
+			// // [get] OfertaServiceClient -g <reervaId>
 			//
 			// try {
 			// String movieURL = clientOfertaService.getMovieUrl(Long
 			// .parseLong(args[1]));
 			//
-			// System.out.println("The URL for the sale " + args[1] + " is "
+			// System.out.println("The URL for the reerva " + args[1] + " is "
 			// + movieURL);
 			// } catch (NumberFormatException | InstanceNotFoundException
-			// | SaleExpirationException ex) {
+			// | reervaExpirationException ex) {
 			// ex.printStackTrace(System.err);
 			// } catch (Exception ex) {
 			// ex.printStackTrace(System.err);
@@ -475,7 +486,7 @@ public class OfertaServiceClient {
 						+ "<fechaLimiteOferta> <fechaLimiteReserva>\n"
 						+ "    [find] OfertaServiceClient -f <keywords> <estado> <fecha>\n"
 						+ "    [reserve] OfertaServiceClient -re <movieId> <userId> <creditCardNumber>\n"
-				// + "    [get]    MovieServiceClient -g <saleId>\n"
+				// + "    [get]    MovieServiceClient -g <reervaId>\n"
 				);
 	}
 }

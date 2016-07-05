@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _SoapReservaExpirationException_QNAME = new QName("http://soap.ws.udc.es/", "SoapReservaExpirationException");
     private final static QName _FindOfertas_QNAME = new QName("http://soap.ws.udc.es/", "findOfertas");
     private final static QName _SoapOfertaReservadaException_QNAME = new QName("http://soap.ws.udc.es/", "SoapOfertaReservadaException");
     private final static QName _RemoveOferta_QNAME = new QName("http://soap.ws.udc.es/", "removeOferta");
@@ -48,6 +47,7 @@ public class ObjectFactory {
     private final static QName _FindOfertaResponse_QNAME = new QName("http://soap.ws.udc.es/", "findOfertaResponse");
     private final static QName _UpdateOfertaResponse_QNAME = new QName("http://soap.ws.udc.es/", "updateOfertaResponse");
     private final static QName _ReclamarOfertaResponse_QNAME = new QName("http://soap.ws.udc.es/", "reclamarOfertaResponse");
+    private final static QName _SoapTimeExpirationException_QNAME = new QName("http://soap.ws.udc.es/", "SoapTimeExpirationException");
     private final static QName _SoapInputValidationException_QNAME = new QName("http://soap.ws.udc.es/", "SoapInputValidationException");
     private final static QName _FindOferta_QNAME = new QName("http://soap.ws.udc.es/", "findOferta");
     private final static QName _FindReservasByUsuario_QNAME = new QName("http://soap.ws.udc.es/", "findReservasByUsuario");
@@ -121,14 +121,6 @@ public class ObjectFactory {
      */
     public UpdateOferta createUpdateOferta() {
         return new UpdateOferta();
-    }
-
-    /**
-     * Create an instance of {@link SoapReservaExpirationExceptionInfo }
-     * 
-     */
-    public SoapReservaExpirationExceptionInfo createSoapReservaExpirationExceptionInfo() {
-        return new SoapReservaExpirationExceptionInfo();
     }
 
     /**
@@ -220,6 +212,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SoapTimeExpirationExceptionInfo }
+     * 
+     */
+    public SoapTimeExpirationExceptionInfo createSoapTimeExpirationExceptionInfo() {
+        return new SoapTimeExpirationExceptionInfo();
+    }
+
+    /**
      * Create an instance of {@link FindOferta }
      * 
      */
@@ -281,15 +281,6 @@ public class ObjectFactory {
      */
     public OfertaDto createOfertaDto() {
         return new OfertaDto();
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link SoapReservaExpirationExceptionInfo }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://soap.ws.udc.es/", name = "SoapReservaExpirationException")
-    public JAXBElement<SoapReservaExpirationExceptionInfo> createSoapReservaExpirationException(SoapReservaExpirationExceptionInfo value) {
-        return new JAXBElement<SoapReservaExpirationExceptionInfo>(_SoapReservaExpirationException_QNAME, SoapReservaExpirationExceptionInfo.class, null, value);
     }
 
     /**
@@ -497,6 +488,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://soap.ws.udc.es/", name = "reclamarOfertaResponse")
     public JAXBElement<ReclamarOfertaResponse> createReclamarOfertaResponse(ReclamarOfertaResponse value) {
         return new JAXBElement<ReclamarOfertaResponse>(_ReclamarOfertaResponse_QNAME, ReclamarOfertaResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SoapTimeExpirationExceptionInfo }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://soap.ws.udc.es/", name = "SoapTimeExpirationException")
+    public JAXBElement<SoapTimeExpirationExceptionInfo> createSoapTimeExpirationException(SoapTimeExpirationExceptionInfo value) {
+        return new JAXBElement<SoapTimeExpirationExceptionInfo>(_SoapTimeExpirationException_QNAME, SoapTimeExpirationExceptionInfo.class, null, value);
     }
 
     /**

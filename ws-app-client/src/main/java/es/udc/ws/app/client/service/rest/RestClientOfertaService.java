@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -19,12 +20,11 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import es.udc.ws.app.client.service.ClientOfertaService;
-import es.udc.ws.app.client.service.soap.wsdl.SoapOfertaReservadaException;
 import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
-import es.udc.ws.app.exceptions.ReservaExpirationException;
+import es.udc.ws.app.exceptions.TimeExpirationException;
 import es.udc.ws.app.xml.ParsingException;
 import es.udc.ws.app.xml.XmlExceptionConversor;
 import es.udc.ws.app.xml.XmlOfertaDtoConversor;
@@ -35,7 +35,7 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public class RestClientOfertaService implements ClientOfertaService {
 
-	private final static String ENDPOINT_ADDRESS_PARAMETER = "RestClientMovieService.endpointAddress";
+	private final static String ENDPOINT_ADDRESS_PARAMETER = "RestClientOfertaService.endpointAddress";
 	private String endpointAddress;
 
 	@Override
@@ -48,7 +48,8 @@ public class RestClientOfertaService implements ClientOfertaService {
 					.bodyStream(toInputStream(oferta),
 							ContentType.create("application/xml")).execute()
 					.returnResponse();
-
+			System.out.println(HttpStatus.SC_CREATED);
+			System.out.println(response);
 			validateStatusCode(HttpStatus.SC_CREATED, response);
 
 			return XmlOfertaDtoConversor.toOferta(
@@ -68,7 +69,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 
 			HttpResponse response = Request
 					.Put(getEndpointAddress() + "ofertas/"
-							+ +oferta.getOfertaId())
+							+ oferta.getOfertaId())
 					.bodyStream(toInputStream(oferta),
 							ContentType.create("application/xml")).execute()
 					.returnResponse();
@@ -85,7 +86,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 
 	@Override
 	public void removeOferta(Long ofertaId) throws InstanceNotFoundException,
-			OfertaReservadaException, SoapOfertaReservadaException {
+			OfertaReservadaException {
 		try {
 
 			HttpResponse response = Request
@@ -105,12 +106,11 @@ public class RestClientOfertaService implements ClientOfertaService {
 	@Override
 	public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException {
 		try {
-
 			HttpResponse response = Request
-					.Get(getEndpointAddress() + "movies?OfertaId="
-							+ URLEncoder.encode(String.valueOf(ofertaId), "UTF-8")).execute()
-					.returnResponse();
-
+					.Get(getEndpointAddress()
+							+ "ofertas/"
+							+ URLEncoder.encode(String.valueOf(ofertaId),
+									"UTF-8")).execute().returnResponse();
 			validateStatusCode(HttpStatus.SC_OK, response);
 
 			return XmlOfertaDtoConversor.toOferta(response.getEntity()
@@ -123,7 +123,22 @@ public class RestClientOfertaService implements ClientOfertaService {
 
 	@Override
 	public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException {
-		// TODO Auto-generated method stub
+		try {
+			System.out.println("intentear invalidaroferta");
+
+			HttpResponse response = Request
+					.Put(getEndpointAddress()
+							+ "ofertas?ofertaId="
+							+ URLEncoder.encode(String.valueOf(ofertaId),
+									"UTF-8")).execute().returnResponse();
+
+			validateStatusCode(HttpStatus.SC_NO_CONTENT, response);
+
+		} catch (InstanceNotFoundException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
@@ -133,16 +148,19 @@ public class RestClientOfertaService implements ClientOfertaService {
 
 		try {
 
-			HttpResponse response = Request
-					.Get(getEndpointAddress()
-							+ "ofertas?keywords="
-							+ URLEncoder.encode(keywords, "UTF-8")
-							+ "?estado="
-							+ URLEncoder.encode(estadoBusqueda, "UTF-8")
-							+ "?fecha="
-							+ URLEncoder.encode(fechaBusqueda.toString(),
-									"UTF-8")).execute().returnResponse();
+			String url = getEndpointAddress() + "ofertas";
 
+			if (keywords != null) {
+				url += "?keywords=" + URLEncoder.encode(keywords, "UTF-8");
+			}
+			if (estadoBusqueda != null) {
+				url += "?estado=" + URLEncoder.encode(estadoBusqueda, "UTF-8");
+			}
+			if ((fechaBusqueda != null)) {
+				url += "?fecha="
+						+ URLEncoder.encode(fechaBusqueda.toString(), "UTF-8");
+			}
+			HttpResponse response = Request.Get(url).execute().returnResponse();
 			validateStatusCode(HttpStatus.SC_OK, response);
 
 			return XmlOfertaDtoConversor.toOfertas(response.getEntity()
@@ -156,7 +174,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 	@Override
 	public Long reservarOferta(Long ofertaId, String emailUsuarioReserva,
 			String tarjetaCreditoReserva) throws InstanceNotFoundException,
-			InputValidationException {
+			InputValidationException, OfertaReservadaException {
 		try {
 
 			HttpResponse response = Request
@@ -186,38 +204,91 @@ public class RestClientOfertaService implements ClientOfertaService {
 	@Override
 	public ReservaDto findReserva(Long reservaId)
 			throws InstanceNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+
+			HttpResponse response = Request
+					.Get(getEndpointAddress()
+							+ "reservas/"
+							+ URLEncoder.encode(String.valueOf(reservaId),
+									"UTF-8")).execute().returnResponse();
+			validateStatusCode(HttpStatus.SC_OK, response);
+
+			return XmlReservaDtoConversor.toReserva(response.getEntity()
+					.getContent());
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public List<ReservaDto> findReservasByOferta(Long ofertaId)
-			throws InstanceNotFoundException, ReservaExpirationException {
-		// TODO Auto-generated method stub
-		return null;
+			throws InstanceNotFoundException, TimeExpirationException {
+		try {
+
+			HttpResponse response = Request
+					.Get(getEndpointAddress()
+							+ "reservas?ofertaId="
+							+ URLEncoder.encode(String.valueOf(ofertaId),
+									"UTF-8")).execute().returnResponse();
+			validateStatusCode(HttpStatus.SC_OK, response);
+
+			return XmlReservaDtoConversor.toReservas(response.getEntity()
+					.getContent());
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva, String estado)
-			throws InstanceNotFoundException, ReservaExpirationException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva,
+			String estado) throws InstanceNotFoundException,
+			TimeExpirationException {
+		try {
+			HttpResponse response = null;
+			if (estado == null) {
+				response = Request
+						.Get(getEndpointAddress()
+								+ "reservas?emailUsuarioReserva="
+								+ URLEncoder.encode(emailUsuarioReserva,
+										"UTF-8") + "?estado="
+								+ URLEncoder.encode(null, "UTF-8")).execute()
+						.returnResponse();
+				validateStatusCode(HttpStatus.SC_OK, response);
+			} else {
+				response = Request
+						.Get(getEndpointAddress()
+								+ "reservas?emailUsuarioReserva="
+								+ URLEncoder.encode(emailUsuarioReserva,
+										"UTF-8") + "?estado="
+								+ URLEncoder.encode(estado, "UTF-8")).execute()
+						.returnResponse();
+				validateStatusCode(HttpStatus.SC_OK, response);
+
+			}
+
+			return XmlReservaDtoConversor.toReservas(response.getEntity()
+					.getContent());
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public Long reclamarOferta(Long reservaId)
 			throws InstanceNotFoundException, BadStateReservaException,
-			ReservaExpirationException {
+			TimeExpirationException {
 		try {
 			// TODO pues algo con badstatereserva que no es lanzada o algo
 			HttpResponse response = Request
-					.Get(getEndpointAddress() + "reservas/" + reservaId)
+					.Put(getEndpointAddress() + "reservas/" + reservaId)
 					.execute().returnResponse();
-
+			System.out.println(response);
 			validateStatusCode(HttpStatus.SC_OK, response);
 
-			return XmlReservaDtoConversor.toReserva(
-					response.getEntity().getContent()).getReservaId();
+			return reservaId;
 
 		} catch (InstanceNotFoundException e) {
 			throw e;
@@ -253,8 +324,9 @@ public class RestClientOfertaService implements ClientOfertaService {
 	}
 
 	private void validateStatusCode(int successCode, HttpResponse response)
-			throws InstanceNotFoundException, ReservaExpirationException,
-			InputValidationException, ParsingException {
+			throws InstanceNotFoundException, TimeExpirationException,
+			InputValidationException, ParsingException,
+			OfertaReservadaException, BadStateReservaException {
 
 		try {
 
@@ -269,20 +341,44 @@ public class RestClientOfertaService implements ClientOfertaService {
 			switch (statusCode) {
 
 			case HttpStatus.SC_NOT_FOUND:
-				throw XmlExceptionConversor
-						.fromInstanceNotFoundExceptionXml(response.getEntity()
-								.getContent());
+				try {
+					throw XmlExceptionConversor
+							.fromInstanceNotFoundExceptionXml(response
+									.getEntity().getContent());
+				} catch (ParsingException e) {
+					try {
+						throw XmlExceptionConversor
+								.fromBadStateReservaExceptionXml(response
+										.getEntity().getContent());
+					} catch (ParsingException e1) {
+						throw new RuntimeException(e1);
+					}
 
+				}
 			case HttpStatus.SC_BAD_REQUEST:
-				throw XmlExceptionConversor
-						.fromInputValidationExceptionXml(response.getEntity()
-								.getContent());
-
+				try {
+					throw XmlExceptionConversor
+							.fromInputValidationExceptionXml(response
+									.getEntity().getContent());
+				} catch (ParsingException e) {
+					throw new RuntimeException(e);
+				}
 			case HttpStatus.SC_GONE:
 				throw XmlExceptionConversor
 						.fromReservaExpirationExceptionXml(response.getEntity()
 								.getContent());
-
+			case HttpStatus.SC_FORBIDDEN:
+				System.out.println("sc forbidden");
+				try {
+					System.out.println(response.getEntity().toString());
+					throw XmlExceptionConversor
+							.fromOfertaReservadaExceptionXml(response
+									.getEntity().getContent());
+				} catch (ParsingException e) {
+					throw new RuntimeException(e);
+				}
+			case HttpStatus.SC_NO_CONTENT:
+				return;
 			default:
 				throw new RuntimeException("HTTP error; status code = "
 						+ statusCode);

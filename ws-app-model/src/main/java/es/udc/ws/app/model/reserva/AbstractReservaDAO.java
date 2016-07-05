@@ -49,7 +49,7 @@ public abstract class AbstractReservaDAO implements ReservaDAO{
 
             Calendar fechaCreacionReserva= Calendar.getInstance();
             fechaCreacionReserva.setTime(resultSet.getTimestamp(i++));
-            /* Return sale. */
+            /* Return reserva. */
             return new Reserva(reservaId, ofertaId, emailUsuarioReserva,
             		tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva);
 
@@ -148,7 +148,7 @@ public abstract class AbstractReservaDAO implements ReservaDAO{
 	            String estadoReserva = resultSet.getString(i++);      
 	            Calendar fechaCreacionReserva= Calendar.getInstance();
 	            fechaCreacionReserva.setTime(resultSet.getTimestamp(i++));
-	            /* Return sale. */
+	            /* Return reserva. */
 	            
 	            reserva.add(new Reserva(reservaId, ofertaId, emailUsuarioReserva,
 	            		tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva));
@@ -200,7 +200,7 @@ public abstract class AbstractReservaDAO implements ReservaDAO{
 	            String estadoReserva = resultSet.getString(i++);      
 	            Calendar fechaCreacionReserva= Calendar.getInstance();
 	            fechaCreacionReserva.setTime(resultSet.getTimestamp(i++));
-	            /* Return sale. */
+	            /* Return reserva. */
 	            
 	            reserva.add(new Reserva(reservaId, ofertaId, emailUsuarioReserva,
 	            		tarjetaCreditoReserva, estadoReserva, fechaCreacionReserva));

@@ -5,7 +5,7 @@ public class OfertaReservadaException extends Exception{
 	private Long ofertaId;
 	
 	public OfertaReservadaException(Long ofertaId){
-		super("The offer with id: "+ofertaId+" is already booked");
+		super("The offer with id: "+ofertaId+" is booked");
 		this.ofertaId=ofertaId;
 		
 	}

@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
-import es.udc.ws.app.exceptions.ReservaExpirationException;
+import es.udc.ws.app.exceptions.TimeExpirationException;
 import es.udc.ws.app.model.oferta.Oferta;
 import es.udc.ws.app.model.oferta.OfertaDAO;
 import es.udc.ws.app.model.oferta.OfertaDAOFactory;
@@ -31,6 +31,7 @@ public class OfertaServiceImpl implements OfertaService {
 	private ReservaDAO reservaDAO = null;
 
 	public OfertaServiceImpl() {
+		System.out.println("ofertaserviceImpl created OK!");
 		dataSource = DataSourceLocator.getDataSource(OFERTA_DATA_SOURCE);
 		ofertaDAO = OfertaDAOFactory.getDao();
 		reservaDAO = ReservaDAOFactory.getDao();
@@ -107,6 +108,9 @@ public class OfertaServiceImpl implements OfertaService {
 				connection.setAutoCommit(false);
 
 				/* Do work. */
+				if(oferta.getEstadoOferta()==null||oferta.getEstadoOferta().equals("nocambiar")){
+					oferta.setEstadoOferta(ofertaDAO.find(connection, oferta.getOfertaId()).getEstadoOferta());				
+				}
 				if ((reservaDAO.findbyOferta(connection, oferta.getOfertaId()))
 						.isEmpty()) {
 					ofertaDAO.update(connection, oferta);
@@ -130,7 +134,10 @@ public class OfertaServiceImpl implements OfertaService {
 						throw new InputValidationException(
 								"Invalid date value (it must be greater than "
 										+ ofertaOriginal.getFechaLimiteOferta()
-										+ "): " + oferta.getFechaLimiteOferta());
+												.getTime()
+										+ "): "
+										+ oferta.getFechaLimiteOferta()
+												.getTime());
 					}
 				}
 				/* Commit. */
@@ -216,8 +223,10 @@ public class OfertaServiceImpl implements OfertaService {
 					reservas = reservaDAO.findbyOferta(connection, ofertaId);
 					if (!reservas.isEmpty()) {
 						for (Reserva reserva : reservas) {
-							reserva.setEstadoReserva("anulada");
-							reservaDAO.update(connection, reserva);
+							if (!reserva.getEstadoReserva().equals("reclamada")) {
+								reserva.setEstadoReserva("anulada");
+								reservaDAO.update(connection, reserva);
+							}
 						}
 					}
 					ofertaDAO.update(connection, oferta);
@@ -281,7 +290,7 @@ public class OfertaServiceImpl implements OfertaService {
 		try (Connection connection = dataSource.getConnection()) {
 
 			try {
-				System.out.println("ofertaserviceimpl keywords: "+keywords);
+				System.out.println("ofertaserviceimpl keywords: " + keywords);
 				/* Prepare connection. */
 				connection
 						.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
@@ -296,11 +305,24 @@ public class OfertaServiceImpl implements OfertaService {
 					ofertas = ofertaDAO.findByParameters(connection, keywords,
 							estadoBusqueda, fechaBusqueda);
 				}
+				List<Oferta> nuevaOfertas=new ArrayList<>();
+				for(Oferta oferta:ofertas){
+					System.out.println(oferta.getFechaLimiteOferta().getTime());
+					System.out.println(Calendar.getInstance().getTime());
+					System.out.println((oferta.getFechaLimiteOferta().after(Calendar.getInstance())));
+					System.out.println(oferta.getEstadoOferta());
+					//TODO cambiar y poner tilde
+					System.out.println(oferta.getEstadoOferta().equals("válida")+"\n");
+					if((oferta.getFechaLimiteOferta().after(Calendar.getInstance()))&&(oferta.getEstadoOferta().equals("válida"))){
+						System.out.println("dentro if");
+						nuevaOfertas.add(oferta);
+					}
+				}
 
 				/* Commit. */
 				connection.commit();
 
-				return ofertas;
+				return nuevaOfertas;
 			} catch (SQLException e) {
 				connection.rollback();
 				throw new RuntimeException(e);
@@ -317,7 +339,7 @@ public class OfertaServiceImpl implements OfertaService {
 	@Override
 	public Long reservarOferta(Long ofertaId, String emailUsuarioReserva,
 			String tarjetaCreditoReserva) throws InstanceNotFoundException,
-			InputValidationException {
+			InputValidationException, OfertaReservadaException, TimeExpirationException {
 
 		PropertyValidator.validateCreditCard(tarjetaCreditoReserva);
 
@@ -331,16 +353,31 @@ public class OfertaServiceImpl implements OfertaService {
 				connection.setAutoCommit(false);
 
 				/* Do work. */
+				boolean canReserve = true;
 				Oferta oferta = ofertaDAO.find(connection, ofertaId);
+				List<Reserva> reservas = reservaDAO.findbyOferta(connection,
+						ofertaId);
+				for (Reserva reservaFound : reservas) {
+					if (reservaFound.getEmailUsuarioReserva().equals(
+							emailUsuarioReserva)) {
+						canReserve = false;
+					}
+				}
+				if((oferta.getFechaLimiteOferta().before(Calendar.getInstance()))){
+					throw new TimeExpirationException("oferta",ofertaId, oferta.getFechaLimiteOferta());
+				}
 				Reserva reserva = new Reserva();
-				reserva.setEmailUsuarioReserva(emailUsuarioReserva);
-				reserva.setOfertaId(oferta.getOfertaId());
-				reserva.setTarjetaCreditoReserva(tarjetaCreditoReserva);
-				reserva.setFechaCreacionReserva(Calendar.getInstance());
-				reserva.setEstadoReserva("válida");
+				if (canReserve) {
+					reserva.setEmailUsuarioReserva(emailUsuarioReserva);
+					reserva.setOfertaId(oferta.getOfertaId());
+					reserva.setTarjetaCreditoReserva(tarjetaCreditoReserva);
+					reserva.setFechaCreacionReserva(Calendar.getInstance());
+					reserva.setEstadoReserva("válida");
 
-				reserva = reservaDAO.create(connection, reserva);
-
+					reserva = reservaDAO.create(connection, reserva);
+				} else {
+					throw new OfertaReservadaException(Long.valueOf(ofertaId));
+				}
 				/* Commit. */
 				connection.commit();
 
@@ -361,7 +398,7 @@ public class OfertaServiceImpl implements OfertaService {
 
 	@Override
 	public List<Reserva> findReservasByOferta(Long ofertaId)
-			throws InstanceNotFoundException, ReservaExpirationException {
+			throws InstanceNotFoundException, TimeExpirationException {
 		try (Connection connection = dataSource.getConnection()) {
 
 			try {
@@ -396,7 +433,7 @@ public class OfertaServiceImpl implements OfertaService {
 	@Override
 	public List<Reserva> findReservasByUsuario(String emailUsuarioReserva,
 			String estado) throws InstanceNotFoundException,
-			ReservaExpirationException {
+			TimeExpirationException {
 		try (Connection connection = dataSource.getConnection()) {
 
 			try {
@@ -405,7 +442,8 @@ public class OfertaServiceImpl implements OfertaService {
 				connection
 						.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				connection.setAutoCommit(false);
-				System.out.println("emailUsuario "+emailUsuarioReserva+" estado: "+estado);
+				System.out.println("emailUsuario " + emailUsuarioReserva
+						+ " estado: " + estado);
 				/* Do work. */
 				List<Reserva> reservas = new ArrayList<Reserva>();
 				reservas = reservaDAO.findbyUsuario(connection,
@@ -435,7 +473,7 @@ public class OfertaServiceImpl implements OfertaService {
 	@Override
 	public Long reclamarOferta(Long reservaId)
 			throws InstanceNotFoundException, BadStateReservaException,
-			ReservaExpirationException {
+			TimeExpirationException {
 		try (Connection connection = dataSource.getConnection()) {
 
 			try {
@@ -449,10 +487,10 @@ public class OfertaServiceImpl implements OfertaService {
 				Reserva reserva = reservaDAO.find(connection, reservaId);
 				if (reserva.getEstadoReserva().equals("anulada")) {
 					throw new BadStateReservaException(reservaId,
-							reserva.getEstadoReserva());
+							"anulada");
 				} else if (reserva.getEstadoReserva().equals("inválida")) {
 					throw new BadStateReservaException(reservaId,
-							reserva.getEstadoReserva());
+							"inválida");
 				} else {
 					Calendar fechalimite = Calendar.getInstance();
 					fechalimite = ((ofertaDAO.find(connection,
@@ -460,10 +498,12 @@ public class OfertaServiceImpl implements OfertaService {
 					if (fechalimite.before(Calendar.getInstance())) {
 						reserva.setEstadoReserva("inválida");
 						reservaDAO.update(connection, reserva);
-						throw new ReservaExpirationException(reservaId,
+						throw new TimeExpirationException("reserva", reservaId,
 								fechalimite);
 					}
 				}
+				reserva.setEstadoReserva("reclamada");
+				reservaDAO.update(connection, reserva);
 				/* Commit. */
 				connection.commit();
 

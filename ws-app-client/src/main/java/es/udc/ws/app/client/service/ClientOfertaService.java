@@ -10,7 +10,7 @@ import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
-import es.udc.ws.app.exceptions.ReservaExpirationException;
+import es.udc.ws.app.exceptions.TimeExpirationException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
@@ -31,15 +31,15 @@ public interface ClientOfertaService {
     public List<OfertaDto> findOfertas(String keywords, String estadoBusqueda, Calendar fechaBusqueda) throws DatatypeConfigurationException;
 
     public Long reservarOferta(Long ofertaId, String emailUsuarioReserva, String tarjetaCreditoReserva)
-            throws InstanceNotFoundException, InputValidationException;
+            throws InstanceNotFoundException, InputValidationException, NumberFormatException, OfertaReservadaException, TimeExpirationException;
     
     public ReservaDto findReserva(Long reservaId) throws InstanceNotFoundException;
 
     public List<ReservaDto> findReservasByOferta(Long ofertaId) throws InstanceNotFoundException,
-            ReservaExpirationException;
+            TimeExpirationException;
     
     public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva, String estado) throws InstanceNotFoundException,
-    ReservaExpirationException;
+    TimeExpirationException;
     
-    public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, ReservaExpirationException ;
+    public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, TimeExpirationException ;
 }

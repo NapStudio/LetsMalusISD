@@ -5,7 +5,7 @@ import java.util.List;
 
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
-import es.udc.ws.app.exceptions.ReservaExpirationException;
+import es.udc.ws.app.exceptions.TimeExpirationException;
 import es.udc.ws.app.model.oferta.Oferta;
 import es.udc.ws.app.model.reserva.Reserva;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -27,15 +27,15 @@ public interface OfertaService {
     public List<Oferta> findOfertas(String keywords, String estadoBusqueda, Calendar fechaBusqueda);
 
     public Long reservarOferta(Long ofertaId, String emailUsuarioReserva, String tarjetaCreditoReserva)
-            throws InstanceNotFoundException, InputValidationException;
+            throws InstanceNotFoundException, InputValidationException, OfertaReservadaException, TimeExpirationException;
     
     public Reserva findReserva(Long reservaId) throws InstanceNotFoundException;
 
     public List<Reserva> findReservasByOferta(Long ofertaId) throws InstanceNotFoundException,
-            ReservaExpirationException;
+            TimeExpirationException;
     
     public List<Reserva> findReservasByUsuario(String emailUsuarioReserva, String estado) throws InstanceNotFoundException,
-    ReservaExpirationException;
+    TimeExpirationException;
     
-    public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, ReservaExpirationException ;
+    public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, TimeExpirationException ;
 }

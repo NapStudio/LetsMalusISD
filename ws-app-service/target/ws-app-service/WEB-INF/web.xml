@@ -31,20 +31,33 @@
 
     <!-- REST service -->
     <!-- Fill XXX and uncomment the following lines --> 
-    <!--
+   
     <servlet>
-        <display-name>XXXServlet</display-name>
-        <servlet-name>XXXServlet</servlet-name>
+        <display-name>OfertaServlet</display-name>
+        <servlet-name>OfertaServlet</servlet-name>
         <servlet-class>
-            es.udc.ws.app.restservice.servlets.XXXServlet
+            es.udc.ws.app.restservice.servlets.OfertaServlet
         </servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>XXXServlet</servlet-name>
-        <url-pattern>/xxx/*</url-pattern>
+        <servlet-name>OfertaServlet</servlet-name>
+        <url-pattern>/ofertas/*</url-pattern>
     </servlet-mapping>
-    -->
+   
+    <servlet>
+        <display-name>ReservaServlet</display-name>
+        <servlet-name>ReservaServlet</servlet-name>
+        <servlet-class>
+            es.udc.ws.app.restservice.servlets.ReservaServlet
+        </servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ReservaServlet</servlet-name>
+        <url-pattern>/reservas/*</url-pattern>
+    </servlet-mapping>
+    
 
     <!-- General configuration -->
 

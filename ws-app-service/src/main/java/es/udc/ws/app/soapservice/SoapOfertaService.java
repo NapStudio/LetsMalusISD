@@ -11,7 +11,7 @@ import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
-import es.udc.ws.app.exceptions.ReservaExpirationException;
+import es.udc.ws.app.exceptions.TimeExpirationException;
 import es.udc.ws.app.model.oferta.Oferta;
 import es.udc.ws.app.model.ofertaservice.OfertaServiceFactory;
 import es.udc.ws.app.model.reserva.Reserva;
@@ -110,7 +110,7 @@ public class SoapOfertaService {
 			@WebParam(name = "ofertaId") Long ofertaId,
 			@WebParam(name = "emailUsuarioReserva") String emailUsuarioReserva,
 			@WebParam(name = "tarjetaCreditoReserva") String tarjetaCreditoReserva)
-			throws SoapInstanceNotFoundException, SoapInputValidationException {
+			throws SoapInstanceNotFoundException, SoapInputValidationException, SoapOfertaReservadaException, SoapTimeExpirationException {
 		try {
 			Long reservaId = OfertaServiceFactory.getService().reservarOferta(
 					ofertaId, emailUsuarioReserva, tarjetaCreditoReserva);
@@ -121,6 +121,10 @@ public class SoapOfertaService {
 							ex.getInstanceType()));
 		} catch (InputValidationException ex) {
 			throw new SoapInputValidationException(ex.getMessage());
+		} catch (OfertaReservadaException ex) {
+			throw new SoapOfertaReservadaException(new SoapOfertaReservadaExceptionInfo(ex.getOfertaId()));
+		} catch (TimeExpirationException e) {
+			throw new SoapTimeExpirationException(new SoapTimeExpirationExceptionInfo(e.getMessage(),e.getId(),e.getFechaExpiracion()));
 		}
 	}
 
@@ -142,7 +146,7 @@ public class SoapOfertaService {
 	@WebMethod(operationName = "reclamarOferta")
 	public Long reclamarOferta(@WebParam(name = "reservaId") Long reservaId)
 			throws SoapInstanceNotFoundException, SoapBadStateReservaException,
-			SoapReservaExpirationException {
+			SoapTimeExpirationException {
 		try {
 			reservaId = OfertaServiceFactory.getService().reclamarOferta(
 					reservaId);
@@ -155,9 +159,9 @@ public class SoapOfertaService {
 			throw new SoapBadStateReservaException(
 					new SoapBadStateReservaExceptionInfo(e.getReservaId(),
 							e.getEstadoReserva()));
-		} catch (ReservaExpirationException e) {
-			throw new SoapReservaExpirationException(
-					new SoapReservaExpirationExceptionInfo(e.getReservaId(),
+		} catch (TimeExpirationException e) {
+			throw new SoapTimeExpirationException(
+					new SoapTimeExpirationExceptionInfo(e.getMessage(), e.getId(),
 							e.getFechaExpiracion()));
 		}
 	}
@@ -165,7 +169,7 @@ public class SoapOfertaService {
 	@WebMethod(operationName = "findReservasByOferta")
 	public List<ReservaDto> findReservasByOferta(
 			@WebParam(name = "ofertaId") Long ofertaId)	throws SoapInstanceNotFoundException,
-			SoapReservaExpirationException {
+			SoapTimeExpirationException {
 		
 		try{
 			System.out.println(Long.valueOf(ofertaId));
@@ -177,9 +181,9 @@ public class SoapOfertaService {
 			throw new SoapInstanceNotFoundException(
 					new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
 							ex.getInstanceType()));			
-		}catch(ReservaExpirationException ex) {
-			throw new SoapReservaExpirationException(
-					new SoapReservaExpirationExceptionInfo(ex.getReservaId(),
+		}catch(TimeExpirationException ex) {
+			throw new SoapTimeExpirationException(
+					new SoapTimeExpirationExceptionInfo(ex.getMessage(), ex.getId(),
 							ex.getFechaExpiracion()));	
 		}
 	}
@@ -189,7 +193,7 @@ public class SoapOfertaService {
 			@WebParam(name = "emailUsuarioReserva") String emailUsuarioReserva,
 			@WebParam(name = "estadoReserva") String estadoReserva)
 			throws SoapInstanceNotFoundException,
-			SoapReservaExpirationException {
+			SoapTimeExpirationException {
 		try{
 			System.out.println("emailUsuario "+emailUsuarioReserva+" estado: "+estadoReserva);
 			List<Reserva> reservas = OfertaServiceFactory.getService()
@@ -200,9 +204,9 @@ public class SoapOfertaService {
 				throw new SoapInstanceNotFoundException(
 						new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
 								ex.getInstanceType()));			
-			}catch(ReservaExpirationException ex) {
-				throw new SoapReservaExpirationException(
-						new SoapReservaExpirationExceptionInfo(ex.getReservaId(),
+			}catch(TimeExpirationException ex) {
+				throw new SoapTimeExpirationException(
+						new SoapTimeExpirationExceptionInfo(ex.getMessage(), ex.getId(),
 								ex.getFechaExpiracion()));	
 			}
 	}

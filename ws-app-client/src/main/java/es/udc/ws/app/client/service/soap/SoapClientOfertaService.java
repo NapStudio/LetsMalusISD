@@ -15,7 +15,8 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 import es.udc.ws.app.exceptions.BadStateReservaException;
-import es.udc.ws.app.exceptions.ReservaExpirationException;
+import es.udc.ws.app.exceptions.OfertaReservadaException;
+import es.udc.ws.app.exceptions.TimeExpirationException;
 
 public class SoapClientOfertaService implements ClientOfertaService {
 	private final static String ENDPOINT_ADDRESS_PARAMETER = "SoapClientOfertaService.endpointAddress";
@@ -77,18 +78,15 @@ public class SoapClientOfertaService implements ClientOfertaService {
 	@Override
 	public List<OfertaDto> findOfertas(String keywords, String estado,
 			Calendar date) throws DatatypeConfigurationException {
-		try {
-			return OfertaDtoToSoapOfertaDtoConversor
-					.toOfertaDtos(ofertasProvider.findOfertas(keywords, estado,
-							(GregorianCalendarConversor
-									.toXMLGregorianCalendar(date))));
-		} catch (DatatypeConfigurationException e) {
-			throw new DatatypeConfigurationException(e);
-		}
+		return OfertaDtoToSoapOfertaDtoConversor
+				.toOfertaDtos(ofertasProvider.findOfertas(keywords, estado,
+						(GregorianCalendarConversor
+								.toXMLGregorianCalendar(date))));
 	}
 
 	@Override
-	public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException, InputValidationException {
+	public void invalidarOferta(Long ofertaId)
+			throws InstanceNotFoundException, InputValidationException {
 		try {
 			ofertasProvider.invalidarOferta(ofertaId);
 		} catch (SoapInstanceNotFoundException ex) {
@@ -112,11 +110,12 @@ public class SoapClientOfertaService implements ClientOfertaService {
 	@Override
 	public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException {
 		try {
-			return OfertaDtoToSoapOfertaDtoConversor.toOfertaDto(ofertasProvider.findOferta(ofertaId));
+			return OfertaDtoToSoapOfertaDtoConversor
+					.toOfertaDto(ofertasProvider.findOferta(ofertaId));
 		} catch (SoapInstanceNotFoundException ex) {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
-		} catch(Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -124,7 +123,8 @@ public class SoapClientOfertaService implements ClientOfertaService {
 	@Override
 	public Long reservarOferta(Long ofertaId, String emailUsuarioReserva,
 			String tarjetaCreditoReserva) throws InstanceNotFoundException,
-			InputValidationException {
+			InputValidationException, NumberFormatException,
+			OfertaReservadaException, TimeExpirationException {
 		try {
 			return ofertasProvider.reservarOferta(ofertaId,
 					emailUsuarioReserva, tarjetaCreditoReserva);
@@ -133,6 +133,10 @@ public class SoapClientOfertaService implements ClientOfertaService {
 		} catch (SoapInstanceNotFoundException ex) {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
+		} catch (SoapOfertaReservadaException e) {
+			throw new OfertaReservadaException(e.getFaultInfo().getOfertaId());
+		} catch (SoapTimeExpirationException e) {
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e.getFaultInfo().getId(), GregorianCalendarConversor.toCalendar(e.getFaultInfo().getFechaExpiracion()));
 		}
 	}
 
@@ -150,7 +154,7 @@ public class SoapClientOfertaService implements ClientOfertaService {
 
 	@Override
 	public List<ReservaDto> findReservasByOferta(Long ofertaId)
-			throws InstanceNotFoundException, ReservaExpirationException {
+			throws InstanceNotFoundException, TimeExpirationException {
 		try {
 			return ReservaDtoToSoapReservaDtoConversor
 					.toReservaDtos(ofertasProvider
@@ -158,47 +162,45 @@ public class SoapClientOfertaService implements ClientOfertaService {
 		} catch (SoapInstanceNotFoundException ex) {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
-		} catch (SoapReservaExpirationException e) {
-			// TODO es una lista, si esta excepcion es de un reserva en concreto
-			// como lanzas la excepcion?
-
-			throw new ReservaExpirationException(ofertaId, null);
+		} catch (SoapTimeExpirationException e) {
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(),
+					e.getFaultInfo().getId(),
+					GregorianCalendarConversor.toCalendar(e.getFaultInfo()
+							.getFechaExpiracion()));
 		}
 	}
 
 	@Override
-	public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva, String estado)
-			throws InstanceNotFoundException, ReservaExpirationException {
+	public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva,
+			String estado) throws InstanceNotFoundException,
+			TimeExpirationException {
 		try {
-			
+
 			return ReservaDtoToSoapReservaDtoConversor
-					.toReservaDtos(ofertasProvider
-							.findReservasByUsuario(emailUsuarioReserva, estado));
+					.toReservaDtos(ofertasProvider.findReservasByUsuario(
+							emailUsuarioReserva, estado));
 		} catch (SoapInstanceNotFoundException ex) {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
-		} catch (SoapReservaExpirationException e) {
-			// TODO es una lista, si esta excepcion es de un reserva en concreto
-			// como lanzas la excepcion?
-
-			throw new ReservaExpirationException((long) 0, null);
+		} catch (SoapTimeExpirationException e) {
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e.getFaultInfo().getId(), GregorianCalendarConversor.toCalendar(e.getFaultInfo().getFechaExpiracion()));
 		}
 	}
 
 	@Override
 	public Long reclamarOferta(Long reservaId)
 			throws InstanceNotFoundException, BadStateReservaException,
-			ReservaExpirationException {
+			TimeExpirationException {
 		try {
 			return ofertasProvider.reclamarOferta(reservaId);
 		} catch (SoapBadStateReservaException e) {
-			throw new BadStateReservaException(reservaId, null);
+			throw new BadStateReservaException(e.getFaultInfo().getReservaId(),
+					e.getFaultInfo().getEstadoReserva());
 		} catch (SoapInstanceNotFoundException e) {
 			throw new InstanceNotFoundException(e.getFaultInfo()
 					.getInstanceId(), e.getFaultInfo().getInstanceType());
-		} catch (SoapReservaExpirationException e) {
-			// TODO Auto-generated catch block
-			throw new ReservaExpirationException((long) 0, null);
+		} catch (SoapTimeExpirationException e) {
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e.getFaultInfo().getId(), GregorianCalendarConversor.toCalendar(e.getFaultInfo().getFechaExpiracion()));
 		}
 	}
 }

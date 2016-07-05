@@ -1,9 +1,9 @@
-C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\exceptions\ReservaExpirationException.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\xml\ParsingException.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\dto\OfertaDto.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\exceptions\OfertaReservadaException.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\xml\XmlExceptionConversor.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\dto\ReservaDto.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\xml\XmlReservaDtoConversor.java
+C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\exceptions\TimeExpirationException.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\xml\XmlOfertaDtoConversor.java
 C:\software\ws-app-1.0.0\ws-app-util\src\main\java\es\udc\ws\app\exceptions\BadStateReservaException.java

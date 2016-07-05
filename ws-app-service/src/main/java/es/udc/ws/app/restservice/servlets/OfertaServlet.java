@@ -1,6 +1,11 @@
 package es.udc.ws.app.restservice.servlets;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +32,12 @@ public class OfertaServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("doPost");
 		OfertaDto xmlOferta;
 		try {
 			xmlOferta = XmlOfertaDtoConversor.toOferta(req.getInputStream());
 		} catch (ParsingException ex) {
+			System.out.println("servlet erro bad request");
 			ServletUtils
 					.writeServiceResponse(
 							resp,
@@ -54,10 +61,10 @@ public class OfertaServlet extends HttpServlet {
 		}
 		OfertaDto ofertaDto = OfertaToOfertaDtoConversor.toOfertaDto(oferta);
 
-		String movieURL = ServletUtils.normalizePath(req.getRequestURL()
+		String ofertaURL = ServletUtils.normalizePath(req.getRequestURL()
 				.toString()) + "/" + oferta.getOfertaId();
 		Map<String, String> headers = new HashMap<>(1);
-		headers.put("Location", movieURL);
+		headers.put("Location", ofertaURL);
 
 		ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_CREATED,
 				XmlOfertaDtoConversor.toXml(ofertaDto), headers);
@@ -66,24 +73,52 @@ public class OfertaServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
+		System.out.println("doPut");
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
-			ServletUtils
-					.writeServiceResponse(
-							resp,
-							HttpServletResponse.SC_BAD_REQUEST,
-							XmlExceptionConversor
-									.toInputValidationExceptionXml(new InputValidationException(
-											"Invalid Request: "
-													+ "invalid oferta id")),
-							null);
-			return;
+
+			String ofertaIdAsString = req.getParameter("ofertaId");
+			System.out.println(ofertaIdAsString);
+			Long ofertaId;
+			try {
+				ofertaId = Long.valueOf(ofertaIdAsString);
+			} catch (NumberFormatException ex) {
+				ServletUtils
+						.writeServiceResponse(
+								resp,
+								HttpServletResponse.SC_BAD_REQUEST,
+								XmlExceptionConversor
+										.toInputValidationExceptionXml(new InputValidationException(
+												"Invalid Request: "
+														+ "invalid oferta id '"
+														+ ofertaIdAsString
+														+ "'")), null);
+				return;
+			}
+			try {
+				OfertaServiceFactory.getService().invalidarOferta(ofertaId);
+			} catch (InstanceNotFoundException e) {
+				ServletUtils.writeServiceResponse(resp,
+						HttpServletResponse.SC_NOT_FOUND,
+						XmlExceptionConversor.toInstanceNotFoundException(e),
+						null);
+				return;
+			} catch (InputValidationException e) {
+				ServletUtils.writeServiceResponse(resp,
+						HttpServletResponse.SC_BAD_REQUEST,
+						XmlExceptionConversor.toInputValidationExceptionXml(e),
+						null);
+				return;
+			}
+
+			System.out.println(req.getInputStream().available());
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_NO_CONTENT, null, null);
 		}
-		String movieIdAsString = path.substring(1);
-		Long movieId;
+		String ofertaIdAsString = path.substring(1);
+		Long ofertaId;
 		try {
-			movieId = Long.valueOf(movieIdAsString);
+			ofertaId = Long.valueOf(ofertaIdAsString);
 		} catch (NumberFormatException ex) {
 			ServletUtils
 					.writeServiceResponse(
@@ -93,7 +128,7 @@ public class OfertaServlet extends HttpServlet {
 									.toInputValidationExceptionXml(new InputValidationException(
 											"Invalid Request: "
 													+ "invalid oferta id '"
-													+ movieIdAsString + "'")),
+													+ ofertaIdAsString + "'")),
 							null);
 			return;
 		}
@@ -112,7 +147,7 @@ public class OfertaServlet extends HttpServlet {
 			return;
 
 		}
-		if (!movieId.equals(ofertaDto.getOfertaId())) {
+		if (!ofertaId.equals(ofertaDto.getOfertaId())) {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
@@ -120,7 +155,8 @@ public class OfertaServlet extends HttpServlet {
 							XmlExceptionConversor
 									.toInputValidationExceptionXml(new InputValidationException(
 											"Invalid Request: "
-													+ "invalid movieId")), null);
+													+ "invalid ofertaId")),
+							null);
 			return;
 		}
 		Oferta oferta = OfertaToOfertaDtoConversor.toOferta(ofertaDto);
@@ -140,6 +176,7 @@ public class OfertaServlet extends HttpServlet {
 									.toInstanceNotFoundException(ex), null);
 			return;
 		}
+		System.out.println(req.getInputStream().available());
 		ServletUtils.writeServiceResponse(resp,
 				HttpServletResponse.SC_NO_CONTENT, null, null);
 	}
@@ -147,6 +184,7 @@ public class OfertaServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("doDelete");
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 			ServletUtils
@@ -160,10 +198,10 @@ public class OfertaServlet extends HttpServlet {
 							null);
 			return;
 		}
-		String movieIdAsString = path.substring(1);
+		String ofertaIdAsString = path.substring(1);
 		Long ofertaId;
 		try {
-			ofertaId = Long.valueOf(movieIdAsString);
+			ofertaId = Long.valueOf(ofertaIdAsString);
 		} catch (NumberFormatException ex) {
 			ServletUtils
 					.writeServiceResponse(
@@ -173,7 +211,7 @@ public class OfertaServlet extends HttpServlet {
 									.toInputValidationExceptionXml(new InputValidationException(
 											"Invalid Request: "
 													+ "invalid oferta id '"
-													+ movieIdAsString + "'")),
+													+ ofertaIdAsString + "'")),
 							null);
 
 			return;
@@ -189,6 +227,7 @@ public class OfertaServlet extends HttpServlet {
 			return;
 		} catch (OfertaReservadaException e) {
 			// TODO Auto-generated catch block
+			// TODO como devolver esta excepcion
 			e.printStackTrace();
 		}
 		ServletUtils.writeServiceResponse(resp,
@@ -198,20 +237,51 @@ public class OfertaServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("doGet");
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
-			String keyWords = req.getParameter("keywords");
-			List<Oferta> movies = OfertaServiceFactory.getService().findOfertas(
-					keyWords, null, null);
-			List<OfertaDto> movieDtos = OfertaToOfertaDtoConversor
-					.toOfertaDtos(movies);
+			String keywords = req.getParameter("keywords");
+			String estado = req.getParameter("estado");
+			System.out.println(estado);
+			String fechaString = req.getParameter("fecha");
+			System.out.println(fechaString);
+			if (estado == null) {
+				estado = null;
+			}
+			Calendar fecha = new GregorianCalendar();
+			if (fechaString == null) {
+				fecha=null;
+			} else {
+				fecha = new GregorianCalendar();
+				SimpleDateFormat dataini = new SimpleDateFormat(
+						"dd/MM/yyyy HH:mm");
+				Date dini = new Date();
+				try {
+					dini = dataini.parse(fechaString);
+				} catch (ParseException e) {
+					ServletUtils
+							.writeServiceResponse(
+									resp,
+									HttpServletResponse.SC_BAD_REQUEST,
+									XmlExceptionConversor
+											.toInputValidationExceptionXml(new InputValidationException(
+													"Invalid Request: not a valid date")),
+									null);
+				}
+				System.out.print("fecha parseada ,; " + dini);
+				fecha.setTime(dini);
+			}
+			List<Oferta> ofertas = OfertaServiceFactory.getService()
+					.findOfertas(keywords, estado, fecha);
+			List<OfertaDto> ofertaDtos = OfertaToOfertaDtoConversor
+					.toOfertaDtos(ofertas);
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
-					XmlOfertaDtoConversor.toXml(movieDtos), null);
+					XmlOfertaDtoConversor.toXml(ofertaDtos), null);
 		} else {
-			String movieIdAsString = path.substring(1);
-			Long movieId;
+			String ofertaIdAsString = path.substring(1);
+			Long ofertaId;
 			try {
-				movieId = Long.valueOf(movieIdAsString);
+				ofertaId = Long.valueOf(ofertaIdAsString);
 			} catch (NumberFormatException ex) {
 				ServletUtils
 						.writeServiceResponse(
@@ -221,14 +291,14 @@ public class OfertaServlet extends HttpServlet {
 										.toInputValidationExceptionXml(new InputValidationException(
 												"Invalid Request: "
 														+ "invalid oferta id'"
-														+ movieIdAsString + "'")),
-								null);
+														+ ofertaIdAsString
+														+ "'")), null);
 
 				return;
 			}
 			Oferta oferta;
 			try {
-				oferta = OfertaServiceFactory.getService().findOferta(movieId);
+				oferta = OfertaServiceFactory.getService().findOferta(ofertaId);
 			} catch (InstanceNotFoundException ex) {
 				ServletUtils.writeServiceResponse(resp,
 						HttpServletResponse.SC_NOT_FOUND,
@@ -236,7 +306,8 @@ public class OfertaServlet extends HttpServlet {
 						null);
 				return;
 			}
-			OfertaDto ofertaDto = OfertaToOfertaDtoConversor.toOfertaDto(oferta);
+			OfertaDto ofertaDto = OfertaToOfertaDtoConversor
+					.toOfertaDto(oferta);
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
 					XmlOfertaDtoConversor.toXml(ofertaDto), null);
 		}
