@@ -232,21 +232,6 @@ public class OfertaServiceTest {
 				exceptionCatched = true;
 			}
 			assertTrue(exceptionCatched);
-			/*
-			 * TODO: mirar lo de runtime y oferta max
-			 * 
-			 * // Check oferta runtime >= 0 exceptionCatched = false; oferta =
-			 * getValidOferta(); oferta.setMax((int) -1); try { addedOferta =
-			 * ofertaService.addOferta(oferta); } catch
-			 * (InputValidationException e) { exceptionCatched = true; }
-			 * assertTrue(exceptionCatched);
-			 * 
-			 * // Check oferta max exceptionCatched = false; oferta =
-			 * getValidOferta(); oferta.setCosteR((float)-1.0); try {
-			 * addedOferta = ofertaService.addOferta(oferta); } catch
-			 * (InputValidationException e) { exceptionCatched = true; }
-			 * assertTrue(exceptionCatched);
-			 */
 
 			// Check oferta description not null
 			exceptionCatched = false;

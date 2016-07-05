@@ -92,9 +92,9 @@ public class ReservaServlet extends HttpServlet {
 
 			return;
 		}
-		Long reserva = (long) 0;
+		Long reservaId = (long) 0;
 		try {
-			reserva = OfertaServiceFactory.getService().reservarOferta(
+			reservaId = OfertaServiceFactory.getService().reservarOferta(
 					ofertaId, emailUsuarioReserva, tarjetaCreditoReserva);
 		} catch (InstanceNotFoundException ex) {
 			ServletUtils
@@ -115,27 +115,29 @@ public class ReservaServlet extends HttpServlet {
 					HttpServletResponse.SC_FORBIDDEN,
 					XmlExceptionConversor.toOfertaReservadaExceptionXml(e),
 					null);
+			return;
 		} catch (TimeExpirationException e) {
-			System.out.println("ofertaReservadaException 1  " + e.toString());
+			System.out.println("TimeExpirationException 1  " + e.toString());
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_GONE,
-					XmlExceptionConversor.toTimeExpirationException(e),
-					null);
+					XmlExceptionConversor.toTimeExpirationException(e), null);
+			return;
 		}
+		System.out.println("id reserva" + reservaId + " deberia sre ");
 		ReservaDto reservaDto;
 		try {
 			reservaDto = ReservaToReservaDtoConversor
 					.toReservaDto(OfertaServiceFactory.getService()
-							.findReserva(reserva));
+							.findReserva(reservaId));
 		} catch (InstanceNotFoundException e) {
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_NOT_FOUND,
 					XmlExceptionConversor.toInstanceNotFoundException(e), null);
 			return;
 		}
-
+		System.out.println(reservaDto.getReservaId());
 		String reservaURL = ServletUtils.normalizePath(req.getRequestURL()
-				.toString()) + "/" + reserva;
+				.toString()) + "/" + reservaId;
 
 		Map<String, String> headers = new HashMap<>(1);
 		headers.put("Location", reservaURL);
@@ -193,11 +195,12 @@ public class ReservaServlet extends HttpServlet {
 					HttpServletResponse.SC_NOT_FOUND,
 					XmlExceptionConversor.toBadStateReservaExceptionXml(e),
 					null);
+			return;
 		} catch (TimeExpirationException e) {
-			ServletUtils
-					.writeServiceResponse(resp, HttpServletResponse.SC_GONE,
-							XmlExceptionConversor
-									.toTimeExpirationException(e), null);
+			ServletUtils.writeServiceResponse(resp,
+					HttpServletResponse.SC_GONE,
+					XmlExceptionConversor.toTimeExpirationException(e), null);
+			return;
 		}
 		ServletUtils.writeServiceResponse(resp,
 				HttpServletResponse.SC_NO_CONTENT, null, null);
@@ -209,7 +212,10 @@ public class ReservaServlet extends HttpServlet {
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 			String ofertaIdParameter = req.getParameter("ofertaId");
-			if (!(ofertaIdParameter == null)) {
+			String emailUsuarioReserva = req
+					.getParameter("emailUsuarioReserva");
+			String estado = req.getParameter("estado");
+			if (ofertaIdParameter != null) {
 				Long ofertaId;
 				try {
 					ofertaId = Long.valueOf(ofertaIdParameter);
@@ -230,9 +236,12 @@ public class ReservaServlet extends HttpServlet {
 				try {
 					List<Reserva> reservas = OfertaServiceFactory.getService()
 							.findReservasByOferta(ofertaId);
-					List<ReservaDto> reservaDtos = ReservaToReservaDtoConversor.toReservaDtos(reservas);
-					ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
+					List<ReservaDto> reservaDtos = ReservaToReservaDtoConversor
+							.toReservaDtos(reservas);
+					ServletUtils.writeServiceResponse(resp,
+							HttpServletResponse.SC_OK,
 							XmlReservaDtoConversor.toXml(reservaDtos), null);
+					return;
 				} catch (InstanceNotFoundException e) {
 					ServletUtils.writeServiceResponse(resp,
 							HttpServletResponse.SC_NOT_FOUND,
@@ -241,27 +250,36 @@ public class ReservaServlet extends HttpServlet {
 					return;
 				} catch (TimeExpirationException e) {
 					ServletUtils.writeServiceResponse(resp,
-							HttpServletResponse.SC_GONE, XmlExceptionConversor
-									.toTimeExpirationException(e), null);
+							HttpServletResponse.SC_GONE,
+							XmlExceptionConversor.toTimeExpirationException(e),
+							null);
+					return;
 				}
-			} else {
-				String emailUsuarioReserva = req.getParameter("emailUsuarioReserva");
-				String estado = req.getParameter("estado");
+			} else if (emailUsuarioReserva != null) {
 				try {
+					if (estado == null || estado.equals("")) {
+						estado = null;
+					}
 					List<Reserva> reservas = OfertaServiceFactory.getService()
 							.findReservasByUsuario(emailUsuarioReserva, estado);
-					List<ReservaDto> reservaDtos = ReservaToReservaDtoConversor.toReservaDtos(reservas);
-					ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
+					List<ReservaDto> reservaDtos = ReservaToReservaDtoConversor
+							.toReservaDtos(reservas);
+					ServletUtils.writeServiceResponse(resp,
+							HttpServletResponse.SC_OK,
 							XmlReservaDtoConversor.toXml(reservaDtos), null);
+					return;
 				} catch (InstanceNotFoundException e) {
 					ServletUtils.writeServiceResponse(resp,
 							HttpServletResponse.SC_NOT_FOUND,
 							XmlExceptionConversor
 									.toInstanceNotFoundException(e), null);
+					return;
 				} catch (TimeExpirationException e) {
 					ServletUtils.writeServiceResponse(resp,
-							HttpServletResponse.SC_GONE, XmlExceptionConversor
-									.toTimeExpirationException(e), null);
+							HttpServletResponse.SC_GONE,
+							XmlExceptionConversor.toTimeExpirationException(e),
+							null);
+					return;
 				}
 			}
 
@@ -302,13 +320,6 @@ public class ReservaServlet extends HttpServlet {
 							XmlExceptionConversor
 									.toInstanceNotFoundException(ex), null);
 			return;
-			// } catch (TimeExpirationException ex) {
-			// ServletUtils.writeServiceResponse(resp,
-			// HttpServletResponse.SC_GONE,
-			// XmlExceptionConversor.toReservaExpirationException(ex), null);
-			//
-			// return;
-			// TODO mirar esta excepcion si se necesita soltar
 		}
 
 		ReservaDto reservaDto = ReservaToReservaDtoConversor

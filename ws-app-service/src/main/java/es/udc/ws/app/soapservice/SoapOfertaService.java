@@ -31,7 +31,6 @@ public class SoapOfertaService {
 			return OfertaServiceFactory.getService().addOferta(oferta)
 					.getOfertaId();
 		} catch (InputValidationException ex) {
-			// TODO implementar esta excepcion
 			throw new SoapInputValidationException(ex.getMessage());
 		}
 	}
@@ -142,7 +141,6 @@ public class SoapOfertaService {
 		}
 	}
 
-	// TODO cambiar paramentros entrada reclamarOferta
 	@WebMethod(operationName = "reclamarOferta")
 	public Long reclamarOferta(@WebParam(name = "reservaId") Long reservaId)
 			throws SoapInstanceNotFoundException, SoapBadStateReservaException,

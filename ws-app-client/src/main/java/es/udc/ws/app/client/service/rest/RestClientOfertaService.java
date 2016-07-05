@@ -189,7 +189,10 @@ public class RestClientOfertaService implements ClientOfertaService {
 					.execute().returnResponse();
 
 			validateStatusCode(HttpStatus.SC_CREATED, response);
-
+			System.out.println(XmlReservaDtoConversor.toReserva(
+					response.getEntity().getContent()));
+			System.out.println( XmlReservaDtoConversor.toReserva(
+					response.getEntity().getContent()).getReservaId());
 			return XmlReservaDtoConversor.toReserva(
 					response.getEntity().getContent()).getReservaId();
 
@@ -252,8 +255,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 						.Get(getEndpointAddress()
 								+ "reservas?emailUsuarioReserva="
 								+ URLEncoder.encode(emailUsuarioReserva,
-										"UTF-8") + "?estado="
-								+ URLEncoder.encode(null, "UTF-8")).execute()
+										"UTF-8")).execute()
 						.returnResponse();
 				validateStatusCode(HttpStatus.SC_OK, response);
 			} else {
@@ -261,7 +263,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 						.Get(getEndpointAddress()
 								+ "reservas?emailUsuarioReserva="
 								+ URLEncoder.encode(emailUsuarioReserva,
-										"UTF-8") + "?estado="
+										"UTF-8") + "&estado="
 								+ URLEncoder.encode(estado, "UTF-8")).execute()
 						.returnResponse();
 				validateStatusCode(HttpStatus.SC_OK, response);
@@ -281,7 +283,6 @@ public class RestClientOfertaService implements ClientOfertaService {
 			throws InstanceNotFoundException, BadStateReservaException,
 			TimeExpirationException {
 		try {
-			// TODO pues algo con badstatereserva que no es lanzada o algo
 			HttpResponse response = Request
 					.Put(getEndpointAddress() + "reservas/" + reservaId)
 					.execute().returnResponse();
@@ -364,9 +365,14 @@ public class RestClientOfertaService implements ClientOfertaService {
 					throw new RuntimeException(e);
 				}
 			case HttpStatus.SC_GONE:
+				System.out.println("GONE");
+				try {
 				throw XmlExceptionConversor
 						.fromReservaExpirationExceptionXml(response.getEntity()
 								.getContent());
+				} catch (ParsingException e) {
+					throw new RuntimeException(e);
+				}
 			case HttpStatus.SC_FORBIDDEN:
 				System.out.println("sc forbidden");
 				try {

@@ -226,9 +226,12 @@ public class OfertaServlet extends HttpServlet {
 									.toInstanceNotFoundException(ex), null);
 			return;
 		} catch (OfertaReservadaException e) {
-			// TODO Auto-generated catch block
-			// TODO como devolver esta excepcion
-			e.printStackTrace();
+			ServletUtils
+					.writeServiceResponse(resp,
+							HttpServletResponse.SC_FORBIDDEN,
+							XmlExceptionConversor
+									.toOfertaReservadaExceptionXml(e), null);
+			return;
 		}
 		ServletUtils.writeServiceResponse(resp,
 				HttpServletResponse.SC_NO_CONTENT, null, null);
@@ -250,7 +253,7 @@ public class OfertaServlet extends HttpServlet {
 			}
 			Calendar fecha = new GregorianCalendar();
 			if (fechaString == null) {
-				fecha=null;
+				fecha = null;
 			} else {
 				fecha = new GregorianCalendar();
 				SimpleDateFormat dataini = new SimpleDateFormat(

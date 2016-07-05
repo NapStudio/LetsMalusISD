@@ -74,7 +74,7 @@ public class XmlExceptionConversor {
 			Element message = rootElement.getChild("message", XML_NS);
 			Element instanceId = rootElement.getChild("Id", XML_NS);
 			Element expirationDate = rootElement
-					.getChild("fechalimite", XML_NS);
+					.getChild("expirationDate", XML_NS);
 
 			Calendar calendar = null;
 			if (expirationDate != null) {
@@ -122,10 +122,10 @@ public class XmlExceptionConversor {
 			Document document = builder.build(ex);
 			Element rootElement = document.getRootElement();
 
-			Element reservaID = rootElement.getChild("ofertaId", XML_NS);
+			Element ofertaId = rootElement.getChild("ofertaId", XML_NS);
 
-			return new OfertaReservadaException(Long.parseLong(reservaID
-					.getTextNormalize()));
+			return new OfertaReservadaException(Long.parseLong(ofertaId
+					.getTextTrim()));
 		} catch (JDOMException | IOException | NumberFormatException e) {
 			throw new ParsingException(e);
 		} catch (Exception e) {
@@ -173,17 +173,17 @@ public class XmlExceptionConversor {
 
 		Element exceptionElement = new Element("TimeExpirationException",
 				XML_NS);
+		
+		if (ex.getMessage() != null) {
+			Element messageElement = new Element("message", XML_NS);
+			messageElement.setText(ex.getMessage());
+			exceptionElement.addContent(messageElement);
+		}
 
 		if (ex.getId() != null) {
 			Element IdElement = new Element("Id", XML_NS);
 			IdElement.setText(ex.getId().toString());
 			exceptionElement.addContent(IdElement);
-		}
-		
-		if (ex.getMessage() != null) {
-			Element messageElement = new Element("message", XML_NS);
-			messageElement.setText(ex.getMessage().toString());
-			exceptionElement.addContent(messageElement);
 		}
 
 		if (ex.getFechaExpiracion() != null) {
@@ -227,13 +227,13 @@ public class XmlExceptionConversor {
 			OfertaReservadaException ex) throws IOException {
 
 		Element exceptionElement = new Element("OfertaReservadaException", XML_NS);
+		System.out.println(ex.getOfertaId());
 
 		if (ex.getOfertaId() != null) {
 			Element reservaIdElement = new Element("ofertaId", XML_NS);
-			reservaIdElement.setText(String.valueOf(ex.getOfertaId()));
+			reservaIdElement.setText(ex.getOfertaId().toString());
 			exceptionElement.addContent(reservaIdElement);
 		}
-
 		return new Document(exceptionElement);
 	}
 }

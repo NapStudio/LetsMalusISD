@@ -49,13 +49,8 @@ public class OfertaServiceImpl implements OfertaService {
 				oferta.getPrecioRealOferta(), 0, MAX_PRICE);
 		PropertyValidator.validateDouble("precioDescontadoOferta",
 				oferta.getPrecioDescontadoOferta(), 0, MAX_PRICE);
-		// TODO: check max_price y que hacer con comision(si es un porcentaje o
-		// que)
 		PropertyValidator.validateDouble("comisionOferta",
 				oferta.getComisionOferta(), 0, MAX_PRICE);
-		// TODO: como cambiar calendar a date o al reves.
-		// PropertyValidator.validatePastDate("creation date",
-		// oferta.getFechaLimiteOferta());
 	}
 
 	@Override
@@ -311,10 +306,8 @@ public class OfertaServiceImpl implements OfertaService {
 					System.out.println(Calendar.getInstance().getTime());
 					System.out.println((oferta.getFechaLimiteOferta().after(Calendar.getInstance())));
 					System.out.println(oferta.getEstadoOferta());
-					//TODO cambiar y poner tilde
 					System.out.println(oferta.getEstadoOferta().equals("válida")+"\n");
 					if((oferta.getFechaLimiteOferta().after(Calendar.getInstance()))&&(oferta.getEstadoOferta().equals("válida"))){
-						System.out.println("dentro if");
 						nuevaOfertas.add(oferta);
 					}
 				}
@@ -364,7 +357,7 @@ public class OfertaServiceImpl implements OfertaService {
 					}
 				}
 				if((oferta.getFechaLimiteOferta().before(Calendar.getInstance()))){
-					throw new TimeExpirationException("oferta",ofertaId, oferta.getFechaLimiteOferta());
+					throw new TimeExpirationException("oferta", ofertaId, oferta.getFechaLimiteOferta());
 				}
 				Reserva reserva = new Reserva();
 				if (canReserve) {
@@ -467,9 +460,7 @@ public class OfertaServiceImpl implements OfertaService {
 		}
 	}
 
-	// TODO reclamar oferta no tiene sentido que se busca por reservaId si va a
-	// devolver exactamente reservaId, tendria que buscarse por Oferta y nombre
-	// usuario
+
 	@Override
 	public Long reclamarOferta(Long reservaId)
 			throws InstanceNotFoundException, BadStateReservaException,
@@ -514,7 +505,7 @@ public class OfertaServiceImpl implements OfertaService {
 			} catch (RuntimeException | Error e) {
 				connection.rollback();
 				throw e;
-			}// TODO catch something
+			}
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

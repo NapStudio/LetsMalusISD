@@ -16,7 +16,7 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public interface ClientOfertaService {
 	
-	//TODO porque devuelve el Id y no un objeto
+
 	public Long addOferta(OfertaDto oferta) throws InputValidationException;
 
     public void updateOferta(OfertaDto oferta) throws InputValidationException,

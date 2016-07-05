@@ -4,7 +4,7 @@
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
 
     <New id="WS-AppDS" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg>jdbc/ws-app-ds</Arg>
+        <Arg>jdbc/ws-javaexamples-ds</Arg>
         <Arg>
             <New class="org.apache.commons.dbcp.BasicDataSource">
                 <Set name="driverClassName">com.mysql.jdbc.Driver</Set>
@@ -14,7 +14,7 @@
             </New>
         </Arg>
         <Call name="bindToENC">
-            <Arg>jdbc/ws-app-ds</Arg>
+            <Arg>jdbc/ws-javaexamples-ds</Arg>
         </Call>
    </New>
 

@@ -91,15 +91,9 @@ public class XmlReservaDtoConversor {
 
 		if (reserva.getReservaId() != null) {
 			Element identifierElement = new Element("reservaId", XML_NS);
-			identifierElement.setText(reserva.getOfertaId().toString());
+			identifierElement.setText(reserva.getReservaId().toString());
 			reservaElement.addContent(identifierElement);
 		}
-		
-//		this.reservaId = reservaId;
-//		this.ofertaId = ofertaId;
-//		this.emailUsuarioReserva = emailUsuarioReserva;
-//		this.tarjetaCreditoReserva = tarjetaCreditoReserva;
-//		this.estadoReserva = estadoReserva;
 
 		Element ofertaElement = new Element("ofertaId", XML_NS);
 		ofertaElement.setText((reserva.getOfertaId().toString()));

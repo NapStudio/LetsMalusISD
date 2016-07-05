@@ -31,7 +31,7 @@ public class OfertaServiceClient {
 			// [add] OfertaServiceClient -a <nombre> <descripcion>
 			// <fechaLimiteOferta> <fechaLimiteReserva>
 			// <priceReal> <priceDescontado> <comision>
-			// estado al crear es siempre algoo TODO ese algo
+			// estado al crear es siempre algoo 
 
 			// public OfertaDto(Long ofertaId, String nombreOferta,
 			// String descripcionOferta, String estadoOferta,
@@ -121,7 +121,6 @@ public class OfertaServiceClient {
 			// <priceReal> <priceDescontado> <comision>
 
 			try {
-				// TODO null si no quieres actualizar
 
 				Calendar fechaLimiteOferta = new GregorianCalendar();
 				Calendar fechaLimiteReserva = new GregorianCalendar();
