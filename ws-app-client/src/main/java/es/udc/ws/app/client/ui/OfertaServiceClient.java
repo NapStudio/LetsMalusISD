@@ -71,16 +71,11 @@ public class OfertaServiceClient {
 					System.out.print("fecha parseada ,; " + dfin);
 					fechaLimiteReserva.setTime(dfin);
 				}
-				float comision = 0;
-				System.out.println(args.length);
-				if (args.length > 7) {
-					comision = Float.valueOf(args[7]);
-				}
 
 				Long ofertaId = clientOfertaService.addOferta(new OfertaDto(
 						null, args[1], args[2], "válida", Float
 								.valueOf(args[5]), Float.valueOf(args[6]),
-						comision, fechaLimiteOferta, fechaLimiteReserva,0));
+						 fechaLimiteOferta, fechaLimiteReserva,0));
 
 				System.out.println("Oferta " + ofertaId
 						+ " created sucessfully");
@@ -171,7 +166,6 @@ public class OfertaServiceClient {
 				ofertaDto.setDescripcionOferta(args[3]);
 				ofertaDto.setPrecioRealOferta(Float.valueOf(args[6]));
 				ofertaDto.setPrecioDescontadoOferta(Float.valueOf(args[7]));
-				ofertaDto.setComisionOferta(comision);
 				ofertaDto.setFechaLimiteOferta(fechaLimiteOferta);
 				ofertaDto.setFechaLimiteReserva(fechaLimiteReserva);
 				ofertaDto.setEstadoOferta("nocambiar");
@@ -326,7 +320,7 @@ public class OfertaServiceClient {
 					addToPrint=" with keywords: " + keyword;
 				}
 				
-				List<OfertaDto> ofertas=clientOfertaService.findOfertas(keyword, estado, fecha);
+				List<OfertaDto> ofertas=clientOfertaService.findOfertas(keyword);
 				
 				
 				System.out.println("Found " + ofertas.size()

@@ -10,7 +10,6 @@ public class OfertaDto {
 	private String estadoOferta;
 	private float precioRealOferta;
 	private float precioDescontadoOferta;
-	private float comisionOferta;
 	private Calendar fechaLimiteOferta;
 	private Calendar fechaLimiteReserva;
 	private int facebookLikes;
@@ -22,8 +21,8 @@ public class OfertaDto {
 	public OfertaDto(Long ofertaId, String nombreOferta,
 			String descripcionOferta, String estadoOferta,
 			float precioRealOferta, float precioDescontadoOferta,
-			float comisionOferta, Calendar fechaLimiteOferta,
-			Calendar fechaLimiteReserva, int facebookLikes) {
+			Calendar fechaLimiteOferta, Calendar fechaLimiteReserva,
+			int facebookLikes) {
 		super();
 		this.ofertaId = ofertaId;
 		this.nombreOferta = nombreOferta;
@@ -31,7 +30,6 @@ public class OfertaDto {
 		this.estadoOferta = estadoOferta;
 		this.precioRealOferta = precioRealOferta;
 		this.precioDescontadoOferta = precioDescontadoOferta;
-		this.comisionOferta = comisionOferta;
 		this.fechaLimiteOferta = fechaLimiteOferta;
 		this.fechaLimiteReserva = fechaLimiteReserva;
 		this.facebookLikes = facebookLikes;
@@ -85,14 +83,6 @@ public class OfertaDto {
 		this.precioDescontadoOferta = precioDescontadoOferta;
 	}
 
-	public float getComisionOferta() {
-		return comisionOferta;
-	}
-
-	public void setComisionOferta(float comisionOferta) {
-		this.comisionOferta = comisionOferta;
-	}
-
 	public Calendar getFechaLimiteOferta() {
 		return fechaLimiteOferta;
 	}
@@ -123,11 +113,9 @@ public class OfertaDto {
 				+ nombreOferta + ", descripcionOferta=" + descripcionOferta
 				+ ", estadoOferta=" + estadoOferta + ", precioRealOferta="
 				+ precioRealOferta + ", precioDescontadoOferta="
-				+ precioDescontadoOferta + ", comisionOferta=" + comisionOferta
-				+ ", fechaLimiteOferta=" + fechaLimiteOferta
-				+ ", fechaLimiteReserva=" + fechaLimiteReserva
-				+ ", facebookLikes=" + facebookLikes + "]";
+				+ precioDescontadoOferta + ", fechaLimiteOferta="
+				+ fechaLimiteOferta + ", fechaLimiteReserva="
+				+ fechaLimiteReserva + ", facebookLikes=" + facebookLikes + "]";
 	}
-
 
 }

@@ -18,7 +18,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="comisionOferta" type="{http://www.w3.org/2001/XMLSchema}float"/>
  *         &lt;element name="descripcionOferta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="estadoOferta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="facebookLikes" type="{http://www.w3.org/2001/XMLSchema}int"/>
@@ -38,7 +37,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ofertaDto", propOrder = {
-    "comisionOferta",
     "descripcionOferta",
     "estadoOferta",
     "facebookLikes",
@@ -51,7 +49,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 })
 public class OfertaDto {
 
-    protected float comisionOferta;
     protected String descripcionOferta;
     protected String estadoOferta;
     protected int facebookLikes;
@@ -63,22 +60,6 @@ public class OfertaDto {
     protected Long ofertaId;
     protected float precioDescontadoOferta;
     protected float precioRealOferta;
-
-    /**
-     * Gets the value of the comisionOferta property.
-     * 
-     */
-    public float getComisionOferta() {
-        return comisionOferta;
-    }
-
-    /**
-     * Sets the value of the comisionOferta property.
-     * 
-     */
-    public void setComisionOferta(float value) {
-        this.comisionOferta = value;
-    }
 
     /**
      * Gets the value of the descripcionOferta property.

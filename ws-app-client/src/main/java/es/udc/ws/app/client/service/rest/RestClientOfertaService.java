@@ -143,8 +143,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 	}
 
 	@Override
-	public List<OfertaDto> findOfertas(String keywords, String estadoBusqueda,
-			Calendar fechaBusqueda) throws DatatypeConfigurationException {
+	public List<OfertaDto> findOfertas(String keywords) throws DatatypeConfigurationException {
 
 		try {
 
@@ -152,13 +151,6 @@ public class RestClientOfertaService implements ClientOfertaService {
 
 			if (keywords != null) {
 				url += "?keywords=" + URLEncoder.encode(keywords, "UTF-8");
-			}
-			if (estadoBusqueda != null) {
-				url += "?estado=" + URLEncoder.encode(estadoBusqueda, "UTF-8");
-			}
-			if ((fechaBusqueda != null)) {
-				url += "?fecha="
-						+ URLEncoder.encode(fechaBusqueda.toString(), "UTF-8");
 			}
 			HttpResponse response = Request.Get(url).execute().returnResponse();
 			validateStatusCode(HttpStatus.SC_OK, response);

@@ -15,7 +15,6 @@ public class OfertaDtoToSoapOfertaDtoConversor {
 	public static es.udc.ws.app.client.service.soap.wsdl.OfertaDto toSoapOfertaDto(
 			OfertaDto oferta) throws DatatypeConfigurationException {
 		es.udc.ws.app.client.service.soap.wsdl.OfertaDto soapOfertaDto = new es.udc.ws.app.client.service.soap.wsdl.OfertaDto();
-		soapOfertaDto.setComisionOferta(oferta.getComisionOferta());
 		soapOfertaDto.setDescripcionOferta(oferta.getDescripcionOferta());
 		soapOfertaDto.setEstadoOferta(oferta.getEstadoOferta());
 		Date cDateini = oferta.getFechaLimiteOferta().getTime();
@@ -43,7 +42,7 @@ public class OfertaDtoToSoapOfertaDtoConversor {
 			return new OfertaDto(oferta.getOfertaId(), oferta.getNombreOferta(),
 					oferta.getDescripcionOferta(), oferta.getEstadoOferta(),
 					oferta.getPrecioRealOferta(),
-					oferta.getPrecioDescontadoOferta(), oferta.getComisionOferta(),
+					oferta.getPrecioDescontadoOferta(),
 					oferta.getFechaLimiteOferta().toGregorianCalendar(), oferta.getFechaLimiteReserva().toGregorianCalendar(),oferta.getFacebookLikes());
 	}
 

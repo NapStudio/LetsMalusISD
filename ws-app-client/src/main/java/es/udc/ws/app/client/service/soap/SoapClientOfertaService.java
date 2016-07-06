@@ -76,12 +76,9 @@ public class SoapClientOfertaService implements ClientOfertaService {
 	}
 
 	@Override
-	public List<OfertaDto> findOfertas(String keywords, String estado,
-			Calendar date) throws DatatypeConfigurationException {
+	public List<OfertaDto> findOfertas(String keywords) throws DatatypeConfigurationException {
 		return OfertaDtoToSoapOfertaDtoConversor
-				.toOfertaDtos(ofertasProvider.findOfertas(keywords, estado,
-						(GregorianCalendarConversor
-								.toXMLGregorianCalendar(date))));
+				.toOfertaDtos(ofertasProvider.findOfertas(keywords));
 	}
 
 	@Override

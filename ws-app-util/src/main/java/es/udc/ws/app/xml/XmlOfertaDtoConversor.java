@@ -114,10 +114,6 @@ public class XmlOfertaDtoConversor {
 				.getPrecioDescontadoOferta()));
 		ofertaElement.addContent(precioDescontadoElement);
 
-		Element comisionElement = new Element("comisionOferta", XML_NS);
-		comisionElement.setText(Double.toString(oferta.getComisionOferta()));
-		ofertaElement.addContent(comisionElement);
-
 		if (oferta.getFechaLimiteOferta() != null) {
 			System.out.println("converting jdom fechaOferta");
             Element fechaOfertaElement = dataToJDOM(
@@ -165,15 +161,7 @@ public class XmlOfertaDtoConversor {
 
 		float discountPrice = Float.valueOf(ofertaElement.getChildTextTrim(
 				"precioDescontadoOferta", XML_NS));
-		float comision = 0;
-		if (Float.valueOf(ofertaElement.getChildTextTrim("comisionOferta",
-				XML_NS)) == null) {
-			comision = 0;
-		} else {
-			comision = Float.valueOf(ofertaElement.getChildTextTrim(
-					"comisionOferta", XML_NS));
-
-		}
+		
 		Calendar limitOfertaDate = null;
 		if (getExpirationOfertaDate(ofertaElement.getChild("fechaLimiteOferta",
 				XML_NS)) == null) {
@@ -194,7 +182,7 @@ public class XmlOfertaDtoConversor {
 		}
 
 		return new OfertaDto(identifier, name, description, state, realPrice,
-				discountPrice, comision, limitOfertaDate, limitReservaDate, facebookLikes);
+				discountPrice, limitOfertaDate, limitReservaDate, facebookLikes);
 	}
 
 	private static Calendar getExpirationReservaDate(

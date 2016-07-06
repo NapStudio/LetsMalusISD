@@ -22,7 +22,7 @@ public class OfertaToOfertaDtoConversor {
 	    public static OfertaDto toOfertaDto(Oferta oferta, int facebookLikes) {
 	        return new OfertaDto(oferta.getOfertaId(), oferta.getNombreOferta(), oferta
 	                .getDescripcionOferta(), oferta.getEstadoOferta(), oferta.getPrecioRealOferta(),
-	                oferta.getPrecioDescontadoOferta(), oferta.getComisionOferta(),oferta.getFechaLimiteOferta(),
+	                oferta.getPrecioDescontadoOferta(),oferta.getFechaLimiteOferta(),
 	                oferta.getFechaLimiteReserva(), facebookLikes);
 	    }
 	    
@@ -30,7 +30,7 @@ public class OfertaToOfertaDtoConversor {
 	    public static Oferta toOferta(OfertaDto oferta) {
 	        return new Oferta(oferta.getOfertaId(), oferta.getNombreOferta(), oferta
 	                .getDescripcionOferta(), oferta.getEstadoOferta(), oferta.getPrecioRealOferta(),
-	                oferta.getPrecioDescontadoOferta(), oferta.getComisionOferta(),oferta.getFechaLimiteOferta(),
+	                oferta.getPrecioDescontadoOferta(),0,oferta.getFechaLimiteOferta(),
 	                oferta.getFechaLimiteReserva(), "");
 	    }    
 

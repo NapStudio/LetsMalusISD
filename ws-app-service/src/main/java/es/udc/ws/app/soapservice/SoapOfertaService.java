@@ -102,11 +102,9 @@ public class SoapOfertaService {
 
 	@WebMethod(operationName = "findOfertas")
 	public List<OfertaDto> findOfertas(
-			@WebParam(name = "keywords") String keywords,
-			@WebParam(name = "estadoBusqueda") String estadoBusqueda,
-			@WebParam(name = "fechaBusqueda") Calendar fechaBusqueda) {
+			@WebParam(name = "keywords") String keywords) {
 		List<Oferta> ofertas = OfertaServiceFactory.getService().findOfertas(
-				keywords, estadoBusqueda, fechaBusqueda);
+				keywords, null, Calendar.getInstance());
 		
 		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas, OfertaServiceFactory.getService().getLikesList(ofertas));
 	}

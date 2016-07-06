@@ -250,38 +250,8 @@ public class OfertaServlet extends HttpServlet {
 		String path = ServletUtils.normalizePath(req.getPathInfo());
 		if (path == null || path.length() == 0) {
 			String keywords = req.getParameter("keywords");
-			String estado = req.getParameter("estado");
-			System.out.println(estado);
-			String fechaString = req.getParameter("fecha");
-			System.out.println(fechaString);
-			if (estado == null) {
-				estado = null;
-			}
-			Calendar fecha = new GregorianCalendar();
-			if (fechaString == null) {
-				fecha = null;
-			} else {
-				fecha = new GregorianCalendar();
-				SimpleDateFormat dataini = new SimpleDateFormat(
-						"dd/MM/yyyy HH:mm");
-				Date dini = new Date();
-				try {
-					dini = dataini.parse(fechaString);
-				} catch (ParseException e) {
-					ServletUtils
-							.writeServiceResponse(
-									resp,
-									HttpServletResponse.SC_BAD_REQUEST,
-									XmlExceptionConversor
-											.toInputValidationExceptionXml(new InputValidationException(
-													"Invalid Request: not a valid date")),
-									null);
-				}
-				System.out.print("fecha parseada ,; " + dini);
-				fecha.setTime(dini);
-			}
 			List<Oferta> ofertas = OfertaServiceFactory.getService()
-					.findOfertas(keywords, estado, fecha);
+					.findOfertas(keywords, null, Calendar.getInstance());
 			List<OfertaDto> ofertaDtos = OfertaToOfertaDtoConversor
 					.toOfertaDtos(ofertas, OfertaServiceFactory.getService().getLikesList(ofertas));
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,

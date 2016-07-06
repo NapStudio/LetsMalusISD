@@ -28,7 +28,7 @@ public interface ClientOfertaService {
 
     public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException;
 
-    public List<OfertaDto> findOfertas(String keywords, String estadoBusqueda, Calendar fechaBusqueda) throws DatatypeConfigurationException;
+    public List<OfertaDto> findOfertas(String keywords) throws DatatypeConfigurationException;
 
     public Long reservarOferta(Long ofertaId, String emailUsuarioReserva, String tarjetaCreditoReserva)
             throws InstanceNotFoundException, InputValidationException, NumberFormatException, OfertaReservadaException, TimeExpirationException;
