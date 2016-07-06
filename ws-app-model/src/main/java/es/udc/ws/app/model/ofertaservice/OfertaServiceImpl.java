@@ -3,6 +3,7 @@ package es.udc.ws.app.model.ofertaservice;
 import static es.udc.ws.app.model.util.ModelConstants.OFERTA_DATA_SOURCE;
 import static es.udc.ws.app.model.util.ModelConstants.MAX_PRICE;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,9 +12,12 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.http.client.ClientProtocolException;
+
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
 import es.udc.ws.app.exceptions.TimeExpirationException;
+import es.udc.ws.app.model.facebook.FacebookService;
 import es.udc.ws.app.model.oferta.Oferta;
 import es.udc.ws.app.model.oferta.OfertaDAO;
 import es.udc.ws.app.model.oferta.OfertaDAOFactory;
@@ -29,6 +33,7 @@ public class OfertaServiceImpl implements OfertaService {
 	private DataSource dataSource;
 	private OfertaDAO ofertaDAO = null;
 	private ReservaDAO reservaDAO = null;
+	private FacebookService facebookService=new FacebookService();
 
 	public OfertaServiceImpl() {
 		System.out.println("ofertaserviceImpl created OK!");
@@ -68,6 +73,15 @@ public class OfertaServiceImpl implements OfertaService {
 				connection.setAutoCommit(false);
 
 				/* Do work. */
+				try {
+					oferta.setFacebookId(facebookService.publicarOferta(oferta));
+				} catch (ClientProtocolException e) {
+					System.out.println("Hubo un problema publicando. La petición a facebook no se ha podido completar. \n"+e);
+					e.printStackTrace();
+				} catch (IOException e) {
+					System.out.println("Hubo un problema publicando. La petición a facebook no se ha podido completar. \n"+e);
+					e.printStackTrace();
+				}
 				Oferta createdOferta = ofertaDAO.create(connection, oferta);
 
 				/* Commit. */
@@ -108,6 +122,16 @@ public class OfertaServiceImpl implements OfertaService {
 				}
 				if ((reservaDAO.findbyOferta(connection, oferta.getOfertaId()))
 						.isEmpty()) {
+						try {
+							Oferta ofertaFace=oferta;
+							ofertaFace.setFacebookId(ofertaDAO.find(connection, oferta.getOfertaId()).getFacebookId());
+							oferta.setFacebookId(facebookService
+									.actualizarOferta(ofertaFace));
+						} catch (Exception e) {
+							System.out
+									.println("Hubo un problema actualizando. La petición a facebook no se ha podido completar. \n"
+											+ e);
+						}
 					ofertaDAO.update(connection, oferta);
 				} else {
 					Oferta ofertaOriginal = ofertaDAO.find(connection,
@@ -116,6 +140,14 @@ public class OfertaServiceImpl implements OfertaService {
 							oferta.getFechaLimiteOferta())) {
 						if (ofertaOriginal.getPrecioDescontadoOferta() >= oferta
 								.getPrecioDescontadoOferta()) {
+							try {
+								oferta.setFacebookId(facebookService
+										.actualizarOferta(oferta));
+							} catch (Exception e) {
+								System.out
+										.println("Hubo un problema actualizando. La petición a facebook no se ha podido completar. \n"
+												+ e);
+							}
 							ofertaDAO.update(connection, oferta);
 						} else {
 							throw new InputValidationException(
@@ -169,6 +201,18 @@ public class OfertaServiceImpl implements OfertaService {
 				connection.setAutoCommit(false);
 
 				/* Do work. */
+				try {
+					facebookService.borrarOferta(OfertaServiceFactory.getService()
+							.findOferta(ofertaId).getFacebookId());
+				} catch (ClientProtocolException e) {
+					System.out
+							.println("Hubo un problema borrando. La petición a facebook no se ha podido completar. \n"
+									+ e);
+				} catch (IOException e) {
+					System.out
+							.println("Hubo un problema borrando. La petición a facebook no se ha podido completar. \n"
+									+ e);
+				}
 				if ((reservaDAO.findbyOferta(connection, ofertaId)).isEmpty()) {
 					System.out.println("no tiene reservas");
 					ofertaDAO.remove(connection, ofertaId);
@@ -210,6 +254,17 @@ public class OfertaServiceImpl implements OfertaService {
 				connection.setAutoCommit(false);
 				/* Do work. */
 				Oferta oferta = ofertaDAO.find(connection, ofertaId);
+				try {
+					facebookService.borrarOferta(oferta.getFacebookId());
+				} catch (ClientProtocolException e) {
+					System.out
+							.println("Hubo un problema actualizando. La petición a facebook no se ha podido completar. \n"
+									+ e);
+				} catch (IOException e) {
+					System.out
+							.println("Hubo un problema actualizando. La petición a facebook no se ha podido completar. \n"
+									+ e);
+				}
 				if (oferta.getEstadoOferta().equals("inválida")) {
 					throw new InputValidationException("inválida");
 				} else {
@@ -543,6 +598,45 @@ public class OfertaServiceImpl implements OfertaService {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public int getLikes(String ofertaFbId){
+
+		int facebookLikes = 0;
+		try {
+			facebookLikes = facebookService.getOfertaLikes(ofertaFbId);
+		} catch (ClientProtocolException e) {
+			System.out
+					.println("Hubo un problema al buscar la oferta. La petición a facebook no se ha podido completar. \n"
+							+ e);
+		} catch (IOException e) {
+			System.out
+					.println("Hubo un problema al buscar la oferta. La petición a facebook no se ha podido completar. \n"
+							+ e);
+		}
+		return facebookLikes;
+	}
+	
+	@Override
+	public List<Integer> getLikesList(List<Oferta> ofertas){
+		List<Integer> facebookLikes = new ArrayList<Integer>();
+		for (Oferta oferta : ofertas) {
+			try {
+				facebookLikes.add(facebookService.getOfertaLikes(oferta
+						.getFacebookId()));
+			} catch (ClientProtocolException e) {
+				System.out
+						.println("No se han podido encontrar los likes. La petición a facebook no se ha podido completar. \n"
+								+ e);
+			} catch (IOException e) {
+				System.out
+						.println("No se han podido encontrar los likes. La petición a facebook no se ha podido completar. \n"
+								+ e);
+			}
+
+		}
+		return facebookLikes;
 	}
 
 }

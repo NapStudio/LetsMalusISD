@@ -11,4 +11,5 @@ es\udc\ws\app\model\util\ModelConstants.class
 es\udc\ws\app\model\ofertaservice\OfertaServiceFactory.class
 es\udc\ws\app\model\reserva\ReservaDAO.class
 es\udc\ws\app\model\reserva\Jdbc3CcSqlReservaDAO.class
+es\udc\ws\app\model\facebook\FacebookService.class
 es\udc\ws\app\model\oferta\OfertaDAO.class

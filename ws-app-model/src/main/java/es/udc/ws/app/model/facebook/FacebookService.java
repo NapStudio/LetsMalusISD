@@ -1,4 +1,4 @@
-package es.udc.ws.app.service.facebook;
+package es.udc.ws.app.model.facebook;
 
 import java.io.IOException;
 

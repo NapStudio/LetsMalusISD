@@ -38,4 +38,8 @@ public interface OfertaService {
     TimeExpirationException;
     
     public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, TimeExpirationException ;
+
+	public int getLikes(String ofertaFbId);
+
+	public List<Integer> getLikesList(List<Oferta> ofertas);
 }

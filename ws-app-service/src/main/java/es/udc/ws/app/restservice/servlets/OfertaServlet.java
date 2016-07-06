@@ -20,9 +20,9 @@ import org.apache.http.client.ClientProtocolException;
 
 import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
+import es.udc.ws.app.model.facebook.FacebookService;
 import es.udc.ws.app.model.oferta.Oferta;
 import es.udc.ws.app.model.ofertaservice.OfertaServiceFactory;
-import es.udc.ws.app.service.facebook.FacebookService;
 import es.udc.ws.app.serviceutil.OfertaToOfertaDtoConversor;
 import es.udc.ws.app.xml.ParsingException;
 import es.udc.ws.app.xml.XmlExceptionConversor;
@@ -34,7 +34,6 @@ import es.udc.ws.util.servlet.ServletUtils;
 @SuppressWarnings("serial")
 public class OfertaServlet extends HttpServlet {
 
-	private FacebookService facebookService = new FacebookService();
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -57,15 +56,6 @@ public class OfertaServlet extends HttpServlet {
 
 		}
 		Oferta oferta = OfertaToOfertaDtoConversor.toOferta(xmlOferta);
-		try {
-			oferta.setFacebookId(facebookService.publicarOferta(oferta));
-		} catch (ClientProtocolException e) {
-			System.out.println("Errorfacebook 1" + e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Errorfacebook 1" + e);
-			e.printStackTrace();
-		}
 		try {
 			oferta = OfertaServiceFactory.getService().addOferta(oferta);
 		} catch (InputValidationException ex) {
@@ -113,14 +103,7 @@ public class OfertaServlet extends HttpServlet {
 			}
 			try {
 				OfertaServiceFactory.getService().invalidarOferta(ofertaId);
-				try {
-					facebookService.borrarOferta(OfertaServiceFactory
-							.getService().findOferta(ofertaId).getFacebookId());
-				} catch (ClientProtocolException e) {
-					System.out.println("Error remove 1" + e);
-				} catch (IOException e) {
-					System.out.println("Error remove 2" + e);
-				}
+
 			} catch (InstanceNotFoundException e) {
 				ServletUtils.writeServiceResponse(resp,
 						HttpServletResponse.SC_NOT_FOUND,
@@ -185,19 +168,6 @@ public class OfertaServlet extends HttpServlet {
 		}
 		Oferta oferta = OfertaToOfertaDtoConversor.toOferta(ofertaDto);
 		try {
-			Oferta ofertaFace = OfertaServiceFactory.getService().findOferta(
-					oferta.getOfertaId());
-			System.out.println("ofertaFace" + ofertaFace);
-			try {
-				oferta.setFacebookId(facebookService
-						.actualizarOferta(ofertaFace));
-			} catch (Exception e) {
-				System.out.println("problema fb");
-			}
-		} catch (InstanceNotFoundException e) {
-			System.out.println("problema fb");
-		}
-		try {
 			OfertaServiceFactory.getService().updateOferta(oferta);
 		} catch (InputValidationException ex) {
 			ServletUtils.writeServiceResponse(resp,
@@ -254,15 +224,6 @@ public class OfertaServlet extends HttpServlet {
 			return;
 		}
 		try {
-			String faceId = OfertaServiceFactory.getService()
-					.findOferta(ofertaId).getFacebookId();
-			try {
-				facebookService.borrarOferta(faceId);
-			} catch (ClientProtocolException e) {
-				System.out.println("Error remove 1" + e);
-			} catch (IOException e) {
-				System.out.println("Error remove 2" + e);
-			}
 			OfertaServiceFactory.getService().removeOferta(ofertaId);
 		} catch (InstanceNotFoundException ex) {
 			ServletUtils
@@ -321,20 +282,8 @@ public class OfertaServlet extends HttpServlet {
 			}
 			List<Oferta> ofertas = OfertaServiceFactory.getService()
 					.findOfertas(keywords, estado, fecha);
-			List<Integer> facebookLikes = new ArrayList<Integer>();
-			for (Oferta oferta : ofertas) {
-				try {
-					facebookLikes.add(facebookService.getOfertaLikes(oferta
-							.getFacebookId()));
-				} catch (ClientProtocolException e) {
-					System.out.println("Error find 1" + e);
-				} catch (IOException e) {
-					System.out.println("Error find 2" + e);
-				}
-
-			}
 			List<OfertaDto> ofertaDtos = OfertaToOfertaDtoConversor
-					.toOfertaDtos(ofertas, facebookLikes);
+					.toOfertaDtos(ofertas, OfertaServiceFactory.getService().getLikesList(ofertas));
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
 					XmlOfertaDtoConversor.toXml(ofertaDtos), null);
 		} else {
@@ -366,17 +315,8 @@ public class OfertaServlet extends HttpServlet {
 						null);
 				return;
 			}
-			int facebookLikes = 0;
-			try {
-				facebookLikes = facebookService.getOfertaLikes(oferta
-						.getFacebookId());
-			} catch (ClientProtocolException e) {
-				System.out.println("Error finds 1" + e);
-			} catch (IOException e) {
-				System.out.println("Error finds 2" + e);
-			}
 			OfertaDto ofertaDto = OfertaToOfertaDtoConversor.toOfertaDto(
-					oferta, facebookLikes);
+					oferta, OfertaServiceFactory.getService().getLikes(oferta.getFacebookId()));
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
 					XmlOfertaDtoConversor.toXml(ofertaDto), null);
 		}
