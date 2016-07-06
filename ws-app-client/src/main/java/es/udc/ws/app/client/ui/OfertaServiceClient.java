@@ -25,13 +25,13 @@ public class OfertaServiceClient {
 		if ("-a".equalsIgnoreCase(args[0])
 				|| "-addOffer".equalsIgnoreCase(args[0])) {
 			System.out.println("Creating Oferta...");
-			validateArgs(args, 8, new int[] { 6, 8 });
+			validateArgs(args, 6, new int[] { 5, 6 });
 			System.out.println("Args checked...");
 
 			// [add] OfertaServiceClient -a <nombre> <descripcion>
 			// <fechaLimiteOferta> <fechaLimiteReserva>
-			// <priceReal> <priceDescontado> <comision>
-			// estado al crear es siempre algoo 
+			// <priceReal> <priceDescontado>
+			// estado al crear es siempre algoo
 
 			// public OfertaDto(Long ofertaId, String nombreOferta,
 			// String descripcionOferta, String estadoOferta,
@@ -75,7 +75,7 @@ public class OfertaServiceClient {
 				Long ofertaId = clientOfertaService.addOferta(new OfertaDto(
 						null, args[1], args[2], "válida", Float
 								.valueOf(args[5]), Float.valueOf(args[6]),
-						 fechaLimiteOferta, fechaLimiteReserva,0));
+						fechaLimiteOferta, fechaLimiteReserva, 0));
 
 				System.out.println("Oferta " + ofertaId
 						+ " created sucessfully");
@@ -86,8 +86,9 @@ public class OfertaServiceClient {
 				ex.printStackTrace(System.err);
 			}
 
-		} else if ("-r".equalsIgnoreCase(args[0])|| "-removeOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 2, new int[] { 1 });
+		} else if ("-r".equalsIgnoreCase(args[0])
+				|| "-removeOffer".equalsIgnoreCase(args[0])) {
+			validateArgs(args, 1, new int[] { 1 });
 
 			// [remove] OfertaServiceClient -r <ofertaId>
 
@@ -105,11 +106,11 @@ public class OfertaServiceClient {
 
 		} else if ("-u".equalsIgnoreCase(args[0])
 				|| "-updateOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 8, new int[] { 1, 3, 5 });
+			validateArgs(args, 7, new int[] { 1, 6, 7 });
 
 			// -updateOffer <offerId2> 'Casa rural'
 			// 'Habitación triple en la casa rural UDC' '01/12/2016 23:59'
-			// '31/12/2016 23:59' 150 100 [20]"
+			// '31/12/2016 23:59' 150 100"
 
 			// [update] OfertaServiceClient -u <offerId> <nombre> <descripcion>
 			// <fechaLimiteOferta> <fechaLimiteReserva>
@@ -160,7 +161,7 @@ public class OfertaServiceClient {
 				if (args.length > 8) {
 					comision = Float.valueOf(args[8]);
 				}
-				OfertaDto ofertaDto=new OfertaDto();
+				OfertaDto ofertaDto = new OfertaDto();
 				ofertaDto.setOfertaId(Long.valueOf(args[1]));
 				ofertaDto.setNombreOferta(args[2]);
 				ofertaDto.setDescripcionOferta(args[3]);
@@ -169,7 +170,7 @@ public class OfertaServiceClient {
 				ofertaDto.setFechaLimiteOferta(fechaLimiteOferta);
 				ofertaDto.setFechaLimiteReserva(fechaLimiteReserva);
 				ofertaDto.setEstadoOferta("nocambiar");
-				
+
 				clientOfertaService.updateOferta(ofertaDto);
 
 				System.out
@@ -184,26 +185,26 @@ public class OfertaServiceClient {
 
 		} else if ("-fUR".equalsIgnoreCase(args[0])
 				|| "-findUserReservations".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 3, new int[] {});
+			validateArgs(args, 2, new int[] {});
 
 			// [find] OfertaServiceClient -findUserReservations <emailUsuario>
 			// <estado>
 
 			try {
-				String estado = null;
-				if (args.length > 2) {
-					estado = args[2];
+				String estado = args[2];
+				String addToPrint=" with state: " + estado;
+				if(estado.equals("todas")){
+					estado=null;
+					addToPrint="";
 				}
+				
 				List<ReservaDto> reservas = clientOfertaService
 						.findReservasByUsuario(args[1], estado);
 
 				System.out.println("emailUsuario " + args[1] + " estado: "
 						+ estado);
 				System.out.println("Found " + reservas.size()
-						+ " reservas(s) with user '" + args[1] + "'");
-				if (args.length > 2) {
-					System.out.println(" with state: " + estado);
-				}
+						+ " reservas(s) with user '" + args[1] + "'"+addToPrint);
 				for (ReservaDto reserva : reservas) {
 					System.out.println("Id: " + reserva.getReservaId()
 							+ " State: " + reserva.getEstadoReserva()
@@ -219,7 +220,7 @@ public class OfertaServiceClient {
 
 		} else if ("-fUO".equalsIgnoreCase(args[0])
 				|| "-findUserOffers".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 3, new int[] {});
+			validateArgs(args, 2, new int[] {});
 
 			// [find] OfertaServiceClient -findUserOffers <emailUsuario>
 
@@ -250,10 +251,9 @@ public class OfertaServiceClient {
 								+ oferta.getFechaLimiteOferta().getTime()
 								+ "\n Deadline reservation: "
 								+ oferta.getFechaLimiteReserva().getTime()
-								+ "\n Likes: "
-								+ oferta.getFacebookLikes()
+								+ "\n Likes: " + oferta.getFacebookLikes()
 								+ "\n   and reservation number: "
-								+ reservas.get(i).getReservaId()+"\n");
+								+ reservas.get(i).getReservaId() + "\n");
 
 					}
 				}
@@ -263,7 +263,7 @@ public class OfertaServiceClient {
 
 		} else if ("-f".equalsIgnoreCase(args[0])
 				|| "-findOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 2, new int[] {});
+			validateArgs(args, 2, new int[] {1});
 
 			// [find] OfertaServiceClient -f <offerId>
 
@@ -278,30 +278,30 @@ public class OfertaServiceClient {
 						+ "\n Regular price: " + oferta.getPrecioRealOferta()
 						+ "\n Discounted price: "
 						+ oferta.getPrecioDescontadoOferta()
-						+ "\n Deadline offer: " + oferta.getFechaLimiteOferta().getTime()
-						+ "\n Likes: "
-						+ oferta.getFacebookLikes()
+						+ "\n Deadline offer: "
+						+ oferta.getFechaLimiteOferta().getTime()
+						+ "\n Likes: " + oferta.getFacebookLikes()
 						+ "\n Deadline reservation: "
 						+ oferta.getFechaLimiteReserva().getTime());
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
 
-		}else if ("-fs".equalsIgnoreCase(args[0])
+		} else if ("-fs".equalsIgnoreCase(args[0])
 				|| "-findOffers".equalsIgnoreCase(args[0])) {
-//			validateArgs(args, 2, new int[] {});
+			 validateArgs(args, 2, new int[] {1});
 
 			// [find] OfertaServiceClient -f <offerId>
 
 			try {
-				String estado=null;
-				String keyword=null;
+				String estado = null;
+				String keyword = null;
 				Calendar fecha = new GregorianCalendar();
-				fecha=null;
-				String addToPrint="";
-				if(args.length>3){
-					estado=args[2];
-					keyword=args[1];
+				fecha = null;
+				String addToPrint = "";
+				if (args.length > 3) {
+					estado = args[2];
+					keyword = args[1];
 					fecha = new GregorianCalendar();
 					System.out.print("fecha a parsear : " + args[3].toString());
 					SimpleDateFormat dataini = new SimpleDateFormat(
@@ -309,34 +309,38 @@ public class OfertaServiceClient {
 					Date dini = dataini.parse(args[3]);
 					System.out.print("fecha parseada ,; " + dini);
 					fecha.setTime(dini);
-					addToPrint=" with  keywords: '" + keyword + "' and state: " + estado + " and date: " + fecha.getTime();
-				}else if(args.length>2){
+					addToPrint = " with  keywords: '" + keyword
+							+ "' and state: " + estado + " and date: "
+							+ fecha.getTime();
+				} else if (args.length > 2) {
 					System.out.println(2);
-					estado=args[2];	
-					keyword=args[1];
-					addToPrint=" with  keywords: '" + keyword + "' and state: " + estado ;
-				}else if(args.length>1){
-					keyword=args[1];	
-					addToPrint=" with keywords: " + keyword;
+					estado = args[2];
+					keyword = args[1];
+					addToPrint = " with  keywords: '" + keyword
+							+ "' and state: " + estado;
+				} else if (args.length > 1) {
+					keyword = args[1];
+					addToPrint = " with keywords: " + keyword;
 				}
-				
-				List<OfertaDto> ofertas=clientOfertaService.findOfertas(keyword);
-				
-				
-				System.out.println("Found " + ofertas.size()
-						+ " oferta(s)"
+
+				List<OfertaDto> ofertas = clientOfertaService
+						.findOfertas(keyword);
+
+				System.out.println("Found " + ofertas.size() + " oferta(s)"
 						+ addToPrint);
-				for (OfertaDto oferta:ofertas) {
+				for (OfertaDto oferta : ofertas) {
 					System.out.println(" Id: " + oferta.getOfertaId()
 							+ "\n  Title: " + oferta.getNombreOferta()
 							+ "\n  Estado: " + oferta.getEstadoOferta()
-							+ "\n  Description: " + oferta.getDescripcionOferta()
-							+ "\n  Regular price: " + oferta.getPrecioRealOferta()
+							+ "\n  Description: "
+							+ oferta.getDescripcionOferta()
+							+ "\n  Regular price: "
+							+ oferta.getPrecioRealOferta()
 							+ "\n  Discounted price: "
 							+ oferta.getPrecioDescontadoOferta()
-							+ "\n Deadline offer: " + oferta.getFechaLimiteOferta().getTime()
-							+ "\n Likes: "
-							+ oferta.getFacebookLikes()
+							+ "\n Deadline offer: "
+							+ oferta.getFechaLimiteOferta().getTime()
+							+ "\n Likes: " + oferta.getFacebookLikes()
 							+ "\n Deadline reservation: "
 							+ oferta.getFechaLimiteReserva().getTime());
 				}
@@ -346,7 +350,7 @@ public class OfertaServiceClient {
 
 		} else if ("-fOR".equalsIgnoreCase(args[0])
 				|| "-findOfferReservations".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 2, new int[] {});
+			validateArgs(args, 2, new int[] {1});
 
 			// [find] OfertaServiceClient -findOfferReservations <offerId>
 
@@ -371,8 +375,7 @@ public class OfertaServiceClient {
 				|| "-reserveOffer".equalsIgnoreCase(args[0])) {
 			validateArgs(args, 4, new int[] { 1 });
 
-			// [reserve] OfertaServiceClient -re <movieId> <userId>
-			// <creditCardNumber>
+			// -reserveOffer 2 'usr2@udc.es' 1111222233334444
 
 			Long reservaId;
 			try {
@@ -389,27 +392,9 @@ public class OfertaServiceClient {
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
-
-			// } else if ("-g".equalsIgnoreCase(args[0])) {
-			// validateArgs(args, 2, new int[] { 1 });
-			//
-			// // [get] OfertaServiceClient -g <reervaId>
-			//
-			// try {
-			// String movieURL = clientOfertaService.getMovieUrl(Long
-			// .parseLong(args[1]));
-			//
-			// System.out.println("The URL for the reerva " + args[1] + " is "
-			// + movieURL);
-			// } catch (NumberFormatException | InstanceNotFoundException
-			// | reervaExpirationException ex) {
-			// ex.printStackTrace(System.err);
-			// } catch (Exception ex) {
-			// ex.printStackTrace(System.err);
-			// }
 		} else if ("-c".equalsIgnoreCase(args[0])
 				|| "-claimReservation".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 3, new int[] { 1 });
+			validateArgs(args, 2, new int[] { 1 });
 
 			// [reserve] OfertaServiceClient -claimReservation <reservationId>
 			// [<userId>]
@@ -429,7 +414,7 @@ public class OfertaServiceClient {
 			}
 		} else if ("-in".equalsIgnoreCase(args[0])
 				|| "-invalidateOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 3, new int[] { 1 });
+			validateArgs(args, 2, new int[] { 1 });
 
 			// [reserve] OfertaServiceClient -invalidateOffer <offerId>
 
@@ -444,7 +429,7 @@ public class OfertaServiceClient {
 			} catch (Exception ex) {
 				ex.printStackTrace(System.err);
 			}
-		}else{
+		} else {
 			printUsageAndExit();
 		}
 
@@ -452,22 +437,22 @@ public class OfertaServiceClient {
 
 	public static void validateArgs(String[] args, int expectedArgs,
 			int[] numericArguments) {
-		if (expectedArgs < args.length) {
+		if (expectedArgs != args.length) {
 			System.out.println("problem args length!! \n" + expectedArgs + " "
 					+ args.length);
 			printUsageAndExit();
 		}
-		// for (int i = 0; i < numericArguments.length; i++) {
-		// int position = numericArguments[i];
-		// try {
-		// Double.parseDouble(args[position]);
-		// } catch (NumberFormatException n) {
-		// System.out.println("exception NumberFormatException");
-		// printUsageAndExit();
-		// } catch(ArrayIndexOutOfBoundsException e){
-		//
-		// }
-		// }
+		for (int i = 0; i < numericArguments.length; i++) {
+			int position = numericArguments[i];
+			try {
+				Double.parseDouble(args[position]);
+			} catch (NumberFormatException n) {
+				System.out.println("exception NumberFormatException");
+				printUsageAndExit();
+			} catch (ArrayIndexOutOfBoundsException e) {
+
+			}
+		}
 	}
 
 	public static void printUsageAndExit() {
