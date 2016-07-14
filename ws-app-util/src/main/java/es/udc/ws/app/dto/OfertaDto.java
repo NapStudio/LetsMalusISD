@@ -114,8 +114,8 @@ public class OfertaDto {
 				+ ", estadoOferta=" + estadoOferta + ", precioRealOferta="
 				+ precioRealOferta + ", precioDescontadoOferta="
 				+ precioDescontadoOferta + ", fechaLimiteOferta="
-				+ fechaLimiteOferta + ", fechaLimiteReserva="
-				+ fechaLimiteReserva + ", facebookLikes=" + facebookLikes + "]";
+				+ fechaLimiteOferta.getTime() + ", fechaLimiteReserva="
+				+ fechaLimiteReserva.getTime() + ", facebookLikes=" + facebookLikes + "]";
 	}
 
 }

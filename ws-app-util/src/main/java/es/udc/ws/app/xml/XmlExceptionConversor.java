@@ -63,36 +63,6 @@ public class XmlExceptionConversor {
 		}
 	}
 
-	public static TimeExpirationException fromReservaExpirationExceptionXml(
-			InputStream ex) throws ParsingException {
-		try {
-
-			SAXBuilder builder = new SAXBuilder();
-			Document document = builder.build(ex);
-			Element rootElement = document.getRootElement();
-
-			Element message = rootElement.getChild("message", XML_NS);
-			Element instanceId = rootElement.getChild("Id", XML_NS);
-			Element expirationDate = rootElement
-					.getChild("expirationDate", XML_NS);
-
-			Calendar calendar = null;
-			if (expirationDate != null) {
-				SimpleDateFormat sdf = new SimpleDateFormat(CONVERSION_PATTERN,
-						Locale.ENGLISH);
-				calendar = Calendar.getInstance();
-				calendar.setTime(sdf.parse(expirationDate.getText()));
-			}
-
-			return new TimeExpirationException(message.toString(), Long.parseLong(instanceId
-					.getTextTrim()), calendar);
-		} catch (JDOMException | IOException | ParseException
-				| NumberFormatException e) {
-			throw new ParsingException(e);
-		} catch (Exception e) {
-			throw new ParsingException(e);
-		}
-	}
 
 	public static BadStateReservaException fromBadStateReservaExceptionXml(
 			InputStream ex) throws ParsingException {
@@ -127,6 +97,42 @@ public class XmlExceptionConversor {
 			return new OfertaReservadaException(Long.parseLong(ofertaId
 					.getTextTrim()));
 		} catch (JDOMException | IOException | NumberFormatException e) {
+			throw new ParsingException(e);
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
+	}
+	
+	public static TimeExpirationException fromTimeExpirationExceptionXml(
+			InputStream ex) throws ParsingException {
+		try {
+
+			SAXBuilder builder = new SAXBuilder();
+			Document document = builder.build(ex);
+			Element rootElement = document.getRootElement();
+
+			Element message = rootElement.getChild("message", XML_NS);
+			Element instanceId = rootElement.getChild("Id", XML_NS);
+			Element expirationDate = rootElement
+					.getChild("expirationDate", XML_NS);
+			
+			System.out.println();
+
+			Calendar calendar = null;
+			if (expirationDate != null) {
+				SimpleDateFormat sdf = new SimpleDateFormat(CONVERSION_PATTERN,
+						Locale.ENGLISH);
+				calendar = Calendar.getInstance();
+				calendar.setTime(sdf.parse(expirationDate.getText()));
+			}
+			
+			System.out.println("toxml timeExpiration "+message.toString()+Long.parseLong(instanceId
+					.getTextTrim())+ calendar);
+
+			return new TimeExpirationException(message.getText(), Long.parseLong(instanceId
+					.getTextTrim()), calendar);
+		} catch (JDOMException | IOException | ParseException
+				| NumberFormatException e) {
 			throw new ParsingException(e);
 		} catch (Exception e) {
 			throw new ParsingException(e);
@@ -176,12 +182,14 @@ public class XmlExceptionConversor {
 		
 		if (ex.getMessage() != null) {
 			Element messageElement = new Element("message", XML_NS);
+			System.out.println("message totime: "+ex.getMessage());
 			messageElement.setText(ex.getMessage());
 			exceptionElement.addContent(messageElement);
 		}
 
 		if (ex.getId() != null) {
 			Element IdElement = new Element("Id", XML_NS);
+			System.out.println("id totime: "+ex.getId());
 			IdElement.setText(ex.getId().toString());
 			exceptionElement.addContent(IdElement);
 		}
@@ -192,6 +200,8 @@ public class XmlExceptionConversor {
 
 			Element expirationDateElement = new Element("expirationDate",
 					XML_NS);
+
+			System.out.println("fecha totime: "+ex.getFechaExpiracion().getTime());
 			expirationDateElement.setText(dateFormatter.format(ex
 					.getFechaExpiracion().getTime()));
 

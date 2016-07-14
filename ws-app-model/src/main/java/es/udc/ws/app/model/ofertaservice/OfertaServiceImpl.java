@@ -201,20 +201,21 @@ public class OfertaServiceImpl implements OfertaService {
 				connection.setAutoCommit(false);
 
 				/* Do work. */
-				try {
-					facebookService.borrarOferta(OfertaServiceFactory.getService()
-							.findOferta(ofertaId).getFacebookId());
-				} catch (ClientProtocolException e) {
-					System.out
-							.println("Hubo un problema borrando. La petición a facebook no se ha podido completar. \n"
-									+ e);
-				} catch (IOException e) {
-					System.out
-							.println("Hubo un problema borrando. La petición a facebook no se ha podido completar. \n"
-									+ e);
-				}
+
 				if ((reservaDAO.findbyOferta(connection, ofertaId)).isEmpty()) {
 					System.out.println("no tiene reservas");
+					try {
+						facebookService.borrarOferta(OfertaServiceFactory.getService()
+								.findOferta(ofertaId).getFacebookId());
+					} catch (ClientProtocolException e) {
+						System.out
+								.println("Hubo un problema borrando. La petición a facebook no se ha podido completar. \n"
+										+ e);
+					} catch (IOException e) {
+						System.out
+								.println("Hubo un problema borrando. La petición a facebook no se ha podido completar. \n"
+										+ e);
+					}
 					ofertaDAO.remove(connection, ofertaId);
 				} else {
 					System.out.println("tiene reservas lanza excepcion");
@@ -412,6 +413,8 @@ public class OfertaServiceImpl implements OfertaService {
 					}
 				}
 				if((oferta.getFechaLimiteOferta().before(Calendar.getInstance()))){
+					System.out.println(ofertaId);
+					System.out.println(oferta.getFechaLimiteOferta());
 					throw new TimeExpirationException("oferta", ofertaId, oferta.getFechaLimiteOferta());
 				}
 				Reserva reserva = new Reserva();

@@ -99,6 +99,11 @@ public class XmlOfertaDtoConversor {
 		descripcionElement.setText((oferta.getDescripcionOferta()));
 		ofertaElement.addContent(descripcionElement);
 
+		System.out.println("xmlOferta toJDOM fbli: "+oferta.getFacebookLikes());
+		Element facebookLikes = new Element("facebookLikes", XML_NS);
+		facebookLikes.setText(String.valueOf(oferta.getFacebookLikes()));
+		ofertaElement.addContent(facebookLikes);
+
 		Element estadoElement = new Element("estadoOferta", XML_NS);
 		estadoElement.setText((oferta.getEstadoOferta()));
 		ofertaElement.addContent(estadoElement);
@@ -149,10 +154,18 @@ public class XmlOfertaDtoConversor {
 
 		String description = ofertaElement.getChildTextNormalize(
 				"descripcionOferta", XML_NS);
-		
-		int facebookLikes = Integer.valueOf(ofertaElement.getChildTextTrim(
-				"facebookLikes", XML_NS));
 
+		System.out.println("facebookLikes dto: "+ofertaElement.getChildTextTrim(
+				"facebookLikes", XML_NS));
+		
+		Element facebookLikesElement = ofertaElement.getChild("facebookLikes", XML_NS);
+		int facebookLikes = 0;
+
+		if (facebookLikesElement != null) {
+			facebookLikes = Integer.valueOf(facebookLikesElement.getTextTrim());
+			System.out.println("xml toOferta fblik: "+facebookLikes);
+		}
+		
 		String state = ofertaElement.getChildTextNormalize("estadoOferta",
 				XML_NS);
 

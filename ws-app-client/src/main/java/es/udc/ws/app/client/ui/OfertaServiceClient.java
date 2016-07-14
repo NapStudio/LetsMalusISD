@@ -25,7 +25,7 @@ public class OfertaServiceClient {
 		if ("-a".equalsIgnoreCase(args[0])
 				|| "-addOffer".equalsIgnoreCase(args[0])) {
 			System.out.println("Creating Oferta...");
-			validateArgs(args, 6, new int[] { 5, 6 });
+			validateArgs(args, 7, new int[] { 6, 7 });
 			System.out.println("Args checked...");
 
 			// [add] OfertaServiceClient -a <nombre> <descripcion>
@@ -88,7 +88,7 @@ public class OfertaServiceClient {
 
 		} else if ("-r".equalsIgnoreCase(args[0])
 				|| "-removeOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 1, new int[] { 1 });
+			validateArgs(args, 2, new int[] { 1 });
 
 			// [remove] OfertaServiceClient -r <ofertaId>
 
@@ -106,7 +106,7 @@ public class OfertaServiceClient {
 
 		} else if ("-u".equalsIgnoreCase(args[0])
 				|| "-updateOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 7, new int[] { 1, 6, 7 });
+			validateArgs(args, 7, new int[] { 1, 7, 8 });
 
 			// -updateOffer <offerId2> 'Casa rural'
 			// 'Habitación triple en la casa rural UDC' '01/12/2016 23:59'
@@ -185,7 +185,7 @@ public class OfertaServiceClient {
 
 		} else if ("-fUR".equalsIgnoreCase(args[0])
 				|| "-findUserReservations".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 2, new int[] {});
+			validateArgs(args, 3, new int[] {});
 
 			// [find] OfertaServiceClient -findUserReservations <emailUsuario>
 			// <estado>
@@ -194,15 +194,13 @@ public class OfertaServiceClient {
 				String estado = args[2];
 				String addToPrint=" with state: " + estado;
 				if(estado.equals("todas")){
-					estado=null;
 					addToPrint="";
+					estado=null;
 				}
 				
 				List<ReservaDto> reservas = clientOfertaService
 						.findReservasByUsuario(args[1], estado);
 
-				System.out.println("emailUsuario " + args[1] + " estado: "
-						+ estado);
 				System.out.println("Found " + reservas.size()
 						+ " reservas(s) with user '" + args[1] + "'"+addToPrint);
 				for (ReservaDto reserva : reservas) {
@@ -227,8 +225,10 @@ public class OfertaServiceClient {
 			try {
 				List<ReservaDto> reservas = clientOfertaService
 						.findReservasByUsuario(args[1], null);
+				System.out.println("searched reservas");
 				List<OfertaDto> ofertas = new ArrayList<>();
 				for (ReservaDto reserva : reservas) {
+					System.out.println("searching each reserva...");
 					ofertas.add(clientOfertaService.findOferta(reserva
 							.getOfertaId()));
 				}
@@ -289,9 +289,9 @@ public class OfertaServiceClient {
 
 		} else if ("-fs".equalsIgnoreCase(args[0])
 				|| "-findOffers".equalsIgnoreCase(args[0])) {
-			 validateArgs(args, 2, new int[] {1});
+			 validateArgs(args, 2, new int[] {});
 
-			// [find] OfertaServiceClient -f <offerId>
+			// [find] OfertaServiceClient -f <keywords>
 
 			try {
 				String estado = null;
@@ -437,22 +437,22 @@ public class OfertaServiceClient {
 
 	public static void validateArgs(String[] args, int expectedArgs,
 			int[] numericArguments) {
-		if (expectedArgs != args.length) {
-			System.out.println("problem args length!! \n" + expectedArgs + " "
-					+ args.length);
-			printUsageAndExit();
-		}
-		for (int i = 0; i < numericArguments.length; i++) {
-			int position = numericArguments[i];
-			try {
-				Double.parseDouble(args[position]);
-			} catch (NumberFormatException n) {
-				System.out.println("exception NumberFormatException");
-				printUsageAndExit();
-			} catch (ArrayIndexOutOfBoundsException e) {
-
-			}
-		}
+//		if (expectedArgs != args.length) {
+//			System.out.println("problem args length!! \n" + expectedArgs + " "
+//					+ args.length);
+//			printUsageAndExit();
+//		}
+//		for (int i = 0; i < numericArguments.length; i++) {
+//			int position = numericArguments[i];
+//			try {
+//				Double.parseDouble(args[position]);
+//			} catch (NumberFormatException n) {
+//				System.out.println("exception NumberFormatException");
+//				printUsageAndExit();
+//			} catch (ArrayIndexOutOfBoundsException e) {
+//
+//			}
+//		}
 	}
 
 	public static void printUsageAndExit() {

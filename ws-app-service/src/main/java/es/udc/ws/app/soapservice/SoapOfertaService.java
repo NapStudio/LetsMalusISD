@@ -104,7 +104,7 @@ public class SoapOfertaService {
 	public List<OfertaDto> findOfertas(
 			@WebParam(name = "keywords") String keywords) {
 		List<Oferta> ofertas = OfertaServiceFactory.getService().findOfertas(
-				keywords, null, Calendar.getInstance());
+				keywords, null, null);
 		
 		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas, OfertaServiceFactory.getService().getLikesList(ofertas));
 	}

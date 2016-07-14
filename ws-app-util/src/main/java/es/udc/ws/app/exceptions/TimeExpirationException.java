@@ -30,5 +30,13 @@ public class TimeExpirationException extends Exception{
 	public String getMessage() {
 		return message;
 	}
+
+	@Override
+	public String toString() {
+		return "TimeExpirationException [Id=" + Id + ", fechaExpiracion="
+				+ fechaExpiracion.getTime() + ", in=" + message + "]";
+	}
+	
+	
     
 }

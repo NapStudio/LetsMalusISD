@@ -2,6 +2,7 @@ package es.udc.ws.app.model.facebook;
 
 import java.io.IOException;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -41,7 +42,12 @@ public class FacebookService {
 			String jsonString = EntityUtils.toString(response.getEntity());
 			JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonString);
 			System.out.println("json" + json.toString());
-			String id = json.getString("id");
+			String id="";
+			try {
+				id = json.getString("id");
+			} catch (JSONException e) {
+				System.out.println("JSON exception");
+			}
 			return id;
 		} catch (ClientProtocolException e) {
 			System.out.println("Errorfacebook 1" + e);
@@ -96,8 +102,16 @@ public class FacebookService {
 
 			String jsonString = EntityUtils.toString(response.getEntity());
 			JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonString);
+			System.out.println("json" + json.toString());
 			JSONObject likesJSON = json.getJSONObject("summary");
-			int likes = likesJSON.getInt("total_count");
+			System.out.println(likesJSON);
+			int likes = 0;
+			try {
+				likes = likesJSON.getInt("total_count");
+			} catch (JSONException e) {
+				System.out.println("JSON exception");
+			}
+
 			return likes;
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block

@@ -41,6 +41,7 @@ public class OfertaServlet extends HttpServlet {
 		System.out.println("doPost");
 		OfertaDto xmlOferta;
 		try {
+			System.out.println(req.getInputStream().toString());
 			xmlOferta = XmlOfertaDtoConversor.toOferta(req.getInputStream());
 		} catch (ParsingException ex) {
 			System.out.println("servlet erro bad request");
@@ -84,7 +85,7 @@ public class OfertaServlet extends HttpServlet {
 		if (path == null || path.length() == 0) {
 
 			String ofertaIdAsString = req.getParameter("ofertaId");
-			System.out.println(ofertaIdAsString);
+			System.out.println("id invalidar: "+ofertaIdAsString);
 			Long ofertaId;
 			try {
 				ofertaId = Long.valueOf(ofertaIdAsString);
@@ -121,6 +122,7 @@ public class OfertaServlet extends HttpServlet {
 			System.out.println(req.getInputStream().available());
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_NO_CONTENT, null, null);
+			return;
 		}
 		String ofertaIdAsString = path.substring(1);
 		Long ofertaId;
@@ -251,11 +253,12 @@ public class OfertaServlet extends HttpServlet {
 		if (path == null || path.length() == 0) {
 			String keywords = req.getParameter("keywords");
 			List<Oferta> ofertas = OfertaServiceFactory.getService()
-					.findOfertas(keywords, null, Calendar.getInstance());
+					.findOfertas(keywords, null, null);
 			List<OfertaDto> ofertaDtos = OfertaToOfertaDtoConversor
 					.toOfertaDtos(ofertas, OfertaServiceFactory.getService().getLikesList(ofertas));
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
 					XmlOfertaDtoConversor.toXml(ofertaDtos), null);
+			return;
 		} else {
 			String ofertaIdAsString = path.substring(1);
 			Long ofertaId;

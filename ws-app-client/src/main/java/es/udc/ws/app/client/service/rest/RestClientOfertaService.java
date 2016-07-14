@@ -42,7 +42,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 	public Long addOferta(OfertaDto oferta) throws InputValidationException {
 
 		try {
-
+			System.out.println("oferta addoferta "+oferta.toString());
 			HttpResponse response = Request
 					.Post(getEndpointAddress() + "ofertas")
 					.bodyStream(toInputStream(oferta),
@@ -143,7 +143,8 @@ public class RestClientOfertaService implements ClientOfertaService {
 	}
 
 	@Override
-	public List<OfertaDto> findOfertas(String keywords) throws DatatypeConfigurationException {
+	public List<OfertaDto> findOfertas(String keywords)
+			throws DatatypeConfigurationException {
 
 		try {
 
@@ -181,9 +182,9 @@ public class RestClientOfertaService implements ClientOfertaService {
 					.execute().returnResponse();
 
 			validateStatusCode(HttpStatus.SC_CREATED, response);
+			System.out.println(XmlReservaDtoConversor.toReserva(response
+					.getEntity().getContent()));
 			System.out.println(XmlReservaDtoConversor.toReserva(
-					response.getEntity().getContent()));
-			System.out.println( XmlReservaDtoConversor.toReserva(
 					response.getEntity().getContent()).getReservaId());
 			return XmlReservaDtoConversor.toReserva(
 					response.getEntity().getContent()).getReservaId();
@@ -247,8 +248,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 						.Get(getEndpointAddress()
 								+ "reservas?emailUsuarioReserva="
 								+ URLEncoder.encode(emailUsuarioReserva,
-										"UTF-8")).execute()
-						.returnResponse();
+										"UTF-8")).execute().returnResponse();
 				validateStatusCode(HttpStatus.SC_OK, response);
 			} else {
 				response = Request
@@ -359,9 +359,9 @@ public class RestClientOfertaService implements ClientOfertaService {
 			case HttpStatus.SC_GONE:
 				System.out.println("GONE");
 				try {
-				throw XmlExceptionConversor
-						.fromReservaExpirationExceptionXml(response.getEntity()
-								.getContent());
+					throw XmlExceptionConversor
+							.fromTimeExpirationExceptionXml(response
+									.getEntity().getContent());
 				} catch (ParsingException e) {
 					throw new RuntimeException(e);
 				}

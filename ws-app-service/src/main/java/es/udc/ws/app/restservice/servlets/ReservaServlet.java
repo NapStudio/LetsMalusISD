@@ -117,7 +117,7 @@ public class ReservaServlet extends HttpServlet {
 					null);
 			return;
 		} catch (TimeExpirationException e) {
-			System.out.println("TimeExpirationException 1  " + e.toString());
+			System.out.println("TimeExpirationException 1  " + e);
 			ServletUtils.writeServiceResponse(resp,
 					HttpServletResponse.SC_GONE,
 					XmlExceptionConversor.toTimeExpirationException(e), null);

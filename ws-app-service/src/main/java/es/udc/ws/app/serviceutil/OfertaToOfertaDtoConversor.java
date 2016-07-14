@@ -20,6 +20,7 @@ public class OfertaToOfertaDtoConversor {
 	    }
 
 	    public static OfertaDto toOfertaDto(Oferta oferta, int facebookLikes) {
+	    	System.out.println("toOfertaDto fbLikes: "+facebookLikes);
 	        return new OfertaDto(oferta.getOfertaId(), oferta.getNombreOferta(), oferta
 	                .getDescripcionOferta(), oferta.getEstadoOferta(), oferta.getPrecioRealOferta(),
 	                oferta.getPrecioDescontadoOferta(),oferta.getFechaLimiteOferta(),
