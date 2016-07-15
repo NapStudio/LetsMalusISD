@@ -42,7 +42,7 @@ public class FacebookService {
 			String jsonString = EntityUtils.toString(response.getEntity());
 			JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonString);
 			System.out.println("json" + json.toString());
-			String id="";
+			String id = "";
 			try {
 				id = json.getString("id");
 			} catch (JSONException e) {

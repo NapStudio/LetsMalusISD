@@ -1,7 +1,7 @@
 package es.udc.ws.app.model.ofertaservice;
 
-import static es.udc.ws.app.model.util.ModelConstants.OFERTA_DATA_SOURCE;
 import static es.udc.ws.app.model.util.ModelConstants.MAX_PRICE;
+import static es.udc.ws.app.model.util.ModelConstants.OFERTA_DATA_SOURCE;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -33,7 +33,7 @@ public class OfertaServiceImpl implements OfertaService {
 	private DataSource dataSource;
 	private OfertaDAO ofertaDAO = null;
 	private ReservaDAO reservaDAO = null;
-	private FacebookService facebookService=new FacebookService();
+	private FacebookService facebookService = new FacebookService();
 
 	public OfertaServiceImpl() {
 		System.out.println("ofertaserviceImpl created OK!");
@@ -76,10 +76,14 @@ public class OfertaServiceImpl implements OfertaService {
 				try {
 					oferta.setFacebookId(facebookService.publicarOferta(oferta));
 				} catch (ClientProtocolException e) {
-					System.out.println("Hubo un problema publicando. La petición a facebook no se ha podido completar. \n"+e);
+					System.out
+							.println("Hubo un problema publicando. La petición a facebook no se ha podido completar. \n"
+									+ e);
 					e.printStackTrace();
 				} catch (IOException e) {
-					System.out.println("Hubo un problema publicando. La petición a facebook no se ha podido completar. \n"+e);
+					System.out
+							.println("Hubo un problema publicando. La petición a facebook no se ha podido completar. \n"
+									+ e);
 					e.printStackTrace();
 				}
 				Oferta createdOferta = ofertaDAO.create(connection, oferta);
@@ -117,21 +121,24 @@ public class OfertaServiceImpl implements OfertaService {
 				connection.setAutoCommit(false);
 
 				/* Do work. */
-				if(oferta.getEstadoOferta()==null||oferta.getEstadoOferta().equals("nocambiar")){
-					oferta.setEstadoOferta(ofertaDAO.find(connection, oferta.getOfertaId()).getEstadoOferta());				
+				if (oferta.getEstadoOferta() == null
+						|| oferta.getEstadoOferta().equals("nocambiar")) {
+					oferta.setEstadoOferta(ofertaDAO.find(connection,
+							oferta.getOfertaId()).getEstadoOferta());
 				}
 				if ((reservaDAO.findbyOferta(connection, oferta.getOfertaId()))
 						.isEmpty()) {
-						try {
-							Oferta ofertaFace=oferta;
-							ofertaFace.setFacebookId(ofertaDAO.find(connection, oferta.getOfertaId()).getFacebookId());
-							oferta.setFacebookId(facebookService
-									.actualizarOferta(ofertaFace));
-						} catch (Exception e) {
-							System.out
-									.println("Hubo un problema actualizando. La petición a facebook no se ha podido completar. \n"
-											+ e);
-						}
+					try {
+						Oferta ofertaFace = oferta;
+						ofertaFace.setFacebookId(ofertaDAO.find(connection,
+								oferta.getOfertaId()).getFacebookId());
+						oferta.setFacebookId(facebookService
+								.actualizarOferta(ofertaFace));
+					} catch (Exception e) {
+						System.out
+								.println("Hubo un problema actualizando. La petición a facebook no se ha podido completar. \n"
+										+ e);
+					}
 					ofertaDAO.update(connection, oferta);
 				} else {
 					Oferta ofertaOriginal = ofertaDAO.find(connection,
@@ -205,8 +212,9 @@ public class OfertaServiceImpl implements OfertaService {
 				if ((reservaDAO.findbyOferta(connection, ofertaId)).isEmpty()) {
 					System.out.println("no tiene reservas");
 					try {
-						facebookService.borrarOferta(OfertaServiceFactory.getService()
-								.findOferta(ofertaId).getFacebookId());
+						facebookService.borrarOferta(OfertaServiceFactory
+								.getService().findOferta(ofertaId)
+								.getFacebookId());
 					} catch (ClientProtocolException e) {
 						System.out
 								.println("Hubo un problema borrando. La petición a facebook no se ha podido completar. \n"
@@ -315,7 +323,7 @@ public class OfertaServiceImpl implements OfertaService {
 
 				/* Do work. */
 				Oferta oferta = ofertaDAO.find(connection, ofertaId);
-				System.out.println("service fbId "+oferta.getFacebookId());
+				System.out.println("service fbId " + oferta.getFacebookId());
 				/* Commit. */
 				connection.commit();
 				return oferta;
@@ -356,14 +364,18 @@ public class OfertaServiceImpl implements OfertaService {
 					ofertas = ofertaDAO.findByParameters(connection, keywords,
 							estadoBusqueda, fechaBusqueda);
 				}
-				List<Oferta> nuevaOfertas=new ArrayList<>();
-				for(Oferta oferta:ofertas){
+				List<Oferta> nuevaOfertas = new ArrayList<>();
+				for (Oferta oferta : ofertas) {
 					System.out.println(oferta.getFechaLimiteOferta().getTime());
 					System.out.println(Calendar.getInstance().getTime());
-					System.out.println((oferta.getFechaLimiteOferta().after(Calendar.getInstance())));
+					System.out.println((oferta.getFechaLimiteOferta()
+							.after(Calendar.getInstance())));
 					System.out.println(oferta.getEstadoOferta());
-					System.out.println(oferta.getEstadoOferta().equals("válida")+"\n");
-					if((oferta.getFechaLimiteOferta().after(Calendar.getInstance()))&&(oferta.getEstadoOferta().equals("válida"))){
+					System.out.println(oferta.getEstadoOferta()
+							.equals("válida") + "\n");
+					if ((oferta.getFechaLimiteOferta().after(Calendar
+							.getInstance()))
+							&& (oferta.getEstadoOferta().equals("válida"))) {
 						nuevaOfertas.add(oferta);
 					}
 				}
@@ -388,7 +400,8 @@ public class OfertaServiceImpl implements OfertaService {
 	@Override
 	public Long reservarOferta(Long ofertaId, String emailUsuarioReserva,
 			String tarjetaCreditoReserva) throws InstanceNotFoundException,
-			InputValidationException, OfertaReservadaException, TimeExpirationException {
+			InputValidationException, OfertaReservadaException,
+			TimeExpirationException {
 
 		PropertyValidator.validateCreditCard(tarjetaCreditoReserva);
 
@@ -412,10 +425,12 @@ public class OfertaServiceImpl implements OfertaService {
 						canReserve = false;
 					}
 				}
-				if((oferta.getFechaLimiteOferta().before(Calendar.getInstance()))){
+				if ((oferta.getFechaLimiteOferta().before(Calendar
+						.getInstance()))) {
 					System.out.println(ofertaId);
 					System.out.println(oferta.getFechaLimiteOferta());
-					throw new TimeExpirationException("oferta", ofertaId, oferta.getFechaLimiteOferta());
+					throw new TimeExpirationException("oferta", ofertaId,
+							oferta.getFechaLimiteOferta());
 				}
 				Reserva reserva = new Reserva();
 				if (canReserve) {
@@ -518,7 +533,6 @@ public class OfertaServiceImpl implements OfertaService {
 		}
 	}
 
-
 	@Override
 	public Long reclamarOferta(Long reservaId)
 			throws InstanceNotFoundException, BadStateReservaException,
@@ -535,11 +549,9 @@ public class OfertaServiceImpl implements OfertaService {
 				/* Do work. */
 				Reserva reserva = reservaDAO.find(connection, reservaId);
 				if (reserva.getEstadoReserva().equals("anulada")) {
-					throw new BadStateReservaException(reservaId,
-							"anulada");
+					throw new BadStateReservaException(reservaId, "anulada");
 				} else if (reserva.getEstadoReserva().equals("inválida")) {
-					throw new BadStateReservaException(reservaId,
-							"inválida");
+					throw new BadStateReservaException(reservaId, "inválida");
 				} else {
 					Calendar fechalimite = Calendar.getInstance();
 					fechalimite = ((ofertaDAO.find(connection,
@@ -602,9 +614,9 @@ public class OfertaServiceImpl implements OfertaService {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
-	public int getLikes(String ofertaFbId){
+	public int getLikes(String ofertaFbId) {
 
 		int facebookLikes = 0;
 		try {
@@ -620,9 +632,9 @@ public class OfertaServiceImpl implements OfertaService {
 		}
 		return facebookLikes;
 	}
-	
+
 	@Override
-	public List<Integer> getLikesList(List<Oferta> ofertas){
+	public List<Integer> getLikesList(List<Oferta> ofertas) {
 		List<Integer> facebookLikes = new ArrayList<Integer>();
 		for (Oferta oferta : ofertas) {
 			try {

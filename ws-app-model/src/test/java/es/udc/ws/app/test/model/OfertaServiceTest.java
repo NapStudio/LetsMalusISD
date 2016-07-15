@@ -1,20 +1,19 @@
 package es.udc.ws.app.test.model;
 
-import static es.udc.ws.app.model.util.ModelConstants.OFERTA_DATA_SOURCE;
 import static es.udc.ws.app.model.util.ModelConstants.MAX_PRICE;
+import static es.udc.ws.app.model.util.ModelConstants.OFERTA_DATA_SOURCE;
 import static es.udc.ws.app.model.util.ModelConstants.RESERVA_EXPIRATION_DAYS;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.sql.DataSource;
-
-import java.sql.Connection;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,14 +63,14 @@ public class OfertaServiceTest {
 	}
 
 	private Oferta getValidOferta(String title) {
-		Calendar calendar= Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MONTH, 11);
 		return new Oferta(title, "esto es una descripcion", "válida", 19.95F,
 				17.50F, 1.75F, calendar, calendar, "");
 	}
 
 	private Oferta getValidOferta(String title, String descripcion) {
-		Calendar calendar= Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MONTH, 11);
 		return new Oferta(title, descripcion, "válida", 19.95F, 17.50F, 1.75F,
 				calendar, calendar, "");
@@ -265,7 +264,7 @@ public class OfertaServiceTest {
 				exceptionCatched = true;
 			}
 			assertTrue(exceptionCatched);
-			
+
 			// Check valid discount
 			exceptionCatched = false;
 			oferta = getValidOferta();
@@ -427,11 +426,11 @@ public class OfertaServiceTest {
 		try {
 
 			/* Buy reserva. */
-//TODO este test
+			// TODO este test
 
 			Long reservaId = (ofertaService.reservarOferta(
 					oferta.getOfertaId(), USER_ID, VALID_CREDIT_CARD_NUMBER));
-			
+
 			Calendar beforeExpirationCalendar = Calendar.getInstance();
 			beforeExpirationCalendar.add(Calendar.DAY_OF_MONTH,
 					RESERVA_EXPIRATION_DAYS);
@@ -446,14 +445,14 @@ public class OfertaServiceTest {
 			afterExpirationCalendar.set(Calendar.MILLISECOND, 0);
 
 			Calendar fechaLimiteReserva = Calendar.getInstance();
-			fechaLimiteReserva=(oferta.getFechaLimiteReserva());
+			fechaLimiteReserva = (oferta.getFechaLimiteReserva());
 			fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
 
 			/* Find reserva. */
 			Reserva foundReserva = ofertaService.findReserva(reserva
 					.getReservaId());
 			Calendar fechaCreacion = Calendar.getInstance();
-			fechaCreacion=(foundReserva.getFechaCreacionReserva());
+			fechaCreacion = (foundReserva.getFechaCreacionReserva());
 			/* Check reserva. */
 			assertEquals(reserva, foundReserva);
 			assertEquals(VALID_CREDIT_CARD_NUMBER,
@@ -483,7 +482,7 @@ public class OfertaServiceTest {
 			OfertaReservadaException, TimeExpirationException {
 
 		Oferta oferta = createOferta(getValidOferta());
-		oferta=ofertaService.addOferta(oferta);
+		oferta = ofertaService.addOferta(oferta);
 		try {
 			ofertaService.reservarOferta(oferta.getOfertaId(), USER_ID,
 					INVALID_CREDIT_CARD_NUMBER);
@@ -497,19 +496,20 @@ public class OfertaServiceTest {
 
 	@Test(expected = InstanceNotFoundException.class)
 	public void testBuyNonExistentOferta() throws InputValidationException,
-			InstanceNotFoundException, OfertaReservadaException, TimeExpirationException {
-		
+			InstanceNotFoundException, OfertaReservadaException,
+			TimeExpirationException {
+
 		Long reservaId = ofertaService.reservarOferta(NON_EXISTENT_OFERTA_ID,
 				USER_ID, VALID_CREDIT_CARD_NUMBER);
 
 		removeReserva(reservaId);
 
-	}	
-	
+	}
+
 	@Test(expected = TimeExpirationException.class)
-	public void testReservarTimeExpiration()
-			throws InputValidationException, InstanceNotFoundException,
-			OfertaReservadaException, TimeExpirationException {
+	public void testReservarTimeExpiration() throws InputValidationException,
+			InstanceNotFoundException, OfertaReservadaException,
+			TimeExpirationException {
 
 		Oferta oferta = createOferta(getValidOferta());
 		oferta.setFechaLimiteOferta(Calendar.getInstance());

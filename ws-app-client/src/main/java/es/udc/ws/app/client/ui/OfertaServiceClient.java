@@ -77,7 +77,7 @@ public class OfertaServiceClient {
 								.valueOf(args[5]), Float.valueOf(args[6]),
 						fechaLimiteOferta, fechaLimiteReserva, 0));
 
-				System.out.println("Oferta " + ofertaId
+				System.out.println("\nOferta " + ofertaId
 						+ " created sucessfully");
 
 			} catch (NumberFormatException | InputValidationException ex) {
@@ -192,17 +192,18 @@ public class OfertaServiceClient {
 
 			try {
 				String estado = args[2];
-				String addToPrint=" with state: " + estado;
-				if(estado.equals("todas")){
-					addToPrint="";
-					estado=null;
+				String addToPrint = " with state: " + estado;
+				if (estado.equals("todas")) {
+					addToPrint = "";
+					estado = null;
 				}
-				
+
 				List<ReservaDto> reservas = clientOfertaService
 						.findReservasByUsuario(args[1], estado);
 
 				System.out.println("Found " + reservas.size()
-						+ " reservas(s) with user '" + args[1] + "'"+addToPrint);
+						+ " reservas(s) with user '" + args[1] + "'"
+						+ addToPrint);
 				for (ReservaDto reserva : reservas) {
 					System.out.println("Id: " + reserva.getReservaId()
 							+ " State: " + reserva.getEstadoReserva()
@@ -263,7 +264,7 @@ public class OfertaServiceClient {
 
 		} else if ("-f".equalsIgnoreCase(args[0])
 				|| "-findOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 2, new int[] {1});
+			validateArgs(args, 2, new int[] { 1 });
 
 			// [find] OfertaServiceClient -f <offerId>
 
@@ -289,7 +290,7 @@ public class OfertaServiceClient {
 
 		} else if ("-fs".equalsIgnoreCase(args[0])
 				|| "-findOffers".equalsIgnoreCase(args[0])) {
-			 validateArgs(args, 2, new int[] {});
+			validateArgs(args, 2, new int[] {});
 
 			// [find] OfertaServiceClient -f <keywords>
 
@@ -350,7 +351,7 @@ public class OfertaServiceClient {
 
 		} else if ("-fOR".equalsIgnoreCase(args[0])
 				|| "-findOfferReservations".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 2, new int[] {1});
+			validateArgs(args, 2, new int[] { 1 });
 
 			// [find] OfertaServiceClient -findOfferReservations <offerId>
 
@@ -437,22 +438,22 @@ public class OfertaServiceClient {
 
 	public static void validateArgs(String[] args, int expectedArgs,
 			int[] numericArguments) {
-//		if (expectedArgs != args.length) {
-//			System.out.println("problem args length!! \n" + expectedArgs + " "
-//					+ args.length);
-//			printUsageAndExit();
-//		}
-//		for (int i = 0; i < numericArguments.length; i++) {
-//			int position = numericArguments[i];
-//			try {
-//				Double.parseDouble(args[position]);
-//			} catch (NumberFormatException n) {
-//				System.out.println("exception NumberFormatException");
-//				printUsageAndExit();
-//			} catch (ArrayIndexOutOfBoundsException e) {
-//
-//			}
-//		}
+		// if (expectedArgs != args.length) {
+		// System.out.println("problem args length!! \n" + expectedArgs + " "
+		// + args.length);
+		// printUsageAndExit();
+		// }
+		// for (int i = 0; i < numericArguments.length; i++) {
+		// int position = numericArguments[i];
+		// try {
+		// Double.parseDouble(args[position]);
+		// } catch (NumberFormatException n) {
+		// System.out.println("exception NumberFormatException");
+		// printUsageAndExit();
+		// } catch (ArrayIndexOutOfBoundsException e) {
+		//
+		// }
+		// }
 	}
 
 	public static void printUsageAndExit() {

@@ -1,22 +1,26 @@
 package es.udc.ws.app.client.service.soap;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.ws.BindingProvider;
 
 import es.udc.ws.app.client.service.ClientOfertaService;
-import es.udc.ws.app.client.service.soap.wsdl.*;
-import es.udc.ws.app.client.service.soap.ReservaDtoToSoapReservaDtoConversor;
-import es.udc.ws.util.configuration.ConfigurationParametersManager;
-import es.udc.ws.util.exceptions.InputValidationException;
-import es.udc.ws.util.exceptions.InstanceNotFoundException;
+import es.udc.ws.app.client.service.soap.wsdl.OfertasProvider;
+import es.udc.ws.app.client.service.soap.wsdl.OfertasProviderService;
+import es.udc.ws.app.client.service.soap.wsdl.SoapBadStateReservaException;
+import es.udc.ws.app.client.service.soap.wsdl.SoapInputValidationException;
+import es.udc.ws.app.client.service.soap.wsdl.SoapInstanceNotFoundException;
+import es.udc.ws.app.client.service.soap.wsdl.SoapOfertaReservadaException;
+import es.udc.ws.app.client.service.soap.wsdl.SoapTimeExpirationException;
 import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
 import es.udc.ws.app.exceptions.TimeExpirationException;
+import es.udc.ws.util.configuration.ConfigurationParametersManager;
+import es.udc.ws.util.exceptions.InputValidationException;
+import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public class SoapClientOfertaService implements ClientOfertaService {
 	private final static String ENDPOINT_ADDRESS_PARAMETER = "SoapClientOfertaService.endpointAddress";
@@ -66,19 +70,23 @@ public class SoapClientOfertaService implements ClientOfertaService {
 
 	@Override
 	public void removeOferta(Long ofertaId) throws InstanceNotFoundException,
-			SoapOfertaReservadaException {
+			OfertaReservadaException {
 		try {
 			ofertasProvider.removeOferta(ofertaId);
 		} catch (SoapInstanceNotFoundException ex) {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
+		} catch(SoapOfertaReservadaException e){
+			throw new OfertaReservadaException(e.getFaultInfo()
+					.getOfertaId());			
 		}
 	}
 
 	@Override
-	public List<OfertaDto> findOfertas(String keywords) throws DatatypeConfigurationException {
-		return OfertaDtoToSoapOfertaDtoConversor
-				.toOfertaDtos(ofertasProvider.findOfertas(keywords));
+	public List<OfertaDto> findOfertas(String keywords)
+			throws DatatypeConfigurationException {
+		return OfertaDtoToSoapOfertaDtoConversor.toOfertaDtos(ofertasProvider
+				.findOfertas(keywords));
 	}
 
 	@Override
@@ -133,7 +141,10 @@ public class SoapClientOfertaService implements ClientOfertaService {
 		} catch (SoapOfertaReservadaException e) {
 			throw new OfertaReservadaException(e.getFaultInfo().getOfertaId());
 		} catch (SoapTimeExpirationException e) {
-			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e.getFaultInfo().getId(), GregorianCalendarConversor.toCalendar(e.getFaultInfo().getFechaExpiracion()));
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e
+					.getFaultInfo().getId(),
+					GregorianCalendarConversor.toCalendar(e.getFaultInfo()
+							.getFechaExpiracion()));
 		}
 	}
 
@@ -160,8 +171,8 @@ public class SoapClientOfertaService implements ClientOfertaService {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
 		} catch (SoapTimeExpirationException e) {
-			throw new TimeExpirationException(e.getFaultInfo().getMessage(),
-					e.getFaultInfo().getId(),
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e
+					.getFaultInfo().getId(),
 					GregorianCalendarConversor.toCalendar(e.getFaultInfo()
 							.getFechaExpiracion()));
 		}
@@ -180,7 +191,10 @@ public class SoapClientOfertaService implements ClientOfertaService {
 			throw new InstanceNotFoundException(ex.getFaultInfo()
 					.getInstanceId(), ex.getFaultInfo().getInstanceType());
 		} catch (SoapTimeExpirationException e) {
-			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e.getFaultInfo().getId(), GregorianCalendarConversor.toCalendar(e.getFaultInfo().getFechaExpiracion()));
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e
+					.getFaultInfo().getId(),
+					GregorianCalendarConversor.toCalendar(e.getFaultInfo()
+							.getFechaExpiracion()));
 		}
 	}
 
@@ -197,7 +211,10 @@ public class SoapClientOfertaService implements ClientOfertaService {
 			throw new InstanceNotFoundException(e.getFaultInfo()
 					.getInstanceId(), e.getFaultInfo().getInstanceType());
 		} catch (SoapTimeExpirationException e) {
-			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e.getFaultInfo().getId(), GregorianCalendarConversor.toCalendar(e.getFaultInfo().getFechaExpiracion()));
+			throw new TimeExpirationException(e.getFaultInfo().getMessage(), e
+					.getFaultInfo().getId(),
+					GregorianCalendarConversor.toCalendar(e.getFaultInfo()
+							.getFechaExpiracion()));
 		}
 	}
 }

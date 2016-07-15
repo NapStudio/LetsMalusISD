@@ -1,7 +1,5 @@
 package es.udc.ws.app.soapservice;
 
-
-
 public class SoapBadStateReservaExceptionInfo {
 
 	private Long reservaId;

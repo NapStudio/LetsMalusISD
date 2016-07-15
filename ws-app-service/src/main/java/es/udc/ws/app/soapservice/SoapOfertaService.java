@@ -1,24 +1,17 @@
 package es.udc.ws.app.soapservice;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
-import org.apache.http.client.ClientProtocolException;
-
 import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 import es.udc.ws.app.exceptions.BadStateReservaException;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
 import es.udc.ws.app.exceptions.TimeExpirationException;
-import es.udc.ws.app.model.facebook.FacebookService;
 import es.udc.ws.app.model.oferta.Oferta;
-import es.udc.ws.app.model.ofertaservice.OfertaService;
 import es.udc.ws.app.model.ofertaservice.OfertaServiceFactory;
 import es.udc.ws.app.model.reserva.Reserva;
 import es.udc.ws.app.serviceutil.OfertaToOfertaDtoConversor;
@@ -44,7 +37,7 @@ public class SoapOfertaService {
 	@WebMethod(operationName = "updateOferta")
 	public void updateOferta(@WebParam(name = "ofertaDto") OfertaDto ofertaDto)
 			throws SoapInputValidationException, SoapInstanceNotFoundException {
-		Oferta oferta = OfertaToOfertaDtoConversor.toOferta(ofertaDto);		
+		Oferta oferta = OfertaToOfertaDtoConversor.toOferta(ofertaDto);
 		try {
 			OfertaServiceFactory.getService().updateOferta(oferta);
 		} catch (InputValidationException ex) {
@@ -61,7 +54,7 @@ public class SoapOfertaService {
 			throws SoapInstanceNotFoundException, SoapInputValidationException {
 		try {
 			OfertaServiceFactory.getService().invalidarOferta(ofertaId);
-			
+
 		} catch (InstanceNotFoundException ex) {
 			throw new SoapInstanceNotFoundException(
 					new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
@@ -97,7 +90,10 @@ public class SoapOfertaService {
 					new SoapInstanceNotFoundExceptionInfo(ex.getInstanceId(),
 							ex.getInstanceType()));
 		}
-		return OfertaToOfertaDtoConversor.toOfertaDto(oferta, OfertaServiceFactory.getService().getLikes(oferta.getFacebookId()));
+		return OfertaToOfertaDtoConversor.toOfertaDto(
+				oferta,
+				OfertaServiceFactory.getService().getLikes(
+						oferta.getFacebookId()));
 	}
 
 	@WebMethod(operationName = "findOfertas")
@@ -105,8 +101,9 @@ public class SoapOfertaService {
 			@WebParam(name = "keywords") String keywords) {
 		List<Oferta> ofertas = OfertaServiceFactory.getService().findOfertas(
 				keywords, null, null);
-		
-		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas, OfertaServiceFactory.getService().getLikesList(ofertas));
+
+		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas,
+				OfertaServiceFactory.getService().getLikesList(ofertas));
 	}
 
 	@WebMethod(operationName = "reservarOferta")

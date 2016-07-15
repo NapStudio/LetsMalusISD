@@ -11,23 +11,19 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 
-import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.dto.ReservaDto;
 
 public class XmlReservaDtoConversor {
 
 	public final static Namespace XML_NS = Namespace
 			.getNamespace("http://ws.udc.es/reservas/xml");
-	
-    public static Document toResponse(ReservaDto reserva)
-            throws IOException {
 
-        Element reservaElement = toJDOMElement(reserva);
+	public static Document toResponse(ReservaDto reserva) throws IOException {
 
-        return new Document(reservaElement);
-    }
+		Element reservaElement = toJDOMElement(reserva);
 
-
+		return new Document(reservaElement);
+	}
 
 	public static Document toXml(List<ReservaDto> reserva) throws IOException {
 
@@ -120,15 +116,16 @@ public class XmlReservaDtoConversor {
 			throw new ParsingException("Unrecognized element '"
 					+ reservaElement.getName() + "' ('reserva' expected)");
 		}
-		Element identifierElement = reservaElement.getChild("reservaId", XML_NS);
+		Element identifierElement = reservaElement
+				.getChild("reservaId", XML_NS);
 		Long identifier = null;
 
 		if (identifierElement != null) {
 			identifier = Long.valueOf(identifierElement.getTextTrim());
 		}
 
-		Long oferta = Long.valueOf(reservaElement.getChild("ofertaId",
-				XML_NS).getTextTrim());
+		Long oferta = Long.valueOf(reservaElement.getChild("ofertaId", XML_NS)
+				.getTextTrim());
 
 		String user = reservaElement.getChildTextNormalize(
 				"emailUsuarioReserva", XML_NS);

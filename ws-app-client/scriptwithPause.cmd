@@ -1,4 +1,4 @@
-﻿chcp 65001 2>&1 & pause &
+chcp 65001 2>&1 & pause &
 @echo comando1 & pause &
 call mvn exec:java -Dexec.mainClass="es.udc.ws.app.client.ui.OfertaServiceClient" -Dexec.args="-addOffer 'Cena  para  dos' 'Cena con menú degustación para dos personas en el restaurante UDC' '01/08/2016 00:00' '31/12/2016 23:59' 80 40" & pause &
 @echo comando2 & pause &

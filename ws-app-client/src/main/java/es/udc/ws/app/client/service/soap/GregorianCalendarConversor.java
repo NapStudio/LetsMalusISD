@@ -17,8 +17,7 @@ public class GregorianCalendarConversor {
 			gc.setTimeInMillis(c.getTimeInMillis());
 			XMLGregorianCalendar xc = null;
 			try {
-				xc = DatatypeFactory.newInstance()
-						.newXMLGregorianCalendar(gc);
+				xc = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
 			} catch (DatatypeConfigurationException e) {
 				return null;
 			}
@@ -26,7 +25,7 @@ public class GregorianCalendarConversor {
 		}
 	}
 
-	public static Calendar toCalendar(XMLGregorianCalendar xc){
+	public static Calendar toCalendar(XMLGregorianCalendar xc) {
 		if (xc == null) {
 			return null;
 		} else {

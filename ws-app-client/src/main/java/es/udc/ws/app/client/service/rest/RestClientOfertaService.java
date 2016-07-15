@@ -5,8 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -42,7 +40,7 @@ public class RestClientOfertaService implements ClientOfertaService {
 	public Long addOferta(OfertaDto oferta) throws InputValidationException {
 
 		try {
-			System.out.println("oferta addoferta "+oferta.toString());
+			System.out.println("oferta addoferta " + oferta.toString());
 			HttpResponse response = Request
 					.Post(getEndpointAddress() + "ofertas")
 					.bodyStream(toInputStream(oferta),

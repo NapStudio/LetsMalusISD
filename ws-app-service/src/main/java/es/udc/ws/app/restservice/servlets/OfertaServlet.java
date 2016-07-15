@@ -1,12 +1,8 @@
 package es.udc.ws.app.restservice.servlets;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.client.ClientProtocolException;
-
 import es.udc.ws.app.dto.OfertaDto;
 import es.udc.ws.app.exceptions.OfertaReservadaException;
-import es.udc.ws.app.model.facebook.FacebookService;
 import es.udc.ws.app.model.oferta.Oferta;
 import es.udc.ws.app.model.ofertaservice.OfertaServiceFactory;
 import es.udc.ws.app.serviceutil.OfertaToOfertaDtoConversor;
@@ -33,7 +26,6 @@ import es.udc.ws.util.servlet.ServletUtils;
 
 @SuppressWarnings("serial")
 public class OfertaServlet extends HttpServlet {
-
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -85,7 +77,7 @@ public class OfertaServlet extends HttpServlet {
 		if (path == null || path.length() == 0) {
 
 			String ofertaIdAsString = req.getParameter("ofertaId");
-			System.out.println("id invalidar: "+ofertaIdAsString);
+			System.out.println("id invalidar: " + ofertaIdAsString);
 			Long ofertaId;
 			try {
 				ofertaId = Long.valueOf(ofertaIdAsString);
@@ -253,9 +245,17 @@ public class OfertaServlet extends HttpServlet {
 		if (path == null || path.length() == 0) {
 			String keywords = req.getParameter("keywords");
 			List<Oferta> ofertas = OfertaServiceFactory.getService()
-					.findOfertas(keywords, null, null);
+					.findOfertas(keywords, null, Calendar.getInstance());
+			List<Integer> likes = OfertaServiceFactory.getService()
+					.getLikesList(ofertas);
+			if (likes.size() != ofertas.size()) {
+				likes = new ArrayList<Integer>();
+				for (int i = 0; i < ofertas.size(); i++) {
+					likes.add(0);
+				}
+			}
 			List<OfertaDto> ofertaDtos = OfertaToOfertaDtoConversor
-					.toOfertaDtos(ofertas, OfertaServiceFactory.getService().getLikesList(ofertas));
+					.toOfertaDtos(ofertas, likes);
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
 					XmlOfertaDtoConversor.toXml(ofertaDtos), null);
 			return;
@@ -289,7 +289,9 @@ public class OfertaServlet extends HttpServlet {
 				return;
 			}
 			OfertaDto ofertaDto = OfertaToOfertaDtoConversor.toOfertaDto(
-					oferta, OfertaServiceFactory.getService().getLikes(oferta.getFacebookId()));
+					oferta,
+					OfertaServiceFactory.getService().getLikes(
+							oferta.getFacebookId()));
 			ServletUtils.writeServiceResponse(resp, HttpServletResponse.SC_OK,
 					XmlOfertaDtoConversor.toXml(ofertaDto), null);
 		}

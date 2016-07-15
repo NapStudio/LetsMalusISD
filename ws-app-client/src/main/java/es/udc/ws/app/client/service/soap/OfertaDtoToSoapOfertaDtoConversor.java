@@ -38,12 +38,15 @@ public class OfertaDtoToSoapOfertaDtoConversor {
 	}
 
 	public static OfertaDto toOfertaDto(
-			es.udc.ws.app.client.service.soap.wsdl.OfertaDto oferta) throws DatatypeConfigurationException {
-			return new OfertaDto(oferta.getOfertaId(), oferta.getNombreOferta(),
-					oferta.getDescripcionOferta(), oferta.getEstadoOferta(),
-					oferta.getPrecioRealOferta(),
-					oferta.getPrecioDescontadoOferta(),
-					oferta.getFechaLimiteOferta().toGregorianCalendar(), oferta.getFechaLimiteReserva().toGregorianCalendar(),oferta.getFacebookLikes());
+			es.udc.ws.app.client.service.soap.wsdl.OfertaDto oferta)
+			throws DatatypeConfigurationException {
+		return new OfertaDto(oferta.getOfertaId(), oferta.getNombreOferta(),
+				oferta.getDescripcionOferta(), oferta.getEstadoOferta(),
+				oferta.getPrecioRealOferta(),
+				oferta.getPrecioDescontadoOferta(), oferta
+						.getFechaLimiteOferta().toGregorianCalendar(), oferta
+						.getFechaLimiteReserva().toGregorianCalendar(),
+				oferta.getFacebookLikes());
 	}
 
 	public static List<OfertaDto> toOfertaDtos(
@@ -61,7 +64,5 @@ public class OfertaDtoToSoapOfertaDtoConversor {
 		}
 		return ofertaDtos;
 	}
-
-
 
 }

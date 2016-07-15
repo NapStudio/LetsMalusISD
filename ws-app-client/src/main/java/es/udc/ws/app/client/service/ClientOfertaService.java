@@ -1,6 +1,5 @@
 package es.udc.ws.app.client.service;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -15,31 +14,39 @@ import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public interface ClientOfertaService {
-	
 
 	public Long addOferta(OfertaDto oferta) throws InputValidationException;
 
-    public void updateOferta(OfertaDto oferta) throws InputValidationException,
-            InstanceNotFoundException;
+	public void updateOferta(OfertaDto oferta) throws InputValidationException,
+			InstanceNotFoundException;
 
-    public void removeOferta(Long ofertaId) throws InstanceNotFoundException, OfertaReservadaException, SoapOfertaReservadaException;
-    
-    public void invalidarOferta(Long ofertaId) throws InstanceNotFoundException, InputValidationException;
+	public void removeOferta(Long ofertaId) throws InstanceNotFoundException,
+			OfertaReservadaException;
 
-    public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException;
+	public void invalidarOferta(Long ofertaId)
+			throws InstanceNotFoundException, InputValidationException;
 
-    public List<OfertaDto> findOfertas(String keywords) throws DatatypeConfigurationException;
+	public OfertaDto findOferta(Long ofertaId) throws InstanceNotFoundException;
 
-    public Long reservarOferta(Long ofertaId, String emailUsuarioReserva, String tarjetaCreditoReserva)
-            throws InstanceNotFoundException, InputValidationException, NumberFormatException, OfertaReservadaException, TimeExpirationException;
-    
-    public ReservaDto findReserva(Long reservaId) throws InstanceNotFoundException;
+	public List<OfertaDto> findOfertas(String keywords)
+			throws DatatypeConfigurationException;
 
-    public List<ReservaDto> findReservasByOferta(Long ofertaId) throws InstanceNotFoundException,
-            TimeExpirationException;
-    
-    public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva, String estado) throws InstanceNotFoundException,
-    TimeExpirationException;
-    
-    public Long reclamarOferta(Long reservaId) throws InstanceNotFoundException, BadStateReservaException, TimeExpirationException ;
+	public Long reservarOferta(Long ofertaId, String emailUsuarioReserva,
+			String tarjetaCreditoReserva) throws InstanceNotFoundException,
+			InputValidationException, NumberFormatException,
+			OfertaReservadaException, TimeExpirationException;
+
+	public ReservaDto findReserva(Long reservaId)
+			throws InstanceNotFoundException;
+
+	public List<ReservaDto> findReservasByOferta(Long ofertaId)
+			throws InstanceNotFoundException, TimeExpirationException;
+
+	public List<ReservaDto> findReservasByUsuario(String emailUsuarioReserva,
+			String estado) throws InstanceNotFoundException,
+			TimeExpirationException;
+
+	public Long reclamarOferta(Long reservaId)
+			throws InstanceNotFoundException, BadStateReservaException,
+			TimeExpirationException;
 }

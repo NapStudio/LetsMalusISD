@@ -99,7 +99,8 @@ public class XmlOfertaDtoConversor {
 		descripcionElement.setText((oferta.getDescripcionOferta()));
 		ofertaElement.addContent(descripcionElement);
 
-		System.out.println("xmlOferta toJDOM fbli: "+oferta.getFacebookLikes());
+		System.out.println("xmlOferta toJDOM fbli: "
+				+ oferta.getFacebookLikes());
 		Element facebookLikes = new Element("facebookLikes", XML_NS);
 		facebookLikes.setText(String.valueOf(oferta.getFacebookLikes()));
 		ofertaElement.addContent(facebookLikes);
@@ -121,17 +122,17 @@ public class XmlOfertaDtoConversor {
 
 		if (oferta.getFechaLimiteOferta() != null) {
 			System.out.println("converting jdom fechaOferta");
-            Element fechaOfertaElement = dataToJDOM(
-            		oferta.getFechaLimiteOferta(),"fechaLimiteOferta");
-            ofertaElement.addContent(fechaOfertaElement);
-        }
+			Element fechaOfertaElement = dataToJDOM(
+					oferta.getFechaLimiteOferta(), "fechaLimiteOferta");
+			ofertaElement.addContent(fechaOfertaElement);
+		}
 
 		if (oferta.getFechaLimiteReserva() != null) {
 			System.out.println("converting jdom fechaOferta");
-            Element fechaReservaElement = dataToJDOM(
-            		oferta.getFechaLimiteReserva(),"fechaLimiteReserva");
-            ofertaElement.addContent(fechaReservaElement);
-        }
+			Element fechaReservaElement = dataToJDOM(
+					oferta.getFechaLimiteReserva(), "fechaLimiteReserva");
+			ofertaElement.addContent(fechaReservaElement);
+		}
 
 		return ofertaElement;
 	}
@@ -155,17 +156,18 @@ public class XmlOfertaDtoConversor {
 		String description = ofertaElement.getChildTextNormalize(
 				"descripcionOferta", XML_NS);
 
-		System.out.println("facebookLikes dto: "+ofertaElement.getChildTextTrim(
-				"facebookLikes", XML_NS));
-		
-		Element facebookLikesElement = ofertaElement.getChild("facebookLikes", XML_NS);
+		System.out.println("facebookLikes dto: "
+				+ ofertaElement.getChildTextTrim("facebookLikes", XML_NS));
+
+		Element facebookLikesElement = ofertaElement.getChild("facebookLikes",
+				XML_NS);
 		int facebookLikes = 0;
 
 		if (facebookLikesElement != null) {
 			facebookLikes = Integer.valueOf(facebookLikesElement.getTextTrim());
-			System.out.println("xml toOferta fblik: "+facebookLikes);
+			System.out.println("xml toOferta fblik: " + facebookLikes);
 		}
-		
+
 		String state = ofertaElement.getChildTextNormalize("estadoOferta",
 				XML_NS);
 
@@ -174,7 +176,7 @@ public class XmlOfertaDtoConversor {
 
 		float discountPrice = Float.valueOf(ofertaElement.getChildTextTrim(
 				"precioDescontadoOferta", XML_NS));
-		
+
 		Calendar limitOfertaDate = null;
 		if (getExpirationOfertaDate(ofertaElement.getChild("fechaLimiteOferta",
 				XML_NS)) == null) {
@@ -260,7 +262,8 @@ public class XmlOfertaDtoConversor {
 		return releaseDate;
 	}
 
-	private static Element dataToJDOM(Calendar expirationDate,String nombreElemento) {
+	private static Element dataToJDOM(Calendar expirationDate,
+			String nombreElemento) {
 
 		Element releaseDateElement = new Element(nombreElemento, XML_NS);
 		int day = expirationDate.get(Calendar.DAY_OF_MONTH);

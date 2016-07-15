@@ -63,7 +63,6 @@ public class XmlExceptionConversor {
 		}
 	}
 
-
 	public static BadStateReservaException fromBadStateReservaExceptionXml(
 			InputStream ex) throws ParsingException {
 		try {
@@ -102,7 +101,7 @@ public class XmlExceptionConversor {
 			throw new ParsingException(e);
 		}
 	}
-	
+
 	public static TimeExpirationException fromTimeExpirationExceptionXml(
 			InputStream ex) throws ParsingException {
 		try {
@@ -113,9 +112,9 @@ public class XmlExceptionConversor {
 
 			Element message = rootElement.getChild("message", XML_NS);
 			Element instanceId = rootElement.getChild("Id", XML_NS);
-			Element expirationDate = rootElement
-					.getChild("expirationDate", XML_NS);
-			
+			Element expirationDate = rootElement.getChild("expirationDate",
+					XML_NS);
+
 			System.out.println();
 
 			Calendar calendar = null;
@@ -125,12 +124,12 @@ public class XmlExceptionConversor {
 				calendar = Calendar.getInstance();
 				calendar.setTime(sdf.parse(expirationDate.getText()));
 			}
-			
-			System.out.println("toxml timeExpiration "+message.toString()+Long.parseLong(instanceId
-					.getTextTrim())+ calendar);
 
-			return new TimeExpirationException(message.getText(), Long.parseLong(instanceId
-					.getTextTrim()), calendar);
+			System.out.println("toxml timeExpiration " + message.toString()
+					+ Long.parseLong(instanceId.getTextTrim()) + calendar);
+
+			return new TimeExpirationException(message.getText(),
+					Long.parseLong(instanceId.getTextTrim()), calendar);
 		} catch (JDOMException | IOException | ParseException
 				| NumberFormatException e) {
 			throw new ParsingException(e);
@@ -174,22 +173,22 @@ public class XmlExceptionConversor {
 		return new Document(exceptionElement);
 	}
 
-	public static Document toTimeExpirationException(
-			TimeExpirationException ex) throws IOException {
+	public static Document toTimeExpirationException(TimeExpirationException ex)
+			throws IOException {
 
 		Element exceptionElement = new Element("TimeExpirationException",
 				XML_NS);
-		
+
 		if (ex.getMessage() != null) {
 			Element messageElement = new Element("message", XML_NS);
-			System.out.println("message totime: "+ex.getMessage());
+			System.out.println("message totime: " + ex.getMessage());
 			messageElement.setText(ex.getMessage());
 			exceptionElement.addContent(messageElement);
 		}
 
 		if (ex.getId() != null) {
 			Element IdElement = new Element("Id", XML_NS);
-			System.out.println("id totime: "+ex.getId());
+			System.out.println("id totime: " + ex.getId());
 			IdElement.setText(ex.getId().toString());
 			exceptionElement.addContent(IdElement);
 		}
@@ -201,7 +200,8 @@ public class XmlExceptionConversor {
 			Element expirationDateElement = new Element("expirationDate",
 					XML_NS);
 
-			System.out.println("fecha totime: "+ex.getFechaExpiracion().getTime());
+			System.out.println("fecha totime: "
+					+ ex.getFechaExpiracion().getTime());
 			expirationDateElement.setText(dateFormatter.format(ex
 					.getFechaExpiracion().getTime()));
 
@@ -236,7 +236,8 @@ public class XmlExceptionConversor {
 	public static Document toOfertaReservadaExceptionXml(
 			OfertaReservadaException ex) throws IOException {
 
-		Element exceptionElement = new Element("OfertaReservadaException", XML_NS);
+		Element exceptionElement = new Element("OfertaReservadaException",
+				XML_NS);
 		System.out.println(ex.getOfertaId());
 
 		if (ex.getOfertaId() != null) {

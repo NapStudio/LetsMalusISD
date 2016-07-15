@@ -18,7 +18,8 @@ public class Oferta {
 	public Oferta(String nombreOferta, String descripcionOferta,
 			String estadoOferta, float precioRealOferta,
 			float precioDescontadoOferta, float comisionOferta,
-			Calendar fechaLimiteOferta, Calendar fechaLimiteReserva, String facebookId) {
+			Calendar fechaLimiteOferta, Calendar fechaLimiteReserva,
+			String facebookId) {
 		super();
 		this.nombreOferta = nombreOferta;
 		this.descripcionOferta = descripcionOferta;
@@ -34,13 +35,14 @@ public class Oferta {
 		if (fechaLimiteReserva != null) {
 			this.fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
 		}
-		this.facebookId=facebookId;
+		this.facebookId = facebookId;
 	}
 
 	public Oferta(Long ofertaId, String nombreOferta, String descripcionOferta,
 			String estadoOferta, float precioRealOferta,
 			float precioDescontadoOferta, float comisionOferta,
-			Calendar fechaLimiteOferta, Calendar fechaLimiteReserva, String facebookId) {
+			Calendar fechaLimiteOferta, Calendar fechaLimiteReserva,
+			String facebookId) {
 		super();
 		this.ofertaId = ofertaId;
 		this.nombreOferta = nombreOferta;
@@ -57,7 +59,7 @@ public class Oferta {
 		if (fechaLimiteReserva != null) {
 			this.fechaLimiteReserva.set(Calendar.MILLISECOND, 0);
 		}
-		this.facebookId=facebookId;
+		this.facebookId = facebookId;
 	}
 
 	public Long getOfertaId() {
@@ -244,18 +246,15 @@ public class Oferta {
 				+ ", fechaLimiteReserva=" + fechaLimiteReserva
 				+ ", facebookId=" + facebookId + "]";
 	}
+
 	public String toStringSin() {
-		return "Oferta [nombreOferta="
-				+ nombreOferta + ", descripcionOferta=" + descripcionOferta
-				+ ", estadoOferta=" + estadoOferta + ", precioRealOferta="
-				+ precioRealOferta + ", precioDescontadoOferta="
-				+ precioDescontadoOferta 
+		return "Oferta [nombreOferta=" + nombreOferta + ", descripcionOferta="
+				+ descripcionOferta + ", estadoOferta=" + estadoOferta
+				+ ", precioRealOferta=" + precioRealOferta
+				+ ", precioDescontadoOferta=" + precioDescontadoOferta
 				+ ", fechaLimiteOferta=" + fechaLimiteOferta
 				+ ", fechaLimiteReserva=" + fechaLimiteReserva
 				+ ", facebookId=" + facebookId + "]";
 	}
-
-
-	
 
 }

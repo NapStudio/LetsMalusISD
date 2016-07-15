@@ -1,15 +1,16 @@
-
 package es.udc.ws.app.client.service.soap.wsdl;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for InputValidationException complex type.
+ * <p>
+ * Java class for InputValidationException complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="InputValidationException">
@@ -26,35 +27,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InputValidationException", propOrder = {
-    "message"
-})
+@XmlType(name = "InputValidationException", propOrder = { "message" })
 public class InputValidationException {
 
-    protected String message;
+	protected String message;
 
-    /**
-     * Gets the value of the message property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMessage() {
-        return message;
-    }
+	/**
+	 * Gets the value of the message property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMessage() {
+		return message;
+	}
 
-    /**
-     * Sets the value of the message property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMessage(String value) {
-        this.message = value;
-    }
+	/**
+	 * Sets the value of the message property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMessage(String value) {
+		this.message = value;
+	}
 
 }

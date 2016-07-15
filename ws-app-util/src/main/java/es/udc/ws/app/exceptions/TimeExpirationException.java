@@ -2,22 +2,21 @@ package es.udc.ws.app.exceptions;
 
 import java.util.Calendar;
 
-
 @SuppressWarnings("serial")
-public class TimeExpirationException extends Exception{
-	
-    private Long Id;
-    private Calendar fechaExpiracion;
-    private String message;
+public class TimeExpirationException extends Exception {
 
-    public TimeExpirationException(String message, Long Id, Calendar fechalimite) {
-        super(message+" with id=\"" + Id + 
-              "\" has expired (expirationDate = \"" + 
-              fechalimite.toString() + "\")");
-        this.message=message;
-        this.Id = Id;
-        this.fechaExpiracion = fechalimite;
-    }
+	private Long Id;
+	private Calendar fechaExpiracion;
+	private String message;
+
+	public TimeExpirationException(String message, Long Id, Calendar fechalimite) {
+		super(message + " with id=\"" + Id
+				+ "\" has expired (expirationDate = \""
+				+ fechalimite.toString() + "\")");
+		this.message = message;
+		this.Id = Id;
+		this.fechaExpiracion = fechalimite;
+	}
 
 	public Long getId() {
 		return Id;
@@ -33,10 +32,8 @@ public class TimeExpirationException extends Exception{
 
 	@Override
 	public String toString() {
-		return "TimeExpirationException [Id=" + Id + ", fechaExpiracion="
-				+ fechaExpiracion.getTime() + ", in=" + message + "]";
+		return " es.udc.ws.app.exceptions.TimeExpirationException: The " + message +" with id: "+Id+ " had expirated at "
+				+ fechaExpiracion.getTime();
 	}
-	
-	
-    
+
 }
