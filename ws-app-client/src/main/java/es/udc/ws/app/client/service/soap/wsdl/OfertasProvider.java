@@ -29,48 +29,20 @@ public interface OfertasProvider {
     /**
      * 
      * @param ofertaId
-     * @return
-     *     returns java.util.List<es.udc.ws.app.client.service.soap.wsdl.ReservaDto>
+     * @throws SoapOfertaReservadaException
      * @throws SoapInstanceNotFoundException
-     * @throws SoapTimeExpirationException
      */
     @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "findReservasByOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByOferta")
-    @ResponseWrapper(localName = "findReservasByOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByOfertaResponse")
-    @Action(input = "http://soap.ws.udc.es/OfertasProvider/findReservasByOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/findReservasByOfertaResponse", fault = {
-        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByOferta/Fault/SoapInstanceNotFoundException"),
-        @FaultAction(className = SoapTimeExpirationException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByOferta/Fault/SoapTimeExpirationException")
+    @RequestWrapper(localName = "removeOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.RemoveOferta")
+    @ResponseWrapper(localName = "removeOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.RemoveOfertaResponse")
+    @Action(input = "http://soap.ws.udc.es/OfertasProvider/removeOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/removeOfertaResponse", fault = {
+        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/removeOferta/Fault/SoapInstanceNotFoundException"),
+        @FaultAction(className = SoapOfertaReservadaException.class, value = "http://soap.ws.udc.es/OfertasProvider/removeOferta/Fault/SoapOfertaReservadaException")
     })
-    public List<ReservaDto> findReservasByOferta(
+    public void removeOferta(
         @WebParam(name = "ofertaId", targetNamespace = "")
         Long ofertaId)
-        throws SoapInstanceNotFoundException, SoapTimeExpirationException
-    ;
-
-    /**
-     * 
-     * @param emailUsuarioReserva
-     * @param estadoReserva
-     * @return
-     *     returns java.util.List<es.udc.ws.app.client.service.soap.wsdl.ReservaDto>
-     * @throws SoapInstanceNotFoundException
-     * @throws SoapTimeExpirationException
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "findReservasByUsuario", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByUsuario")
-    @ResponseWrapper(localName = "findReservasByUsuarioResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByUsuarioResponse")
-    @Action(input = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuarioRequest", output = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuarioResponse", fault = {
-        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuario/Fault/SoapInstanceNotFoundException"),
-        @FaultAction(className = SoapTimeExpirationException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuario/Fault/SoapTimeExpirationException")
-    })
-    public List<ReservaDto> findReservasByUsuario(
-        @WebParam(name = "emailUsuarioReserva", targetNamespace = "")
-        String emailUsuarioReserva,
-        @WebParam(name = "estadoReserva", targetNamespace = "")
-        String estadoReserva)
-        throws SoapInstanceNotFoundException, SoapTimeExpirationException
+        throws SoapInstanceNotFoundException, SoapOfertaReservadaException
     ;
 
     /**
@@ -95,22 +67,69 @@ public interface OfertasProvider {
 
     /**
      * 
+     * @param emailUsuarioReserva
+     * @param tarjetaCreditoReserva
      * @param ofertaId
+     * @return
+     *     returns java.lang.Long
      * @throws SoapOfertaReservadaException
      * @throws SoapInstanceNotFoundException
+     * @throws SoapTimeExpirationException
+     * @throws SoapInputValidationException
      */
     @WebMethod
-    @RequestWrapper(localName = "removeOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.RemoveOferta")
-    @ResponseWrapper(localName = "removeOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.RemoveOfertaResponse")
-    @Action(input = "http://soap.ws.udc.es/OfertasProvider/removeOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/removeOfertaResponse", fault = {
-        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/removeOferta/Fault/SoapInstanceNotFoundException"),
-        @FaultAction(className = SoapOfertaReservadaException.class, value = "http://soap.ws.udc.es/OfertasProvider/removeOferta/Fault/SoapOfertaReservadaException")
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "reservarOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.ReservarOferta")
+    @ResponseWrapper(localName = "reservarOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.ReservarOfertaResponse")
+    @Action(input = "http://soap.ws.udc.es/OfertasProvider/reservarOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/reservarOfertaResponse", fault = {
+        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapInstanceNotFoundException"),
+        @FaultAction(className = SoapInputValidationException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapInputValidationException"),
+        @FaultAction(className = SoapOfertaReservadaException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapOfertaReservadaException"),
+        @FaultAction(className = SoapTimeExpirationException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapTimeExpirationException")
     })
-    public void removeOferta(
+    public Long reservarOferta(
+        @WebParam(name = "ofertaId", targetNamespace = "")
+        Long ofertaId,
+        @WebParam(name = "emailUsuarioReserva", targetNamespace = "")
+        String emailUsuarioReserva,
+        @WebParam(name = "tarjetaCreditoReserva", targetNamespace = "")
+        String tarjetaCreditoReserva)
+        throws SoapInputValidationException, SoapInstanceNotFoundException, SoapOfertaReservadaException, SoapTimeExpirationException
+    ;
+
+    /**
+     * 
+     * @param ofertaId
+     * @throws SoapInstanceNotFoundException
+     * @throws SoapInputValidationException
+     */
+    @WebMethod
+    @RequestWrapper(localName = "invalidarOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.InvalidarOferta")
+    @ResponseWrapper(localName = "invalidarOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.InvalidarOfertaResponse")
+    @Action(input = "http://soap.ws.udc.es/OfertasProvider/invalidarOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/invalidarOfertaResponse", fault = {
+        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/invalidarOferta/Fault/SoapInstanceNotFoundException"),
+        @FaultAction(className = SoapInputValidationException.class, value = "http://soap.ws.udc.es/OfertasProvider/invalidarOferta/Fault/SoapInputValidationException")
+    })
+    public void invalidarOferta(
         @WebParam(name = "ofertaId", targetNamespace = "")
         Long ofertaId)
-        throws SoapInstanceNotFoundException, SoapOfertaReservadaException
+        throws SoapInputValidationException, SoapInstanceNotFoundException
     ;
+
+    /**
+     * 
+     * @param keywords
+     * @return
+     *     returns java.util.List<es.udc.ws.app.client.service.soap.wsdl.OfertaDto>
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "findOfertas", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindOfertas")
+    @ResponseWrapper(localName = "findOfertasResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindOfertasResponse")
+    @Action(input = "http://soap.ws.udc.es/OfertasProvider/findOfertasRequest", output = "http://soap.ws.udc.es/OfertasProvider/findOfertasResponse")
+    public List<OfertaDto> findOfertas(
+        @WebParam(name = "keywords", targetNamespace = "")
+        String keywords);
 
     /**
      * 
@@ -157,8 +176,8 @@ public interface OfertasProvider {
      * @return
      *     returns java.lang.Long
      * @throws SoapInstanceNotFoundException
-     * @throws SoapBadStateReservaException
      * @throws SoapTimeExpirationException
+     * @throws SoapBadStateReservaException
      */
     @WebMethod
     @WebResult(targetNamespace = "")
@@ -198,67 +217,48 @@ public interface OfertasProvider {
     /**
      * 
      * @param ofertaId
+     * @return
+     *     returns java.util.List<es.udc.ws.app.client.service.soap.wsdl.ReservaDto>
      * @throws SoapInstanceNotFoundException
-     * @throws SoapInputValidationException
+     * @throws SoapTimeExpirationException
      */
     @WebMethod
-    @RequestWrapper(localName = "invalidarOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.InvalidarOferta")
-    @ResponseWrapper(localName = "invalidarOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.InvalidarOfertaResponse")
-    @Action(input = "http://soap.ws.udc.es/OfertasProvider/invalidarOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/invalidarOfertaResponse", fault = {
-        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/invalidarOferta/Fault/SoapInstanceNotFoundException"),
-        @FaultAction(className = SoapInputValidationException.class, value = "http://soap.ws.udc.es/OfertasProvider/invalidarOferta/Fault/SoapInputValidationException")
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "findReservasByOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByOferta")
+    @ResponseWrapper(localName = "findReservasByOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByOfertaResponse")
+    @Action(input = "http://soap.ws.udc.es/OfertasProvider/findReservasByOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/findReservasByOfertaResponse", fault = {
+        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByOferta/Fault/SoapInstanceNotFoundException"),
+        @FaultAction(className = SoapTimeExpirationException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByOferta/Fault/SoapTimeExpirationException")
     })
-    public void invalidarOferta(
+    public List<ReservaDto> findReservasByOferta(
         @WebParam(name = "ofertaId", targetNamespace = "")
         Long ofertaId)
-        throws SoapInputValidationException, SoapInstanceNotFoundException
+        throws SoapInstanceNotFoundException, SoapTimeExpirationException
     ;
 
     /**
      * 
-     * @param keywords
-     * @return
-     *     returns java.util.List<es.udc.ws.app.client.service.soap.wsdl.OfertaDto>
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "findOfertas", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindOfertas")
-    @ResponseWrapper(localName = "findOfertasResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindOfertasResponse")
-    @Action(input = "http://soap.ws.udc.es/OfertasProvider/findOfertasRequest", output = "http://soap.ws.udc.es/OfertasProvider/findOfertasResponse")
-    public List<OfertaDto> findOfertas(
-        @WebParam(name = "keywords", targetNamespace = "")
-        String keywords);
-
-    /**
-     * 
      * @param emailUsuarioReserva
-     * @param tarjetaCreditoReserva
-     * @param ofertaId
+     * @param estadoReserva
      * @return
-     *     returns java.lang.Long
-     * @throws SoapOfertaReservadaException
+     *     returns java.util.List<es.udc.ws.app.client.service.soap.wsdl.ReservaDto>
      * @throws SoapInstanceNotFoundException
      * @throws SoapTimeExpirationException
-     * @throws SoapInputValidationException
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "reservarOferta", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.ReservarOferta")
-    @ResponseWrapper(localName = "reservarOfertaResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.ReservarOfertaResponse")
-    @Action(input = "http://soap.ws.udc.es/OfertasProvider/reservarOfertaRequest", output = "http://soap.ws.udc.es/OfertasProvider/reservarOfertaResponse", fault = {
-        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapInstanceNotFoundException"),
-        @FaultAction(className = SoapInputValidationException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapInputValidationException"),
-        @FaultAction(className = SoapOfertaReservadaException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapOfertaReservadaException"),
-        @FaultAction(className = SoapTimeExpirationException.class, value = "http://soap.ws.udc.es/OfertasProvider/reservarOferta/Fault/SoapTimeExpirationException")
+    @RequestWrapper(localName = "findReservasByUsuario", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByUsuario")
+    @ResponseWrapper(localName = "findReservasByUsuarioResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.app.client.service.soap.wsdl.FindReservasByUsuarioResponse")
+    @Action(input = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuarioRequest", output = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuarioResponse", fault = {
+        @FaultAction(className = SoapInstanceNotFoundException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuario/Fault/SoapInstanceNotFoundException"),
+        @FaultAction(className = SoapTimeExpirationException.class, value = "http://soap.ws.udc.es/OfertasProvider/findReservasByUsuario/Fault/SoapTimeExpirationException")
     })
-    public Long reservarOferta(
-        @WebParam(name = "ofertaId", targetNamespace = "")
-        Long ofertaId,
+    public List<ReservaDto> findReservasByUsuario(
         @WebParam(name = "emailUsuarioReserva", targetNamespace = "")
         String emailUsuarioReserva,
-        @WebParam(name = "tarjetaCreditoReserva", targetNamespace = "")
-        String tarjetaCreditoReserva)
-        throws SoapInputValidationException, SoapInstanceNotFoundException, SoapOfertaReservadaException, SoapTimeExpirationException
+        @WebParam(name = "estadoReserva", targetNamespace = "")
+        String estadoReserva)
+        throws SoapInstanceNotFoundException, SoapTimeExpirationException
     ;
 
 }

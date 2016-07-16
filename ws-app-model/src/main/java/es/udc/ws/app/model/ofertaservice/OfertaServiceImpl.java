@@ -364,26 +364,11 @@ public class OfertaServiceImpl implements OfertaService {
 					ofertas = ofertaDAO.findByParameters(connection, keywords,
 							estadoBusqueda, fechaBusqueda);
 				}
-				List<Oferta> nuevaOfertas = new ArrayList<>();
-				for (Oferta oferta : ofertas) {
-					System.out.println(oferta.getFechaLimiteOferta().getTime());
-					System.out.println(Calendar.getInstance().getTime());
-					System.out.println((oferta.getFechaLimiteOferta()
-							.after(Calendar.getInstance())));
-					System.out.println(oferta.getEstadoOferta());
-					System.out.println(oferta.getEstadoOferta()
-							.equals("válida") + "\n");
-					if ((oferta.getFechaLimiteOferta().after(Calendar
-							.getInstance()))
-							&& (oferta.getEstadoOferta().equals("válida"))) {
-						nuevaOfertas.add(oferta);
-					}
-				}
 
 				/* Commit. */
 				connection.commit();
 
-				return nuevaOfertas;
+				return ofertas;
 			} catch (SQLException e) {
 				connection.rollback();
 				throw new RuntimeException(e);

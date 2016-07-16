@@ -106,7 +106,7 @@ public class OfertaServiceClient {
 
 		} else if ("-u".equalsIgnoreCase(args[0])
 				|| "-updateOffer".equalsIgnoreCase(args[0])) {
-			validateArgs(args, 7, new int[] { 1, 7, 8 });
+			validateArgs(args, 8, new int[] { 1, 7, 8 });
 
 			// -updateOffer <offerId2> 'Casa rural'
 			// 'Habitación triple en la casa rural UDC' '01/12/2016 23:59'
@@ -438,22 +438,22 @@ public class OfertaServiceClient {
 
 	public static void validateArgs(String[] args, int expectedArgs,
 			int[] numericArguments) {
-		// if (expectedArgs != args.length) {
-		// System.out.println("problem args length!! \n" + expectedArgs + " "
-		// + args.length);
-		// printUsageAndExit();
-		// }
-		// for (int i = 0; i < numericArguments.length; i++) {
-		// int position = numericArguments[i];
-		// try {
-		// Double.parseDouble(args[position]);
-		// } catch (NumberFormatException n) {
-		// System.out.println("exception NumberFormatException");
-		// printUsageAndExit();
-		// } catch (ArrayIndexOutOfBoundsException e) {
-		//
-		// }
-		// }
+		if (expectedArgs != args.length) {
+			System.out.println("problem args length!! \n" + expectedArgs + " "
+					+ args.length);
+			printUsageAndExit();
+		}
+		for (int i = 0; i < numericArguments.length; i++) {
+			int position = numericArguments[i];
+			try {
+				Double.parseDouble(args[position]);
+			} catch (NumberFormatException n) {
+				System.out.println("exception NumberFormatException");
+				printUsageAndExit();
+			} catch (ArrayIndexOutOfBoundsException e) {
+
+			}
+		}
 	}
 
 	public static void printUsageAndExit() {

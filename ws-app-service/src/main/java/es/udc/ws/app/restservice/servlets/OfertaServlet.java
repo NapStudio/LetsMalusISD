@@ -245,7 +245,8 @@ public class OfertaServlet extends HttpServlet {
 		if (path == null || path.length() == 0) {
 			String keywords = req.getParameter("keywords");
 			List<Oferta> ofertas = OfertaServiceFactory.getService()
-					.findOfertas(keywords, null, Calendar.getInstance());
+					.findOfertas(keywords, "válida", Calendar.getInstance());
+			
 			List<Integer> likes = OfertaServiceFactory.getService()
 					.getLikesList(ofertas);
 			if (likes.size() != ofertas.size()) {

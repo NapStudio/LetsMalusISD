@@ -1,5 +1,7 @@
 package es.udc.ws.app.soapservice;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.jws.WebMethod;
@@ -100,10 +102,18 @@ public class SoapOfertaService {
 	public List<OfertaDto> findOfertas(
 			@WebParam(name = "keywords") String keywords) {
 		List<Oferta> ofertas = OfertaServiceFactory.getService().findOfertas(
-				keywords, null, null);
+				keywords, "válida", Calendar.getInstance());
+		
+		List<Integer> likes = OfertaServiceFactory.getService()
+				.getLikesList(ofertas);
+		if (likes.size() != ofertas.size()) {
+			likes = new ArrayList<Integer>();
+			for (int i = 0; i < ofertas.size(); i++) {
+				likes.add(0);
+			}
+		}
 
-		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas,
-				OfertaServiceFactory.getService().getLikesList(ofertas));
+		return OfertaToOfertaDtoConversor.toOfertaDtos(ofertas, likes);
 	}
 
 	@WebMethod(operationName = "reservarOferta")
